@@ -14,15 +14,40 @@ export function BlogHeader({ onNavigate, currentView }: BlogHeaderProps) {
     <header className="border-b border-gray-200">
       <div className={`max-w-3xl mx-auto px-6 py-12`}>
         <div className={isArticleView ? 'hidden' : ''}>
-          <pre className="mb-2 text-[6px] sm:text-[8px] md:text-[10px] leading-[1] font-mono overflow-x-auto">
-{`
-██    ██ ██    ██  █████  ███    ██     ██     ██  █████  ███    ██  ██████  
+          <style>{`
+            @keyframes scroll-led {
+              0% {
+                transform: translateX(0);
+              }
+              100% {
+                transform: translateX(-50%);
+              }
+            }
+            .led-scroll-container {
+              animation: scroll-led 15s linear infinite;
+            }
+            .led-scroll-container:hover {
+              animation-play-state: paused;
+            }
+          `}</style>
+          <div className="overflow-hidden mb-2 relative">
+            <div className="led-scroll-container inline-flex whitespace-nowrap">
+              <pre className="text-[6px] sm:text-[8px] md:text-[10px] leading-[1] font-mono inline-block pr-8">
+{`██    ██ ██    ██  █████  ███    ██     ██     ██  █████  ███    ██  ██████  
  ██  ██  ██    ██ ██   ██ ████   ██     ██     ██ ██   ██ ████   ██ ██       
   ████   ██    ██ ███████ ██ ██  ██     ██  █  ██ ███████ ██ ██  ██ ██   ███ 
    ██    ██    ██ ██   ██ ██  ██ ██     ██ ███ ██ ██   ██ ██  ██ ██ ██    ██ 
-   ██     ██████  ██   ██ ██   ████      ███ ███  ██   ██ ██   ████  ██████  
-`}
-          </pre>
+   ██     ██████  ██   ██ ██   ████      ███ ███  ██   ██ ██   ████  ██████  `}
+              </pre>
+              <pre className="text-[6px] sm:text-[8px] md:text-[10px] leading-[1] font-mono inline-block pr-8" aria-hidden="true">
+{`██    ██ ██    ██  █████  ███    ██     ██     ██  █████  ███    ██  ██████  
+ ██  ██  ██    ██ ██   ██ ████   ██     ██     ██ ██   ██ ████   ██ ██       
+  ████   ██    ██ ███████ ██ ██  ██     ██  █  ██ ███████ ██ ██  ██ ██   ███ 
+   ██    ██    ██ ██   ██ ██  ██ ██     ██ ███ ██ ██   ██ ██  ██ ██ ██    ██ 
+   ██     ██████  ██   ██ ██   ████      ███ ███  ██   ██ ██   ████  ██████  `}
+              </pre>
+            </div>
+          </div>
           <p className="text-[rgb(119,123,126)] text-[16px] italic font-bold font-normal">Oaks form little acorns grown.</p>
           
           <div className="flex gap-4 mt-4">
