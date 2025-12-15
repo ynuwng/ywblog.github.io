@@ -32,19 +32,19 @@ export function BlogHeader({ onNavigate, currentView }: BlogHeaderProps) {
           `}</style>
           <div className="overflow-hidden mb-2 relative">
             <div className="led-scroll-container inline-flex whitespace-nowrap">
-              <pre className="text-[6px] sm:text-[8px] md:text-[10px] leading-[1] font-mono inline-block pr-8">
-{`██    ██ ██    ██  █████  ███    ██     ██     ██  █████  ███    ██  ██████  
- ██  ██  ██    ██ ██   ██ ████   ██     ██     ██ ██   ██ ████   ██ ██       
-  ████   ██    ██ ███████ ██ ██  ██     ██  █  ██ ███████ ██ ██  ██ ██   ███ 
-   ██    ██    ██ ██   ██ ██  ██ ██     ██ ███ ██ ██   ██ ██  ██ ██ ██    ██ 
-   ██     ██████  ██   ██ ██   ████      ███ ███  ██   ██ ██   ████  ██████  `}
+              <pre className="text-[6px] sm:text-[8px] md:text-[10px] leading-[1] font-mono inline-block">
+{`██    ██ ██    ██  █████  ███    ██     ██     ██  █████  ███    ██  ██████       
+ ██  ██  ██    ██ ██   ██ ████   ██     ██     ██ ██   ██ ████   ██ ██            
+  ████   ██    ██ ███████ ██ ██  ██     ██  █  ██ ███████ ██ ██  ██ ██   ███      
+   ██    ██    ██ ██   ██ ██  ██ ██     ██ ███ ██ ██   ██ ██  ██ ██ ██    ██      
+   ██     ██████  ██   ██ ██   ████      ███ ███  ██   ██ ██   ████  ██████       `}
               </pre>
-              <pre className="text-[6px] sm:text-[8px] md:text-[10px] leading-[1] font-mono inline-block pr-8" aria-hidden="true">
-{`██    ██ ██    ██  █████  ███    ██     ██     ██  █████  ███    ██  ██████  
- ██  ██  ██    ██ ██   ██ ████   ██     ██     ██ ██   ██ ████   ██ ██       
-  ████   ██    ██ ███████ ██ ██  ██     ██  █  ██ ███████ ██ ██  ██ ██   ███ 
-   ██    ██    ██ ██   ██ ██  ██ ██     ██ ███ ██ ██   ██ ██  ██ ██ ██    ██ 
-   ██     ██████  ██   ██ ██   ████      ███ ███  ██   ██ ██   ████  ██████  `}
+              <pre className="text-[6px] sm:text-[8px] md:text-[10px] leading-[1] font-mono inline-block" aria-hidden="true">
+{`██    ██ ██    ██  █████  ███    ██     ██     ██  █████  ███    ██  ██████       
+ ██  ██  ██    ██ ██   ██ ████   ██     ██     ██ ██   ██ ████   ██ ██            
+  ████   ██    ██ ███████ ██ ██  ██     ██  █  ██ ███████ ██ ██  ██ ██   ███      
+   ██    ██    ██ ██   ██ ██  ██ ██     ██ ███ ██ ██   ██ ██  ██ ██ ██    ██      
+   ██     ██████  ██   ██ ██   ████      ███ ███  ██   ██ ██   ████  ██████       `}
               </pre>
             </div>
           </div>
