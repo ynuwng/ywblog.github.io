@@ -382,7 +382,7 @@
   }
 
   :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) h1 {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: var(--font-weight-medium);
     line-height: 1.5;
   }
