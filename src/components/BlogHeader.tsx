@@ -58,35 +58,35 @@ export function BlogHeader({ onNavigate, currentView }: BlogHeaderProps) {
         <nav className="mt-8 flex gap-2 sm:gap-6">
           <button 
             onClick={() => onNavigate('home')} 
-            className={`${currentView === 'home' ? 'font-bold' : ''} hover:text-gray-900 transition-colors whitespace-nowrap text-sm sm:text-base`}
+            className={`${currentView === 'home' ? 'font-bold' : ''} hover:text-gray-900 transition-colors whitespace-nowrap text-lg sm:text-xl`}
             style={{ color: currentView === 'home' ? '#235347' : '#4B5563' }}
           >
             Home
           </button>
           <button 
             onClick={() => onNavigate('archives')} 
-            className={`${currentView === 'archives' ? 'font-bold' : ''} hover:text-gray-900 transition-colors whitespace-nowrap text-sm sm:text-base`}
+            className={`${currentView === 'archives' ? 'font-bold' : ''} hover:text-gray-900 transition-colors whitespace-nowrap text-lg sm:text-xl`}
             style={{ color: currentView === 'archives' ? '#235347' : '#4B5563' }}
           >
             Archives
           </button>
           <button 
             onClick={() => onNavigate('categories')} 
-            className={`${currentView === 'categories' ? 'font-bold' : ''} hover:text-gray-900 transition-colors whitespace-nowrap text-sm sm:text-base`}
+            className={`${currentView === 'categories' ? 'font-bold' : ''} hover:text-gray-900 transition-colors whitespace-nowrap text-lg sm:text-xl`}
             style={{ color: currentView === 'categories' ? '#235347' : '#4B5563' }}
           >
             Categories
           </button>
           <button 
             onClick={() => onNavigate('tags')} 
-            className={`${currentView === 'tags' ? 'font-bold' : ''} hover:text-gray-900 transition-colors whitespace-nowrap text-sm sm:text-base`}
+            className={`${currentView === 'tags' ? 'font-bold' : ''} hover:text-gray-900 transition-colors whitespace-nowrap text-lg sm:text-xl`}
             style={{ color: currentView === 'tags' ? '#235347' : '#4B5563' }}
           >
             Tags
           </button>
           <button 
             onClick={() => onNavigate('about')} 
-            className={`${currentView === 'about' ? 'font-bold' : ''} hover:text-gray-900 transition-colors whitespace-nowrap text-sm sm:text-base`}
+            className={`${currentView === 'about' ? 'font-bold' : ''} hover:text-gray-900 transition-colors whitespace-nowrap text-lg sm:text-xl`}
             style={{ color: currentView === 'about' ? '#235347' : '#4B5563' }}
           >
             About

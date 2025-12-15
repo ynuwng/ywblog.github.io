@@ -28,7 +28,7 @@ function getTagColor(tag: string): { bg: string; text: string } {
 export function BlogPost({ post, onClick }: BlogPostProps) {
   return (
     <article className="group cursor-pointer" onClick={onClick}>
-      <h2 className="mb-3 font-bold group-hover:text-gray-600 transition-colors">
+      <h2 className="mb-3 text-2xl font-bold text-gray-900 group-hover:text-gray-600 transition-colors">
         {post.title}
       </h2>
       
