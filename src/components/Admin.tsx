@@ -447,7 +447,9 @@ export function Admin({ refreshPosts }: AdminProps) {
               <p><code className="bg-white px-2 py-1 rounded">```language\ncode block\n```</code> - Code block</p>
               <p><code className="bg-white px-2 py-1 rounded">- item</code> - Bullet list</p>
               <p><code className="bg-white px-2 py-1 rounded">1. item</code> - Numbered list</p>
-              <p><code className="bg-white px-2 py-1 rounded">[text](url)</code> - Link</p>
+              <p><code className="bg-white px-2 py-1 rounded">[text](url)</code> - External link</p>
+              <p><code className="bg-white px-2 py-1 rounded">[text](/article/123)</code> - Link to another article</p>
+              <p><code className="bg-white px-2 py-1 rounded">[text](#section-name)</code> - Table of contents link</p>
               <p><code className="bg-white px-2 py-1 rounded">&gt; quote</code> - Blockquote (with left border)</p>
               <p><code className="bg-white px-2 py-1 rounded">| Header | Header |\n| --- | --- |\n| Cell | Cell |</code> - Table</p>
               <p><code className="bg-white px-2 py-1 rounded">$E = mc^2$</code> - Inline math equation</p>

@@ -81,17 +81,34 @@ export function Article({ post, onBack, onCategoryClick, onTagClick }: ArticlePr
             a({ node, children, ...props }) {
               const href = props.href || '';
               const isExternal = href.startsWith('http');
+              const isHashOnly = href.startsWith('#') && !href.includes('/');
+              const isInternalArticle = href.startsWith('/article/') || href.match(/^article\//);
               
-              // Handle internal links to other posts manually to avoid full page reload/home redirection
-              // Assuming internal links might look like "/posts/123" or similar
-              // But for markdown content, user might write [Link](#) or [Link](https://...)
-              // If it's a relative link to another post, we'd need a way to intercept it.
-              // However, typically markdown links are external. 
-              // If the user puts a link to the homepage, it might reload.
+              // Handle different types of links
+              const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+                if (isHashOnly) {
+                  // Table of contents link - scroll to section
+                  e.preventDefault();
+                  const targetId = href.slice(1);
+                  const element = document.getElementById(targetId);
+                  if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                  }
+                } else if (isInternalArticle) {
+                  // Internal article link - use hash routing
+                  e.preventDefault();
+                  const articlePath = href.startsWith('/') ? href.slice(1) : href;
+                  window.location.hash = `#/${articlePath}`;
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+                // External links will behave normally
+              };
               
               return (
                 <a
                   {...props}
+                  href={href}
+                  onClick={handleClick}
                   style={{ color: '#002fa7' }}
                   className="hover:underline"
                   target={isExternal ? "_blank" : undefined}
@@ -116,15 +133,25 @@ export function Article({ post, onBack, onCategoryClick, onTagClick }: ArticlePr
               );
             },
             h2({ node, children, ...props }) {
+              // Generate ID from heading text for table of contents
+              const text = typeof children === 'string' ? children : 
+                           Array.isArray(children) ? children.join('') : '';
+              const id = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+              
               return (
-                <h2 className="mt-10 mb-5 text-[18px]" {...props}>
+                <h2 id={id} className="mt-10 mb-5 text-[18px]" {...props}>
                   {children}
                 </h2>
               );
             },
             h3({ node, children, ...props }) {
+              // Generate ID from heading text for table of contents
+              const text = typeof children === 'string' ? children : 
+                           Array.isArray(children) ? children.join('') : '';
+              const id = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+              
               return (
-                <h3 className="mt-8 mb-4 text-[16px]" {...props}>
+                <h3 id={id} className="mt-8 mb-4 text-[16px]" {...props}>
                   {children}
                 </h3>
               );
