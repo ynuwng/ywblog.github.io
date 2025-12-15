@@ -226,8 +226,19 @@ export function Admin({ refreshPosts }: AdminProps) {
             <h2 className="text-2xl">Published Articles</h2>
             <button
               onClick={() => {
+                // Clear form fields
+                setEditingId(null);
+                setTitle('');
+                setDate('');
+                setAuthor('Yuan Wang');
+                setExcerpt('');
+                setReadTime('5 min read');
+                setTags('');
+                setCategory('');
+                setContent('');
+                // Show the form
                 setShowArticleList(false);
-                handleCancelEdit();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
               className="px-6 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors"
             >
