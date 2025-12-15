@@ -17,35 +17,38 @@ import { fallbackPosts } from './data/fallbackPosts';
 
 type ViewType = 'home' | 'archives' | 'categories' | 'tags' | 'about' | 'article' | 'tagged' | 'category' | 'admin';
 
-export default function App() {
-  // Lazy initialization of state based on history.state
-  const [currentView, setCurrentView] = useState<ViewType>(() => {
-    if (typeof window !== 'undefined' && window.history.state?.view) {
-      return window.history.state.view;
-    }
-    return 'home';
-  });
+// Parse hash from URL to get initial state
+function parseHash(): { view: ViewType; articleId?: string; tag?: string; category?: string } {
+  const hash = window.location.hash.slice(1); // Remove the '#'
+  if (!hash || hash === '/') return { view: 'home' };
   
-  const [selectedArticle, setSelectedArticle] = useState<string | null>(() => {
-    if (typeof window !== 'undefined' && window.history.state?.articleId) {
-      return window.history.state.articleId;
-    }
-    return null;
-  });
+  const parts = hash.split('/').filter(Boolean);
+  
+  if (parts[0] === 'article' && parts[1]) {
+    return { view: 'article', articleId: parts[1] };
+  }
+  if (parts[0] === 'tag' && parts[1]) {
+    return { view: 'tagged', tag: decodeURIComponent(parts[1]) };
+  }
+  if (parts[0] === 'category' && parts[1]) {
+    return { view: 'category', category: decodeURIComponent(parts[1]) };
+  }
+  if (parts[0] === 'archives') return { view: 'archives' };
+  if (parts[0] === 'categories') return { view: 'categories' };
+  if (parts[0] === 'tags') return { view: 'tags' };
+  if (parts[0] === 'about') return { view: 'about' };
+  if (parts[0] === 'admin') return { view: 'admin' };
+  
+  return { view: 'home' };
+}
 
-  const [selectedTag, setSelectedTag] = useState<string | null>(() => {
-    if (typeof window !== 'undefined' && window.history.state?.tag) {
-      return window.history.state.tag;
-    }
-    return null;
-  });
-
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(() => {
-    if (typeof window !== 'undefined' && window.history.state?.category) {
-      return window.history.state.category;
-    }
-    return null;
-  });
+export default function App() {
+  // Initialize state from URL hash
+  const initialState = parseHash();
+  const [currentView, setCurrentView] = useState<ViewType>(initialState.view);
+  const [selectedArticle, setSelectedArticle] = useState<string | null>(initialState.articleId || null);
+  const [selectedTag, setSelectedTag] = useState<string | null>(initialState.tag || null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(initialState.category || null);
   
   // Use custom hook for data fetching
   const { blogPosts: postsFromHook, loading, refreshPosts } = useBlogPosts();
@@ -63,75 +66,54 @@ export default function App() {
   // Decide which article object to use
   const currentArticle = hasContent ? postInList : fetchedPost;
 
-  // Initialize state from URL on mount and handle browser back/forward
+  // Handle hash changes (back/forward navigation)
   useEffect(() => {
-    const handlePopState = (event: PopStateEvent) => {
-      if (event.state) {
-        setCurrentView(event.state.view);
-        setSelectedArticle(event.state.articleId || null);
-        setSelectedTag(event.state.tag || null);
-        setSelectedCategory(event.state.category || null);
-      } else {
-        // If no state, go to home
-        setCurrentView('home');
-      }
+    const handleHashChange = () => {
+      const state = parseHash();
+      setCurrentView(state.view);
+      setSelectedArticle(state.articleId || null);
+      setSelectedTag(state.tag || null);
+      setSelectedCategory(state.category || null);
     };
 
-    window.addEventListener('popstate', handlePopState);
-    
-    // Set initial state if not already set (this is redundant with lazy init but safe)
-    if (!window.history.state) {
-      window.history.replaceState({ view: 'home' }, '', '');
-    }
+    window.addEventListener('hashchange', handleHashChange);
 
     return () => {
-      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('hashchange', handleHashChange);
     };
   }, []);
 
   const handleArticleClick = (articleId: string) => {
-    setSelectedArticle(articleId);
-    setCurrentView('article');
+    window.location.hash = `#/article/${articleId}`;
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    window.history.pushState({ view: 'article', articleId }, '', '');
   };
 
   const handleBackToHome = () => {
-    setSelectedArticle(null);
-    setCurrentView('home');
-    window.history.pushState({ view: 'home' }, '', '');
+    window.location.hash = '#/';
   };
 
   const handleTagClick = (tag: string) => {
-    setSelectedTag(tag);
-    setCurrentView('tagged');
-    window.history.pushState({ view: 'tagged', tag }, '', '');
+    window.location.hash = `#/tag/${encodeURIComponent(tag)}`;
   };
 
   const handleBackToTags = () => {
-    setSelectedTag(null);
-    setCurrentView('tags');
-    window.history.pushState({ view: 'tags' }, '', '');
+    window.location.hash = '#/tags';
   };
 
   const handleCategoryClick = (category: string) => {
-    setSelectedCategory(category);
-    setCurrentView('category');
-    window.history.pushState({ view: 'category', category }, '', '');
+    window.location.hash = `#/category/${encodeURIComponent(category)}`;
   };
 
   const handleBackToCategories = () => {
-    setSelectedCategory(null);
-    setCurrentView('categories');
-    window.history.pushState({ view: 'categories' }, '', '');
+    window.location.hash = '#/categories';
   };
 
   const handleNavigate = (view: ViewType) => {
-    setCurrentView(view);
-    setSelectedArticle(null);
-    setSelectedTag(null);
-    setSelectedCategory(null);
-    window.history.pushState({ view }, '', '');
+    if (view === 'home') {
+      window.location.hash = '#/';
+    } else {
+      window.location.hash = `#/${view}`;
+    }
   };
 
   return (
@@ -183,7 +165,7 @@ export default function App() {
           )}
         </main>
       ) : currentView === 'archives' ? (
-        <Archives posts={postsFromHook} onNavigateHome={() => handleNavigate('home')} onArticleClick={handleArticleClick} />
+        <Archives posts={postsFromHook} onNavigateHome={handleBackToHome} onArticleClick={handleArticleClick} />
       ) : currentView === 'tags' ? (
         <Tags posts={postsFromHook} onTagClick={handleTagClick} />
       ) : currentView === 'about' ? (
