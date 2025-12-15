@@ -3,6 +3,10 @@ import React, { useState } from 'react';
 import { ArrowLeft, Share2, Folder, Tag, Copy, Check } from 'lucide-react';
 import { CodeBlock } from './CodeBlock';
 import { BlogPost } from '../types';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
 
 interface ArticleProps {
   post: BlogPost;
@@ -57,6 +61,8 @@ export function Article({ post, onBack, onCategoryClick, onTagClick }: ArticlePr
       {/* Article Content */}
       <div className="content mb-16">
         <ReactMarkdown
+          remarkPlugins={[remarkGfm, remarkMath]}
+          rehypePlugins={[rehypeKatex]}
           components={{
             code({ node, inline, className, children, ...props }) {
               const match = /language-(\w+)/.exec(className || '');
@@ -104,7 +110,7 @@ export function Article({ post, onBack, onCategoryClick, onTagClick }: ArticlePr
             },
             blockquote({ node, children, ...props }) {
               return (
-                <blockquote className="my-6 pl-0 border-l-0 text-gray-500 italic text-[15px] leading-[1.8]" {...props}>
+                <blockquote className="my-6 pl-4 border-l-4 border-gray-300 text-gray-600 italic text-[15px] leading-[1.8]" {...props}>
                   {children}
                 </blockquote>
               );
@@ -149,6 +155,50 @@ export function Article({ post, onBack, onCategoryClick, onTagClick }: ArticlePr
                 <strong className="font-semibold text-gray-900" {...props}>
                   {children}
                 </strong>
+              );
+            },
+            table({ node, children, ...props }) {
+              return (
+                <div className="overflow-x-auto my-6">
+                  <table className="min-w-full border border-gray-200 rounded-lg" {...props}>
+                    {children}
+                  </table>
+                </div>
+              );
+            },
+            thead({ node, children, ...props }) {
+              return (
+                <thead className="bg-gray-50" {...props}>
+                  {children}
+                </thead>
+              );
+            },
+            tbody({ node, children, ...props }) {
+              return (
+                <tbody className="bg-white" {...props}>
+                  {children}
+                </tbody>
+              );
+            },
+            tr({ node, children, ...props }) {
+              return (
+                <tr className="border-b border-gray-200" {...props}>
+                  {children}
+                </tr>
+              );
+            },
+            th({ node, children, ...props }) {
+              return (
+                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900 border-b border-gray-300" {...props}>
+                  {children}
+                </th>
+              );
+            },
+            td({ node, children, ...props }) {
+              return (
+                <td className="px-4 py-3 text-sm text-gray-800" {...props}>
+                  {children}
+                </td>
               );
             },
           }}

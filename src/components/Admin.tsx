@@ -448,6 +448,11 @@ export function Admin({ refreshPosts }: AdminProps) {
               <p><code className="bg-white px-2 py-1 rounded">- item</code> - Bullet list</p>
               <p><code className="bg-white px-2 py-1 rounded">1. item</code> - Numbered list</p>
               <p><code className="bg-white px-2 py-1 rounded">[text](url)</code> - Link</p>
+              <p><code className="bg-white px-2 py-1 rounded">&gt; quote</code> - Blockquote (with left border)</p>
+              <p><code className="bg-white px-2 py-1 rounded">| Header | Header |\n| --- | --- |\n| Cell | Cell |</code> - Table</p>
+              <p><code className="bg-white px-2 py-1 rounded">$E = mc^2$</code> - Inline math equation</p>
+              <p><code className="bg-white px-2 py-1 rounded">$$\n\int_0^\infty x^2 dx\n$$</code> - Block math equation</p>
+              <p><code className="bg-white px-2 py-1 rounded">~~strikethrough~~</code> - Strikethrough text</p>
             </div>
           </div>
         </>
