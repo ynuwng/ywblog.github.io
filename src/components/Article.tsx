@@ -80,9 +80,10 @@ export function Article({ post, onBack, onCategoryClick, onTagClick }: ArticlePr
             },
             a({ node, children, ...props }) {
               const href = props.href || '';
-              const isExternal = href.startsWith('http');
+              const isExternal = href.startsWith('http://') || href.startsWith('https://');
               const isHashOnly = href.startsWith('#') && !href.includes('/');
-              const isInternalArticle = href.startsWith('/article/') || href.match(/^article\//);
+              // Treat any non-external, non-hash-only link as an internal article link
+              const isInternalArticle = !isExternal && !isHashOnly && href.length > 0;
               
               // Handle different types of links
               const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -92,16 +93,25 @@ export function Article({ post, onBack, onCategoryClick, onTagClick }: ArticlePr
                   const targetId = href.slice(1);
                   const element = document.getElementById(targetId);
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth' });
+                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
                 } else if (isInternalArticle) {
                   // Internal article link - use hash routing
                   e.preventDefault();
-                  const articlePath = href.startsWith('/') ? href.slice(1) : href;
-                  window.location.hash = `#/${articlePath}`;
+                  console.log('Internal link clicked:', href);
+                  
+                  // If it's already in the format /article/123, use it directly
+                  if (href.startsWith('/article/') || href.startsWith('article/')) {
+                    const articlePath = href.startsWith('/') ? href.slice(1) : href;
+                    window.location.hash = `#/${articlePath}`;
+                  } else {
+                    // Otherwise, treat it as an article ID
+                    const articleId = href.startsWith('/') ? href.slice(1) : href;
+                    window.location.hash = `#/article/${articleId}`;
+                  }
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
-                // External links will behave normally
+                // External links will behave normally with target="_blank"
               };
               
               return (

@@ -437,7 +437,20 @@ export function Admin({ refreshPosts }: AdminProps) {
             </div>
           </form>
 
-          <div className="mt-12 p-6 bg-gray-50 rounded-lg">
+          <div className="mt-12 p-6 bg-blue-50 rounded-lg border border-blue-200">
+            <h2 className="text-xl mb-4 text-blue-900">💡 Linking to Other Articles</h2>
+            <p className="text-sm text-blue-800 mb-3">
+              To link to another article, you need its Article ID. You can find it in the article list above or in your browser's address bar when viewing an article.
+            </p>
+            <p className="text-sm text-blue-800 mb-2">
+              <strong>Example:</strong> If you see <code className="bg-white px-2 py-1 rounded">http://localhost:3000/#/article/2</code> in the URL, the article ID is <code className="bg-white px-2 py-1 rounded">2</code>
+            </p>
+            <p className="text-sm text-blue-800">
+              Then use: <code className="bg-white px-2 py-1 rounded">[Article Title](2)</code> or <code className="bg-white px-2 py-1 rounded">[Article Title](/article/2)</code>
+            </p>
+          </div>
+
+          <div className="mt-6 p-6 bg-gray-50 rounded-lg">
             <h2 className="text-xl mb-4">Markdown Tips</h2>
             <div className="space-y-2 text-sm text-gray-700">
               <p><code className="bg-white px-2 py-1 rounded">## Heading</code> - Creates a heading</p>
@@ -447,9 +460,10 @@ export function Admin({ refreshPosts }: AdminProps) {
               <p><code className="bg-white px-2 py-1 rounded">```language\ncode block\n```</code> - Code block</p>
               <p><code className="bg-white px-2 py-1 rounded">- item</code> - Bullet list</p>
               <p><code className="bg-white px-2 py-1 rounded">1. item</code> - Numbered list</p>
-              <p><code className="bg-white px-2 py-1 rounded">[text](url)</code> - External link</p>
-              <p><code className="bg-white px-2 py-1 rounded">[text](/article/123)</code> - Link to another article</p>
-              <p><code className="bg-white px-2 py-1 rounded">[text](#section-name)</code> - Table of contents link</p>
+              <p><code className="bg-white px-2 py-1 rounded">[text](https://example.com)</code> - External link (opens in new tab)</p>
+              <p><code className="bg-white px-2 py-1 rounded">[text](/article/2)</code> - Link to article ID 2</p>
+              <p><code className="bg-white px-2 py-1 rounded">[text](2)</code> - Also links to article ID 2</p>
+              <p><code className="bg-white px-2 py-1 rounded">[text](#section-name)</code> - Table of contents link (scrolls to section)</p>
               <p><code className="bg-white px-2 py-1 rounded">&gt; quote</code> - Blockquote (with left border)</p>
               <p><code className="bg-white px-2 py-1 rounded">| Header | Header |\n| --- | --- |\n| Cell | Cell |</code> - Table</p>
               <p><code className="bg-white px-2 py-1 rounded">$E = mc^2$</code> - Inline math equation</p>
