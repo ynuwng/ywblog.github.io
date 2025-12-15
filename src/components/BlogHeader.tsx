@@ -20,11 +20,11 @@ export function BlogHeader({ onNavigate, currentView }: BlogHeaderProps) {
                 transform: translateX(0);
               }
               100% {
-                transform: translateX(-50%);
+                transform: translateX(-25%);
               }
             }
             .led-scroll-container {
-              animation: scroll-led 15s linear infinite;
+              animation: scroll-led 20s linear infinite;
             }
             .led-scroll-container:hover {
               animation-play-state: paused;
@@ -33,6 +33,20 @@ export function BlogHeader({ onNavigate, currentView }: BlogHeaderProps) {
           <div className="overflow-hidden mb-2 relative">
             <div className="led-scroll-container inline-flex whitespace-nowrap">
               <pre className="text-[6px] sm:text-[8px] md:text-[10px] leading-[1] font-mono inline-block">
+{`██    ██ ██    ██  █████  ███    ██     ██     ██  █████  ███    ██  ██████       
+ ██  ██  ██    ██ ██   ██ ████   ██     ██     ██ ██   ██ ████   ██ ██            
+  ████   ██    ██ ███████ ██ ██  ██     ██  █  ██ ███████ ██ ██  ██ ██   ███      
+   ██    ██    ██ ██   ██ ██  ██ ██     ██ ███ ██ ██   ██ ██  ██ ██ ██    ██      
+   ██     ██████  ██   ██ ██   ████      ███ ███  ██   ██ ██   ████  ██████       `}
+              </pre>
+              <pre className="text-[6px] sm:text-[8px] md:text-[10px] leading-[1] font-mono inline-block" aria-hidden="true">
+{`██    ██ ██    ██  █████  ███    ██     ██     ██  █████  ███    ██  ██████       
+ ██  ██  ██    ██ ██   ██ ████   ██     ██     ██ ██   ██ ████   ██ ██            
+  ████   ██    ██ ███████ ██ ██  ██     ██  █  ██ ███████ ██ ██  ██ ██   ███      
+   ██    ██    ██ ██   ██ ██  ██ ██     ██ ███ ██ ██   ██ ██  ██ ██ ██    ██      
+   ██     ██████  ██   ██ ██   ████      ███ ███  ██   ██ ██   ████  ██████       `}
+              </pre>
+              <pre className="text-[6px] sm:text-[8px] md:text-[10px] leading-[1] font-mono inline-block" aria-hidden="true">
 {`██    ██ ██    ██  █████  ███    ██     ██     ██  █████  ███    ██  ██████       
  ██  ██  ██    ██ ██   ██ ████   ██     ██     ██ ██   ██ ████   ██ ██            
   ████   ██    ██ ███████ ██ ██  ██     ██  █  ██ ███████ ██ ██  ██ ██   ███      

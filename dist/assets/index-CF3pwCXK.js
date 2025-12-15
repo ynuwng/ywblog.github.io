@@ -113,16 +113,24 @@ Error generating stack: `+y.message+`
                 transform: translateX(0);
               }
               100% {
-                transform: translateX(-50%);
+                transform: translateX(-25%);
               }
             }
             .led-scroll-container {
-              animation: scroll-led 15s linear infinite;
+              animation: scroll-led 20s linear infinite;
             }
             .led-scroll-container:hover {
               animation-play-state: paused;
             }
           `}),H.jsx("div",{className:"overflow-hidden mb-2 relative",children:H.jsxs("div",{className:"led-scroll-container inline-flex whitespace-nowrap",children:[H.jsx("pre",{className:"text-[6px] sm:text-[8px] md:text-[10px] leading-[1] font-mono inline-block",children:`██    ██ ██    ██  █████  ███    ██     ██     ██  █████  ███    ██  ██████       
+ ██  ██  ██    ██ ██   ██ ████   ██     ██     ██ ██   ██ ████   ██ ██            
+  ████   ██    ██ ███████ ██ ██  ██     ██  █  ██ ███████ ██ ██  ██ ██   ███      
+   ██    ██    ██ ██   ██ ██  ██ ██     ██ ███ ██ ██   ██ ██  ██ ██ ██    ██      
+   ██     ██████  ██   ██ ██   ████      ███ ███  ██   ██ ██   ████  ██████       `}),H.jsx("pre",{className:"text-[6px] sm:text-[8px] md:text-[10px] leading-[1] font-mono inline-block","aria-hidden":"true",children:`██    ██ ██    ██  █████  ███    ██     ██     ██  █████  ███    ██  ██████       
+ ██  ██  ██    ██ ██   ██ ████   ██     ██     ██ ██   ██ ████   ██ ██            
+  ████   ██    ██ ███████ ██ ██  ██     ██  █  ██ ███████ ██ ██  ██ ██   ███      
+   ██    ██    ██ ██   ██ ██  ██ ██     ██ ███ ██ ██   ██ ██  ██ ██ ██    ██      
+   ██     ██████  ██   ██ ██   ████      ███ ███  ██   ██ ██   ████  ██████       `}),H.jsx("pre",{className:"text-[6px] sm:text-[8px] md:text-[10px] leading-[1] font-mono inline-block","aria-hidden":"true",children:`██    ██ ██    ██  █████  ███    ██     ██     ██  █████  ███    ██  ██████       
  ██  ██  ██    ██ ██   ██ ████   ██     ██     ██ ██   ██ ████   ██ ██            
   ████   ██    ██ ███████ ██ ██  ██     ██  █  ██ ███████ ██ ██  ██ ██   ███      
    ██    ██    ██ ██   ██ ██  ██ ██     ██ ███ ██ ██   ██ ██  ██ ██ ██    ██      
