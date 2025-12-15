@@ -118,7 +118,7 @@ export default function App() {
       />
       
       {/* Admin access button - only visible in development */}
-      {import.meta.env.DEV && (
+      {(import.meta as any).env.DEV && (
         <button
           onClick={() => handleNavigate('admin')}
           className="fixed bottom-6 right-6 w-12 h-12 bg-black text-white rounded-full hover:bg-gray-800 transition-colors shadow-lg flex items-center justify-center z-50"
@@ -139,9 +139,9 @@ export default function App() {
           ) : postsFromHook.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-gray-500 mb-6">No blog posts yet.</p>
-              {import.meta.env.DEV && (
+              {(import.meta as any).env.DEV && (
                 <button
-                  onClick={() => setCurrentView('admin')}
+                  onClick={() => handleNavigate('admin')}
                   className="px-6 py-3 bg-black text-white rounded-md hover:bg-gray-800 transition-colors"
                 >
                   Create Your First Post
@@ -185,7 +185,7 @@ export default function App() {
         <Categories posts={postsFromHook} onCategoryClick={handleCategoryClick} />
       ) : currentView === 'category' && selectedCategory ? (
         <CategoryArticles category={selectedCategory} posts={postsFromHook} onBack={handleBackToCategories} onArticleClick={handleArticleClick} />
-      ) : currentView === 'admin' && import.meta.env.DEV ? (
+      ) : currentView === 'admin' && (import.meta as any).env.DEV ? (
         <Admin refreshPosts={refreshPosts} />
       ) : null}
 
