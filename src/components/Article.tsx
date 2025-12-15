@@ -73,11 +73,23 @@ export function Article({ post, onBack, onCategoryClick, onTagClick }: ArticlePr
               );
             },
             a({ node, children, ...props }) {
+              const href = props.href || '';
+              const isExternal = href.startsWith('http');
+              
+              // Handle internal links to other posts manually to avoid full page reload/home redirection
+              // Assuming internal links might look like "/posts/123" or similar
+              // But for markdown content, user might write [Link](#) or [Link](https://...)
+              // If it's a relative link to another post, we'd need a way to intercept it.
+              // However, typically markdown links are external. 
+              // If the user puts a link to the homepage, it might reload.
+              
               return (
                 <a
                   {...props}
                   style={{ color: '#002fa7' }}
                   className="hover:underline"
+                  target={isExternal ? "_blank" : undefined}
+                  rel={isExternal ? "noopener noreferrer" : undefined}
                 >
                   {children}
                 </a>
