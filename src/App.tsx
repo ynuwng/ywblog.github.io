@@ -66,6 +66,7 @@ export default function App() {
   const handleArticleClick = (articleId: string) => {
     setSelectedArticle(articleId);
     setCurrentView('article');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     window.history.pushState({ view: 'article', articleId }, '', '');
   };
 
