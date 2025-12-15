@@ -116,16 +116,18 @@ export default function App() {
         currentView={currentView}
       />
       
-      {/* Admin access button - positioned in top right */}
-      <button
-        onClick={() => handleNavigate('admin')}
-        className="fixed bottom-6 right-6 w-12 h-12 bg-black text-white rounded-full hover:bg-gray-800 transition-colors shadow-lg flex items-center justify-center z-50"
-        title="Admin Panel"
-      >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-        </svg>
-      </button>
+      {/* Admin access button - only visible in development */}
+      {import.meta.env.DEV && (
+        <button
+          onClick={() => handleNavigate('admin')}
+          className="fixed bottom-6 right-6 w-12 h-12 bg-black text-white rounded-full hover:bg-gray-800 transition-colors shadow-lg flex items-center justify-center z-50"
+          title="Admin Panel"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+        </button>
+      )}
       
       {currentView === 'home' ? (
         <main className="max-w-3xl mx-auto px-6 py-16">
@@ -136,12 +138,14 @@ export default function App() {
           ) : postsFromHook.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-gray-500 mb-6">No blog posts yet.</p>
-              <button
-                onClick={() => setCurrentView('admin')}
-                className="px-6 py-3 bg-black text-white rounded-md hover:bg-gray-800 transition-colors"
-              >
-                Create Your First Post
-              </button>
+              {import.meta.env.DEV && (
+                <button
+                  onClick={() => setCurrentView('admin')}
+                  className="px-6 py-3 bg-black text-white rounded-md hover:bg-gray-800 transition-colors"
+                >
+                  Create Your First Post
+                </button>
+              )}
             </div>
           ) : (
             <div className="space-y-16">
@@ -180,7 +184,7 @@ export default function App() {
         <Categories posts={postsFromHook} onCategoryClick={handleCategoryClick} />
       ) : currentView === 'category' && selectedCategory ? (
         <CategoryArticles category={selectedCategory} posts={postsFromHook} onBack={handleBackToCategories} onArticleClick={handleArticleClick} />
-      ) : currentView === 'admin' ? (
+      ) : currentView === 'admin' && import.meta.env.DEV ? (
         <Admin refreshPosts={refreshPosts} />
       ) : null}
 
