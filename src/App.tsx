@@ -15,11 +15,37 @@ import { useBlogPosts } from './hooks/useBlogPosts';
 import { useBlogPost } from './hooks/useBlogPost';
 import { fallbackPosts } from './data/fallbackPosts';
 
+type ViewType = 'home' | 'archives' | 'categories' | 'tags' | 'about' | 'article' | 'tagged' | 'category' | 'admin';
+
 export default function App() {
-  const [currentView, setCurrentView] = useState<'home' | 'archives' | 'categories' | 'tags' | 'about' | 'article' | 'tagged' | 'category' | 'admin'>('home');
-  const [selectedArticle, setSelectedArticle] = useState<string | null>(null);
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  // Lazy initialization of state based on history.state
+  const [currentView, setCurrentView] = useState<ViewType>(() => {
+    if (typeof window !== 'undefined' && window.history.state?.view) {
+      return window.history.state.view;
+    }
+    return 'home';
+  });
+  
+  const [selectedArticle, setSelectedArticle] = useState<string | null>(() => {
+    if (typeof window !== 'undefined' && window.history.state?.articleId) {
+      return window.history.state.articleId;
+    }
+    return null;
+  });
+
+  const [selectedTag, setSelectedTag] = useState<string | null>(() => {
+    if (typeof window !== 'undefined' && window.history.state?.tag) {
+      return window.history.state.tag;
+    }
+    return null;
+  });
+
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(() => {
+    if (typeof window !== 'undefined' && window.history.state?.category) {
+      return window.history.state.category;
+    }
+    return null;
+  });
   
   // Use custom hook for data fetching
   const { blogPosts: postsFromHook, loading, refreshPosts } = useBlogPosts();
@@ -53,7 +79,7 @@ export default function App() {
 
     window.addEventListener('popstate', handlePopState);
     
-    // Set initial state if not already set
+    // Set initial state if not already set (this is redundant with lazy init but safe)
     if (!window.history.state) {
       window.history.replaceState({ view: 'home' }, '', '');
     }
@@ -100,7 +126,7 @@ export default function App() {
     window.history.pushState({ view: 'categories' }, '', '');
   };
 
-  const handleNavigate = (view: 'home' | 'archives' | 'categories' | 'tags' | 'about' | 'article' | 'tagged' | 'category' | 'admin') => {
+  const handleNavigate = (view: ViewType) => {
     setCurrentView(view);
     setSelectedArticle(null);
     setSelectedTag(null);
@@ -157,7 +183,7 @@ export default function App() {
           )}
         </main>
       ) : currentView === 'archives' ? (
-        <Archives posts={postsFromHook} onNavigateHome={() => setCurrentView('home')} onArticleClick={handleArticleClick} />
+        <Archives posts={postsFromHook} onNavigateHome={() => handleNavigate('home')} onArticleClick={handleArticleClick} />
       ) : currentView === 'tags' ? (
         <Tags posts={postsFromHook} onTagClick={handleTagClick} />
       ) : currentView === 'about' ? (
