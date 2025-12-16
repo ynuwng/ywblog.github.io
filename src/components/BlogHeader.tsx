@@ -99,7 +99,7 @@ export function BlogHeader({ onNavigate, currentView }: BlogHeaderProps) {
         <nav className={`flex flex-wrap gap-2 sm:gap-6 ${isArticleView ? '' : 'mt-8'}`}>
           <button 
             onClick={() => onNavigate('home')} 
-            className={`${currentView === 'home' ? 'font-bold' : ''} hover:text-gray-900 transition-colors whitespace-nowrap text-lg sm:text-2xl font-bold`}
+            className={`${currentView === 'home' ? 'font-bold' : ''} hover:text-gray-900 transition-colors whitespace-nowrap text-lg sm:text-2xl font-medium`}
             style={{ color: currentView === 'home' ? '#235347' : '#4B5563' }}
           >
             Home
