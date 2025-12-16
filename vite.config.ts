@@ -78,8 +78,14 @@
       compress: {
         drop_console: true, // Remove console.logs in production
         drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.warn'],
+      },
+      mangle: {
+        safari10: true,
       },
     },
+    // CSS optimization
+    cssMinify: 'lightningcss',
     // Code splitting configuration
     rollupOptions: {
       output: {

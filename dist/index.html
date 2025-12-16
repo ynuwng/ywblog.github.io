@@ -10,27 +10,32 @@
     
     <!-- DNS Prefetch & Preconnect for faster resource loading -->
     <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Performance hints -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="color-scheme" content="light" />
     
     <!-- Preload critical fonts with font-display: swap -->
     <link rel="preload" href="./fonts/custom-font.ttf" as="font" type="font/ttf" crossorigin />
     
-    <!-- Load Google Fonts with font-display=swap to prevent blocking -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100..900&display=swap" media="print" onload="this.media='all'" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Han+Sans+CN:wght@200..900&display=swap" media="print" onload="this.media='all'" />
+    <!-- Load Google Fonts with font-display=swap - Only load weights we actually use -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" media="print" onload="this.media='all'" />
     
     <!-- Fallback for browsers without JavaScript -->
     <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100..900&display=swap" />
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Han+Sans+CN:wght@200..900&display=swap" />
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" />
     </noscript>
-    <script type="module" crossorigin src="./assets/index-C715deaI.js"></script>
+    <script type="module" crossorigin src="./assets/index-Dq9GetHC.js"></script>
     <link rel="modulepreload" crossorigin href="./assets/react-vendor-DJcYfsJ3.js">
-    <link rel="modulepreload" crossorigin href="./assets/markdown-vendor-56kYHSf3.js">
-    <link rel="modulepreload" crossorigin href="./assets/syntax-vendor-BaojAHWd.js">
-    <link rel="modulepreload" crossorigin href="./assets/ui-vendor-CxW8ChDL.js">
-    <link rel="stylesheet" crossorigin href="./assets/index-BcsFhGcU.css">
+    <link rel="modulepreload" crossorigin href="./assets/markdown-vendor-DiBYG1S_.js">
+    <link rel="modulepreload" crossorigin href="./assets/syntax-vendor-DsKRSHuS.js">
+    <link rel="modulepreload" crossorigin href="./assets/ui-vendor-0n-_plnJ.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-BBy7sBVA.css">
   </head>
 
   <body>

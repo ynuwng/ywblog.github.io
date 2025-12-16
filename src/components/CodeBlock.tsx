@@ -1,27 +1,46 @@
 import { useState } from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { atomOneLight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { Copy, Check } from 'lucide-react';
+
+// Import only the languages we actually use to reduce bundle size
+import javascript from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript';
+import typescript from 'react-syntax-highlighter/dist/esm/languages/hljs/typescript';
+import python from 'react-syntax-highlighter/dist/esm/languages/hljs/python';
+import bash from 'react-syntax-highlighter/dist/esm/languages/hljs/bash';
+import css from 'react-syntax-highlighter/dist/esm/languages/hljs/css';
+import json from 'react-syntax-highlighter/dist/esm/languages/hljs/json';
+import markdown from 'react-syntax-highlighter/dist/esm/languages/hljs/markdown';
+import sql from 'react-syntax-highlighter/dist/esm/languages/hljs/sql';
+
+// Register only the languages we need
+SyntaxHighlighter.registerLanguage('javascript', javascript);
+SyntaxHighlighter.registerLanguage('typescript', typescript);
+SyntaxHighlighter.registerLanguage('python', python);
+SyntaxHighlighter.registerLanguage('bash', bash);
+SyntaxHighlighter.registerLanguage('shell', bash);
+SyntaxHighlighter.registerLanguage('css', css);
+SyntaxHighlighter.registerLanguage('json', json);
+SyntaxHighlighter.registerLanguage('markdown', markdown);
+SyntaxHighlighter.registerLanguage('sql', sql);
+SyntaxHighlighter.registerLanguage('jsx', javascript);
+SyntaxHighlighter.registerLanguage('tsx', typescript);
 
 interface CodeBlockProps {
   language: string;
   children: string;
 }
 
-// Custom light theme matching Chirpy style
+// Custom light theme matching Chirpy style (using atomOneLight as base)
 const chirpyLightTheme = {
-  ...oneLight,
-  'code[class*="language-"]': {
-    ...oneLight['code[class*="language-"]'],
+  ...atomOneLight,
+  'hljs': {
+    ...atomOneLight['hljs'],
     color: '#24292e',
     background: '#f6f8fa',
     fontFamily: "'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Menlo', 'Courier New', monospace",
     fontSize: '0.875rem',
     lineHeight: '1.6',
-  },
-  'pre[class*="language-"]': {
-    ...oneLight['pre[class*="language-"]'],
-    background: '#f6f8fa',
     padding: '1rem',
     margin: 0,
     overflow: 'auto',

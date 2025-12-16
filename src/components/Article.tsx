@@ -1,12 +1,23 @@
 import ReactMarkdown from 'react-markdown';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Share2, Folder, Tag, Copy, Check } from 'lucide-react';
 import { CodeBlock } from './CodeBlock';
 import { BlogPost } from '../types';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
-import 'katex/dist/katex.min.css';
+
+// Lazy load KaTeX CSS only when Article component is rendered (reduces initial bundle)
+const loadKatexCSS = () => {
+  if (typeof document !== 'undefined' && !document.querySelector('link[href*="katex"]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css';
+    link.integrity = 'sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV';
+    link.crossOrigin = 'anonymous';
+    document.head.appendChild(link);
+  }
+};
 
 interface ArticleProps {
   post: BlogPost;
@@ -34,6 +45,11 @@ function getTagColor(tag: string): { bg: string; text: string } {
 
 export function Article({ post, onBack, onCategoryClick, onTagClick }: ArticleProps) {
   const [isCopied, setIsCopied] = useState(false);
+
+  // Load KaTeX CSS on component mount (lazy loading)
+  useEffect(() => {
+    loadKatexCSS();
+  }, []);
 
   return (
     <article className="max-w-3xl mx-auto px-6 py-16">
