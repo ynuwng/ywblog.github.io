@@ -30,7 +30,7 @@ export function BlogHeader({ onNavigate, currentView }: BlogHeaderProps) {
               animation-play-state: paused;
             }
           `}</style>
-          <div className="overflow-hidden mb-2 relative">
+          <div className="overflow-hidden mb-2 relative" style={{ minHeight: '32px' }}>
             <div className="led-scroll-container inline-flex whitespace-nowrap">
               <pre className="text-[6px] sm:text-[8px] md:text-[10px] leading-[1] font-mono inline-block">
 {`██    ██ ██    ██  █████  ███    ██     ██     ██  █████  ███    ██  ██████       

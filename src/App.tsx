@@ -1,19 +1,28 @@
 import { BlogHeader } from './components/BlogHeader';
 import { BlogPost } from './components/BlogPost';
 import { Footer } from './components/Footer';
-import { Archives } from './components/Archives';
-import { Tags } from './components/Tags';
-import { About } from './components/About';
-import { Article } from './components/Article';
-import { TaggedArticles } from './components/TaggedArticles';
-import { Categories } from './components/Categories';
-import { CategoryArticles } from './components/CategoryArticles';
-import { Admin } from './components/Admin';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Toaster } from 'sonner';
 import { useBlogPosts } from './hooks/useBlogPosts';
 import { useBlogPost } from './hooks/useBlogPost';
 import { fallbackPosts } from './data/fallbackPosts';
+
+// Lazy load heavy components that aren't needed immediately
+const Archives = lazy(() => import('./components/Archives').then(m => ({ default: m.Archives })));
+const Tags = lazy(() => import('./components/Tags').then(m => ({ default: m.Tags })));
+const About = lazy(() => import('./components/About').then(m => ({ default: m.About })));
+const Article = lazy(() => import('./components/Article').then(m => ({ default: m.Article })));
+const TaggedArticles = lazy(() => import('./components/TaggedArticles').then(m => ({ default: m.TaggedArticles })));
+const Categories = lazy(() => import('./components/Categories').then(m => ({ default: m.Categories })));
+const CategoryArticles = lazy(() => import('./components/CategoryArticles').then(m => ({ default: m.CategoryArticles })));
+const Admin = lazy(() => import('./components/Admin').then(m => ({ default: m.Admin })));
+
+// Loading fallback component
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+  </div>
+);
 
 type ViewType = 'home' | 'archives' | 'categories' | 'tags' | 'about' | 'article' | 'tagged' | 'category' | 'admin';
 
@@ -165,36 +174,52 @@ export default function App() {
           )}
         </main>
       ) : currentView === 'archives' ? (
-        <Archives posts={postsFromHook} onNavigateHome={handleBackToHome} onArticleClick={handleArticleClick} />
+        <Suspense fallback={<LoadingSpinner />}>
+          <Archives posts={postsFromHook} onNavigateHome={handleBackToHome} onArticleClick={handleArticleClick} />
+        </Suspense>
       ) : currentView === 'tags' ? (
-        <Tags posts={postsFromHook} onTagClick={handleTagClick} />
+        <Suspense fallback={<LoadingSpinner />}>
+          <Tags posts={postsFromHook} onTagClick={handleTagClick} />
+        </Suspense>
       ) : currentView === 'about' ? (
-        <About />
+        <Suspense fallback={<LoadingSpinner />}>
+          <About />
+        </Suspense>
       ) : currentView === 'article' ? (
         loadingArticle ? (
            <div className="max-w-3xl mx-auto px-6 py-16 text-center text-gray-500">
               <div className="inline-block animate-pulse">Loading article...</div>
            </div>
         ) : currentArticle ? (
-          <Article 
-            post={currentArticle} 
-            onBack={handleBackToHome} 
-            onCategoryClick={handleCategoryClick}
-            onTagClick={handleTagClick}
-          />
+          <Suspense fallback={<LoadingSpinner />}>
+            <Article 
+              post={currentArticle} 
+              onBack={handleBackToHome} 
+              onCategoryClick={handleCategoryClick}
+              onTagClick={handleTagClick}
+            />
+          </Suspense>
         ) : (
            <div className="max-w-3xl mx-auto px-6 py-16 text-center text-gray-500">
               Article not found.
            </div>
         )
       ) : currentView === 'tagged' && selectedTag ? (
-        <TaggedArticles tag={selectedTag} posts={postsFromHook} onBack={handleBackToTags} onArticleClick={handleArticleClick} />
+        <Suspense fallback={<LoadingSpinner />}>
+          <TaggedArticles tag={selectedTag} posts={postsFromHook} onBack={handleBackToTags} onArticleClick={handleArticleClick} />
+        </Suspense>
       ) : currentView === 'categories' ? (
-        <Categories posts={postsFromHook} onCategoryClick={handleCategoryClick} />
+        <Suspense fallback={<LoadingSpinner />}>
+          <Categories posts={postsFromHook} onCategoryClick={handleCategoryClick} />
+        </Suspense>
       ) : currentView === 'category' && selectedCategory ? (
-        <CategoryArticles category={selectedCategory} posts={postsFromHook} onBack={handleBackToCategories} onArticleClick={handleArticleClick} />
+        <Suspense fallback={<LoadingSpinner />}>
+          <CategoryArticles category={selectedCategory} posts={postsFromHook} onBack={handleBackToCategories} onArticleClick={handleArticleClick} />
+        </Suspense>
       ) : currentView === 'admin' && (import.meta as any).env.DEV ? (
-        <Admin refreshPosts={refreshPosts} />
+        <Suspense fallback={<LoadingSpinner />}>
+          <Admin refreshPosts={refreshPosts} />
+        </Suspense>
       ) : null}
 
       <Footer />

@@ -1,18 +1,40 @@
 
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-      <link rel="icon" type="image/png" href="/favicon.png" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Tech Style Personal Blog</title>
-      <script type="module" crossorigin src="./assets/index-0lqHEiYQ.js"></script>
-      <link rel="stylesheet" crossorigin href="./assets/index-CtSb591p.css">
-    </head>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tech Style Personal Blog</title>
+    
+    <!-- DNS Prefetch & Preconnect for faster resource loading -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Preload critical fonts with font-display: swap -->
+    <link rel="preload" href="./fonts/custom-font.ttf" as="font" type="font/ttf" crossorigin />
+    
+    <!-- Load Google Fonts with font-display=swap to prevent blocking -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100..900&display=swap" media="print" onload="this.media='all'" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Han+Sans+CN:wght@200..900&display=swap" media="print" onload="this.media='all'" />
+    
+    <!-- Fallback for browsers without JavaScript -->
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100..900&display=swap" />
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Han+Sans+CN:wght@200..900&display=swap" />
+    </noscript>
+    <script type="module" crossorigin src="./assets/index-C715deaI.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/react-vendor-DJcYfsJ3.js">
+    <link rel="modulepreload" crossorigin href="./assets/markdown-vendor-56kYHSf3.js">
+    <link rel="modulepreload" crossorigin href="./assets/syntax-vendor-BaojAHWd.js">
+    <link rel="modulepreload" crossorigin href="./assets/ui-vendor-CxW8ChDL.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-BcsFhGcU.css">
+  </head>
 
-    <body>
-      <div id="root"></div>
-    </body>
-  </html>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
   
