@@ -80,11 +80,12 @@ export function Article({ post, onBack, onCategoryClick, onTagClick }: ArticlePr
           remarkPlugins={[remarkGfm, remarkMath]}
           rehypePlugins={[rehypeKatex]}
           components={{
-            code({ node, inline, className, children, ...props }) {
+            code({ node, className, children, ...props }) {
               const match = /language-(\w+)/.exec(className || '');
               const codeString = String(children).replace(/\n$/, '');
-              
-              return !inline && match ? (
+              const isInline = !match && !(node?.properties?.className as string[] | undefined)?.length;
+
+              return !isInline && match ? (
                 <CodeBlock language={match[1]}>
                   {codeString}
                 </CodeBlock>
