@@ -11,9 +11,9 @@ interface BlogPostProps {
 
 // 3-tier grey: most frequent = deepest, once = lightest
 const tagTierColors = [
-  { bg: '#EBEBEB', text: '#909090' }, // light grey  — appears once
-  { bg: '#909090', text: '#FFFFFF' }, // medium grey — in between
-  { bg: '#3D3D3D', text: '#FFFFFF' }, // deepest grey — most frequent
+  { bg: 'var(--tag-light-bg)', text: 'var(--tag-light-text)' }, // light — appears once
+  { bg: 'var(--tag-mid-bg)',   text: 'var(--tag-mid-text)'   }, // medium — in between
+  { bg: 'var(--tag-dark-bg)',  text: 'var(--tag-dark-text)'  }, // deepest — most frequent
 ];
 
 function getTagColor(tag: string, frequencies?: Record<string, number>, maxCount?: number): { bg: string; text: string } {
@@ -27,7 +27,7 @@ function getTagColor(tag: string, frequencies?: Record<string, number>, maxCount
 export function BlogPost({ post, onClick, tagFrequencies, maxTagCount }: BlogPostProps) {
   return (
     <article className="group cursor-pointer" onClick={onClick}>
-      <h2 className="mb-3 text-2xl font-bold text-gray-900 group-hover:text-gray-600 transition-colors">
+      <h2 className="mb-3 text-2xl font-bold text-foreground group-hover:text-gray-500 transition-colors">
         {post.title}
       </h2>
       
@@ -42,7 +42,7 @@ export function BlogPost({ post, onClick, tagFrequencies, maxTagCount }: BlogPos
         </div>
       </div>
       
-      <div className="bg-gray-50 rounded-lg p-6 mb-4 border border-gray-100">
+      <div className="bg-muted rounded-lg p-6 mb-4 border border-border">
         <p className="text-gray-600 leading-relaxed text-[16px]">
           {post.excerpt}
         </p>

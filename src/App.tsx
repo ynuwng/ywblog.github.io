@@ -132,7 +132,7 @@ export default function App() {
   const maxTagCount = Math.max(1, ...Object.values(tagFrequencies));
 
   return (
-    <div className="min-h-screen bg-white text-gray-900">
+    <div className="min-h-screen bg-background text-foreground">
       <Toaster position="top-right" />
       <BlogHeader
         onNavigate={handleNavigate}

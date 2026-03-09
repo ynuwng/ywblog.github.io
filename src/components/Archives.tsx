@@ -45,10 +45,10 @@ export function Archives({ posts, onNavigateHome, onArticleClick }: ArchivesProp
             {/* Year Header */}
             <div className="flex items-start mb-8">
               <div className="w-20 flex-shrink-0">
-                <span className="text-gray-900">{year}</span>
+                <span className="text-foreground">{year}</span>
               </div>
               <div className="relative flex items-center">
-                <div className="w-3 h-3 rounded-full border-2 border-gray-300 bg-white"></div>
+                <div className="w-3 h-3 rounded-full border-2 border-gray-300 bg-background"></div>
               </div>
             </div>
 
@@ -63,7 +63,7 @@ export function Archives({ posts, onNavigateHome, onArticleClick }: ArchivesProp
                   <div key={post.id} className="relative flex mb-8">
                     {/* Date */}
                     <div className="w-20 flex-shrink-0 text-right pr-4">
-                      <div className="text-gray-900">{day}</div>
+                      <div className="text-foreground">{day}</div>
                       <div className="text-gray-500 text-sm">{month}</div>
                     </div>
 

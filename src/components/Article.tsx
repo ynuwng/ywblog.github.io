@@ -206,7 +206,7 @@ export function Article({ post, onBack, onCategoryClick, onTagClick }: ArticlePr
             },
             strong({ node, children, ...props }) {
               return (
-                <strong className="font-semibold text-gray-900" {...props}>
+                <strong className="font-semibold text-foreground" {...props}>
                   {children}
                 </strong>
               );
@@ -222,14 +222,14 @@ export function Article({ post, onBack, onCategoryClick, onTagClick }: ArticlePr
             },
             thead({ node, children, ...props }) {
               return (
-                <thead className="bg-gray-50" {...props}>
+                <thead className="bg-muted" {...props}>
                   {children}
                 </thead>
               );
             },
             tbody({ node, children, ...props }) {
               return (
-                <tbody className="bg-white" {...props}>
+                <tbody className="bg-background" {...props}>
                   {children}
                 </tbody>
               );
@@ -243,7 +243,7 @@ export function Article({ post, onBack, onCategoryClick, onTagClick }: ArticlePr
             },
             th({ node, children, ...props }) {
               return (
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900 border-b border-gray-300" {...props}>
+                <th className="px-4 py-3 text-left text-sm font-semibold text-foreground border-b border-border" {...props}>
                   {children}
                 </th>
               );
