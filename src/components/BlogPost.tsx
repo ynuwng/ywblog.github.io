@@ -5,27 +5,26 @@ import { BlogPost as BlogPostType } from '../types';
 interface BlogPostProps {
   post: BlogPostType;
   onClick?: () => void;
+  tagFrequencies?: Record<string, number>;
+  maxTagCount?: number;
 }
 
-// Morandi color palette - muted, desaturated colors
-const morandiColors = [
-  { bg: '#E8D5C4', text: '#6B5D54' }, // Muted terracotta
-  { bg: '#C9D5C0', text: '#5A6152' }, // Sage green
-  { bg: '#D4C5D0', text: '#635A60' }, // Dusty rose
-  { bg: '#C8D5D5', text: '#546366' }, // Powder blue
-  { bg: '#E0D5C8', text: '#6B6158' }, // Warm beige
-  { bg: '#D5CFD0', text: '#625E5F' }, // Cool gray
-  { bg: '#D9D0C7', text: '#66605A' }, // Mushroom
-  { bg: '#C5D0D8', text: '#535F66' }, // Soft blue-gray
+// 3-tier grey: most frequent = deepest, once = lightest
+const tagTierColors = [
+  { bg: '#EBEBEB', text: '#909090' }, // light grey  — appears once
+  { bg: '#909090', text: '#FFFFFF' }, // medium grey — in between
+  { bg: '#3D3D3D', text: '#FFFFFF' }, // deepest grey — most frequent
 ];
 
-function getTagColor(tag: string): { bg: string; text: string } {
-  // Generate a consistent index based on tag name
-  const hash = tag.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  return morandiColors[hash % morandiColors.length];
+function getTagColor(tag: string, frequencies?: Record<string, number>, maxCount?: number): { bg: string; text: string } {
+  const count = frequencies?.[tag] ?? 1;
+  const max = maxCount ?? 1;
+  if (count === 1) return tagTierColors[0];
+  if (count >= max) return tagTierColors[2];
+  return tagTierColors[1];
 }
 
-export function BlogPost({ post, onClick }: BlogPostProps) {
+export function BlogPost({ post, onClick, tagFrequencies, maxTagCount }: BlogPostProps) {
   return (
     <article className="group cursor-pointer" onClick={onClick}>
       <h2 className="mb-3 text-2xl font-bold text-gray-900 group-hover:text-gray-600 transition-colors">
@@ -51,7 +50,7 @@ export function BlogPost({ post, onClick }: BlogPostProps) {
       
       <div className="flex gap-2">
         {post.tags.map((tag) => {
-          const colors = getTagColor(tag);
+          const colors = getTagColor(tag, tagFrequencies, maxTagCount);
           return (
             <span 
               key={tag}

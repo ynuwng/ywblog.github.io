@@ -125,6 +125,12 @@ export default function App() {
     }
   };
 
+  const tagFrequencies = postsFromHook.reduce((acc, post) => {
+    post.tags.forEach(tag => { acc[tag] = (acc[tag] || 0) + 1; });
+    return acc;
+  }, {} as Record<string, number>);
+  const maxTagCount = Math.max(1, ...Object.values(tagFrequencies));
+
   return (
     <div className="min-h-screen bg-white text-gray-900">
       <Toaster position="top-right" />
@@ -168,7 +174,7 @@ export default function App() {
           ) : (
             <div className="space-y-16">
               {postsFromHook.map((post) => (
-                <BlogPost key={post.id} post={post} onClick={() => handleArticleClick(post.id)} />
+                <BlogPost key={post.id} post={post} onClick={() => handleArticleClick(post.id)} tagFrequencies={tagFrequencies} maxTagCount={maxTagCount} />
               ))}
             </div>
           )}
