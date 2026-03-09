@@ -1,17 +1,27 @@
-import { Github, Linkedin, Mail } from 'lucide-react';
+import { Github, Linkedin, Mail, Sun, Moon } from 'lucide-react';
 import React from 'react';
 import { XIcon } from './XIcon';
 
 interface BlogHeaderProps {
   onNavigate: (view: 'home' | 'archives' | 'categories' | 'tags' | 'about' | 'article' | 'tagged' | 'category') => void;
   currentView: 'home' | 'archives' | 'categories' | 'tags' | 'about' | 'article' | 'tagged' | 'category';
+  theme: 'light' | 'dark';
+  onToggleTheme: () => void;
 }
 
-export function BlogHeader({ onNavigate, currentView }: BlogHeaderProps) {
+export function BlogHeader({ onNavigate, currentView, theme, onToggleTheme }: BlogHeaderProps) {
   const isArticleView = currentView === 'article' || currentView === 'tagged' || currentView === 'category';
   
   return (
-    <header className="border-b border-gray-200">
+    <header className="border-b border-gray-200 relative">
+      <button
+        onClick={onToggleTheme}
+        className="absolute top-4 right-4 p-2 rounded-full text-gray-500 hover:text-foreground transition-colors"
+        aria-label="Toggle theme"
+        title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+      >
+        {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+      </button>
       <div className={`max-w-3xl mx-auto px-6 py-12`}>
         <div className={isArticleView ? 'hidden' : ''}>
           <div className="mb-2 overflow-x-auto">

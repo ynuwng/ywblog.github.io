@@ -7,6 +7,14 @@ import { useBlogPosts } from './hooks/useBlogPosts';
 import { useBlogPost } from './hooks/useBlogPost';
 import { fallbackPosts } from './data/fallbackPosts';
 
+type Theme = 'light' | 'dark';
+
+function getInitialTheme(): Theme {
+  const stored = localStorage.getItem('theme') as Theme | null;
+  if (stored === 'light' || stored === 'dark') return stored;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
 // Lazy load heavy components that aren't needed immediately
 const Archives = lazy(() => import('./components/Archives').then(m => ({ default: m.Archives })));
 const Tags = lazy(() => import('./components/Tags').then(m => ({ default: m.Tags })));
@@ -52,6 +60,15 @@ function parseHash(): { view: ViewType; articleId?: string; tag?: string; catego
 }
 
 export default function App() {
+  const [theme, setTheme] = useState<Theme>(getInitialTheme);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
+
   // Initialize state from URL hash
   const initialState = parseHash();
   const [currentView, setCurrentView] = useState<ViewType>(initialState.view);
@@ -138,6 +155,8 @@ export default function App() {
         onNavigate={handleNavigate}
         // @ts-expect-error: 'admin' is not a valid currentView for BlogHeader, but we support it at the App level
         currentView={currentView}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
       
       {/* Admin access button - only visible in development */}

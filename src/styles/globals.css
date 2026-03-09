@@ -92,6 +92,14 @@
 }
 
 .dark {
+  --nav-active: #4ade80;
+  --nav-inactive: #9ca3af;
+  --tag-light-bg: #2d2d2d;
+  --tag-light-text: #9ca3af;
+  --tag-mid-bg: #525252;
+  --tag-mid-text: #e5e7eb;
+  --tag-dark-bg: #d1d5db;
+  --tag-dark-text: #1f2937;
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.145 0 0);
