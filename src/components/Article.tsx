@@ -168,6 +168,24 @@ export function Article({ post, onCategoryClick, onTagClick }: ArticleProps) {
                 const id = slugify(text);
                 return <h3 id={id}>{children}</h3>;
               },
+              /* Render images as proper <figure>s — alt-text becomes the caption. */
+              img({ src, alt, ...rest }) {
+                return (
+                  <figure>
+                    <img src={src} alt={alt} {...rest} />
+                    {alt && <figcaption>{alt}</figcaption>}
+                  </figure>
+                );
+              },
+              /* Markdown wraps lone-image paragraphs in <p>; unwrap so the figure
+                 doesn't sit inside a paragraph (which is invalid HTML). */
+              p({ node, children, ...props }) {
+                const onlyChild = (node?.children?.length === 1 && node.children[0]) as any;
+                if (onlyChild && onlyChild.type === 'element' && onlyChild.tagName === 'img') {
+                  return <>{children}</>;
+                }
+                return <p {...props}>{children}</p>;
+              },
             }}
           >
             {post.content || ''}

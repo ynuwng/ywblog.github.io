@@ -1,8 +1,48 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
 import { toast } from 'sonner';
 import { MigratePosts } from './MigratePosts';
 import { BlogPost } from '../types';
+
+/**
+ * Parse a markdown file with YAML-style frontmatter.
+ * Recognized keys: title, date, author, category, tags, readTime, excerpt.
+ * Tags accept "a, b, c" or YAML "[a, b, c]".
+ */
+function parseFrontmatter(raw: string): {
+  meta: Partial<BlogPost & { tagsString?: string }>;
+  body: string;
+} {
+  const fmMatch = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/m.exec(raw);
+  if (!fmMatch) return { meta: {}, body: raw };
+  const [, fmRaw, body] = fmMatch;
+
+  const meta: Partial<BlogPost & { tagsString?: string }> = {};
+  fmRaw.split('\n').forEach((line) => {
+    const m = /^([\w-]+)\s*:\s*(.*)$/.exec(line);
+    if (!m) return;
+    const key = m[1].trim().toLowerCase();
+    let val = m[2].trim();
+    // Strip wrapping quotes
+    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+      val = val.slice(1, -1);
+    }
+    switch (key) {
+      case 'title':    meta.title = val; break;
+      case 'date':     meta.date = val; break;
+      case 'author':   meta.author = val; break;
+      case 'category': meta.category = val; break;
+      case 'readtime': meta.readTime = val; break;
+      case 'excerpt':  meta.excerpt = val; break;
+      case 'tags': {
+        const stripped = val.replace(/^\[|\]$/g, '');
+        meta.tagsString = stripped.split(/[,\s]+/).map((t) => t.replace(/['"]/g, '').trim()).filter(Boolean).join(', ');
+        break;
+      }
+    }
+  });
+  return { meta, body: body.trim() };
+}
 
 interface AdminProps {
   refreshPosts: () => Promise<void>;
@@ -19,6 +59,27 @@ export function Admin({ refreshPosts }: AdminProps) {
   const [content, setContent] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Read a .md file with YAML frontmatter and populate the form fields.
+  const handleImportMarkdown = async (file: File) => {
+    try {
+      const text = await file.text();
+      const { meta, body } = parseFrontmatter(text);
+      if (meta.title)    setTitle(meta.title);
+      if (meta.date)     setDate(meta.date);
+      if (meta.author)   setAuthor(meta.author);
+      if (meta.excerpt)  setExcerpt(meta.excerpt);
+      if (meta.readTime) setReadTime(meta.readTime);
+      if (meta.category) setCategory(meta.category);
+      if ((meta as any).tagsString) setTags((meta as any).tagsString);
+      setContent(body);
+      toast.success(`Loaded ${file.name}${meta.title ? ` — “${meta.title}”` : ''}`);
+    } catch (err) {
+      console.error(err);
+      toast.error('Could not read file');
+    }
+  };
   
   // Article list management
   const [articles, setArticles] = useState<BlogPost[]>([]);
@@ -296,6 +357,41 @@ export function Admin({ refreshPosts }: AdminProps) {
       {/* Article Form */}
       {!showArticleList && (
         <>
+          {/* Markdown import — read a .md file with YAML frontmatter and auto-fill the form */}
+          <div
+            className="mb-6 p-4 border border-gray-200 rounded-lg bg-gray-50 flex items-center justify-between"
+            onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; }}
+            onDrop={(e) => {
+              e.preventDefault();
+              const file = e.dataTransfer.files?.[0];
+              if (file && /\.(md|markdown|txt)$/i.test(file.name)) handleImportMarkdown(file);
+              else toast.error('Drop a .md file');
+            }}
+          >
+            <div className="text-sm text-gray-700">
+              <strong>Import from .md</strong>
+              <span className="text-gray-500"> — drop a markdown file here, or click to choose. YAML frontmatter (title, date, tags…) auto-fills the form.</span>
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".md,.markdown,.txt"
+              style={{ display: 'none' }}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleImportMarkdown(file);
+                if (fileInputRef.current) fileInputRef.current.value = '';
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-white whitespace-nowrap"
+            >
+              Choose file…
+            </button>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="title" className="block text-sm mb-2">

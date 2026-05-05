@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 320" preserveAspectRatio="xMidYMid meet">
+  <style>
+    .ax    { stroke: #8A8A85; stroke-width: 0.5; fill: none; }
+    .lbl   { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; fill: #8A8A85; letter-spacing: 0.04em; }
+    .axt   { font-family: 'STIX Two Text', 'Source Serif Pro', Georgia, serif; font-size: 12px; fill: #555555; font-style: italic; }
+    .curve { fill: none; stroke: #7F77DD; stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
+    .pt    { fill: #7F77DD; }
+    .ann   { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; fill: #7F77DD; letter-spacing: 0.04em; }
+    @media (prefers-color-scheme: dark) {
+      .ax { stroke: #4A4A45; }
+      .lbl, .axt { fill: #8A8A85; }
+    }
+  </style>
+
+  <line class="ax" x1="60" y1="270" x2="570" y2="270"/>
+  <line class="ax" x1="60" y1="30"  x2="60"  y2="270"/>
+
+  <text class="lbl" x="55" y="274" text-anchor="end">0.17</text>
+  <text class="lbl" x="55" y="234" text-anchor="end">0.18</text>
+  <text class="lbl" x="55" y="194" text-anchor="end">0.19</text>
+  <text class="lbl" x="55" y="154" text-anchor="end">0.20</text>
+  <text class="lbl" x="55" y="114" text-anchor="end">0.21</text>
+  <text class="lbl" x="55"  y="74" text-anchor="end">0.22</text>
+  <text class="lbl" x="55"  y="34" text-anchor="end">0.23</text>
+
+  <text class="lbl" x="60"  y="285" text-anchor="middle">0</text>
+  <text class="lbl" x="111" y="285" text-anchor="middle">1m</text>
+  <text class="lbl" x="162" y="285" text-anchor="middle">2m</text>
+  <text class="lbl" x="213" y="285" text-anchor="middle">3m</text>
+  <text class="lbl" x="315" y="285" text-anchor="middle">6m</text>
+  <text class="lbl" x="417" y="285" text-anchor="middle">9m</text>
+  <text class="lbl" x="570" y="285" text-anchor="middle">1y</text>
+
+  <text class="axt" x="315" y="310" text-anchor="middle">time to expiry  T</text>
+  <text class="axt" x="22"  y="150" text-anchor="middle" transform="rotate(-90 22 150)">ATM implied vol</text>
+
+  <path class="curve" d="M 85.5 194 L 111 178 L 162 158 L 213 142 L 264 130 L 315 118 L 366 106 L 417 98 L 468 86 L 519 78 L 570 70"/>
+
+  <circle class="pt" cx="315" cy="118" r="2.4"/>
+  <text class="ann" x="322" y="115">σ_atm(6m) ≈ 20.8%</text>
+
+  <text class="ann" x="565" y="55" text-anchor="end">contango</text>
+</svg>
