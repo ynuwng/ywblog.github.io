@@ -2003,7 +2003,8 @@ body {
 .prose strong { font-weight: 500; color: var(--text-primary); }
 .prose em { font-style: italic; }
 
-.prose code {
+/* Inline code only — strictly excluded from the highlighted code block. */
+.prose :not(pre) > code {
   font-family: var(--font-mono);
   font-size: var(--text-code-inline);
   background: var(--bg-subtle);
@@ -2011,6 +2012,21 @@ body {
   border-radius: 3px;
   border: 0.5px solid var(--border-faint);
 }
+
+/* Nuke any inherited chrome (borders, underlines, backgrounds) on every
+   element inside the syntax-highlighter output. The wrapper itself keeps
+   its outer border via .code-block-wrapper above. */
+.code-block-wrapper pre,
+.code-block-wrapper pre *,
+.code-block-wrapper code,
+.code-block-wrapper code * {
+  border: 0 !important;
+  border-radius: 0 !important;
+  text-decoration: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.code-block-wrapper pre { padding: 0 !important; margin: 0 !important; }
 
 .prose hr {
   border: 0;
