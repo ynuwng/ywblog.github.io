@@ -1,3 +1,5 @@
+import React from 'react';
+
 interface Post {
   id: string;
   title: string;
@@ -13,89 +15,61 @@ interface ArchivesProps {
   onArticleClick: (articleId: string) => void;
 }
 
-export function Archives({ posts, onNavigateHome, onArticleClick }: ArchivesProps) {
-  // Group posts by year
+export function Archives({ posts, onArticleClick }: ArchivesProps) {
   const postsByYear = posts.reduce((acc, post) => {
     const year = new Date(post.date).getFullYear();
-    if (!acc[year]) {
-      acc[year] = [];
-    }
+    if (!acc[year]) acc[year] = [];
     acc[year].push(post);
     return acc;
   }, {} as Record<number, Post[]>);
 
-  // Sort years descending
-  const sortedYears = Object.keys(postsByYear)
-    .map(Number)
-    .sort((a, b) => b - a);
+  const sortedYears = Object.keys(postsByYear).map(Number).sort((a, b) => b - a);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const day = date.getDate();
-    const month = date.toLocaleDateString('en-US', { month: 'short' });
-    return { day, month };
+  // Sort posts within each year by date desc
+  sortedYears.forEach((y) => {
+    postsByYear[y].sort((a, b) => +new Date(b.date) - +new Date(a.date));
+  });
+
+  const formatShort = (s: string) => {
+    const d = new Date(s);
+    const day = String(d.getDate()).padStart(2, '0');
+    const mon = d.toLocaleDateString('en-US', { month: 'short' });
+    return `${mon} ${day}`;
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-8">
-      {/* Timeline */}
-      <div className="relative">
-        {sortedYears.map((year, yearIndex) => (
-          <div key={year} className="relative">
-            {/* Year Header */}
-            <div className="flex items-start mb-8">
-              <div className="w-20 flex-shrink-0">
-                <span className="text-foreground">{year}</span>
-              </div>
-              <div className="relative flex items-center">
-                <div className="w-3 h-3 rounded-full border-2 border-gray-300 bg-background"></div>
-              </div>
-            </div>
+    <main className="editorial fade-in" style={{ paddingTop: '2.5rem', paddingBottom: '4rem' }}>
+      <h1 className="year-head" style={{ marginBottom: '1.5rem' }}>Archives</h1>
 
-            {/* Posts for this year */}
-            <div className="relative">
-              {postsByYear[year].map((post, postIndex) => {
-                const { day, month } = formatDate(post.date);
-                const isLastPost = yearIndex === sortedYears.length - 1 && 
-                                   postIndex === postsByYear[year].length - 1;
-
-                return (
-                  <div key={post.id} className="relative flex mb-8">
-                    {/* Date */}
-                    <div className="w-20 flex-shrink-0 text-right pr-4">
-                      <div className="text-foreground">{day}</div>
-                      <div className="text-gray-500 text-sm">{month}</div>
-                    </div>
-
-                    {/* Timeline dot and line */}
-                    <div className="relative flex flex-col items-center mr-6">
-                      <div className="w-2.5 h-2.5 rounded-full bg-gray-400"></div>
-                      {!isLastPost && (
-                        <div className="w-px bg-gray-300 flex-grow absolute top-2.5" style={{ height: '60px' }}></div>
-                      )}
-                    </div>
-
-                    {/* Article title */}
-                    <div className="flex-1 pt-0">
-                      <a
-                        href="#"
-                        className="hover:underline"
-                        style={{ color: '#002fa7' }}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          onArticleClick(post.id);
-                        }}
-                      >
-                        {post.title}
-                      </a>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+      {sortedYears.map((year, idx) => (
+        <section key={year} style={{ marginTop: idx === 0 ? 0 : '2.25rem' }}>
+          <div
+            className="flex items-baseline justify-between"
+            style={{ marginBottom: '0.5rem' }}
+          >
+            <h2 className="year-head">{year}</h2>
+            <span className="meta">
+              {postsByYear[year].length} {postsByYear[year].length === 1 ? 'post' : 'posts'}
+            </span>
           </div>
-        ))}
-      </div>
-    </div>
+          <hr className="rule" />
+          <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+            {postsByYear[year].map((post) => (
+              <li key={post.id}>
+                <a
+                  href="#"
+                  className="list-row"
+                  onClick={(e) => { e.preventDefault(); onArticleClick(post.id); }}
+                  style={{ textDecoration: 'none' }}
+                >
+                  <span className="list-row-title">{post.title}</span>
+                  <span className="list-row-meta">{formatShort(post.date)}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </main>
   );
 }

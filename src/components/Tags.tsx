@@ -14,54 +14,46 @@ interface TagsProps {
   onTagClick: (tag: string) => void;
 }
 
-// 3-tier grey: most frequent = deepest, once = lightest
 const tagTierColors = [
-  { bg: '#EBEBEB', text: '#909090' }, // light grey  — appears once
-  { bg: '#909090', text: '#FFFFFF' }, // medium grey — in between
-  { bg: '#3D3D3D', text: '#FFFFFF' }, // deepest grey — most frequent
+  { bg: 'var(--tag-light-bg)', text: 'var(--tag-light-text)' },
+  { bg: 'var(--tag-mid-bg)',   text: 'var(--tag-mid-text)'   },
+  { bg: 'var(--tag-dark-bg)',  text: 'var(--tag-dark-text)'  },
 ];
 
-function getTagColor(count: number, maxCount: number): { bg: string; text: string } {
-  if (count === 1) return tagTierColors[0];
-  if (count >= maxCount) return tagTierColors[2];
+function getTagColor(count: number, maxCount: number) {
+  if (count === 1)        return tagTierColors[0];
+  if (count >= maxCount)  return tagTierColors[2];
   return tagTierColors[1];
 }
 
 export function Tags({ posts, onTagClick }: TagsProps) {
-  // Count tags
   const tagCounts = posts.reduce((acc, post) => {
-    post.tags.forEach(tag => {
-      acc[tag] = (acc[tag] || 0) + 1;
-    });
+    post.tags.forEach(tag => { acc[tag] = (acc[tag] || 0) + 1; });
     return acc;
   }, {} as Record<string, number>);
 
   const maxCount = Math.max(1, ...Object.values(tagCounts));
-
-  // Sort tags alphabetically
   const sortedTags = Object.entries(tagCounts).sort(([a], [b]) => a.localeCompare(b));
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-16">
-      <div className="flex flex-wrap gap-3">
+    <main className="editorial fade-in" style={{ paddingTop: '2.5rem', paddingBottom: '4rem' }}>
+      <h1 className="year-head" style={{ marginBottom: '1.25rem' }}>Tags</h1>
+      <div className="flex flex-wrap" style={{ gap: '8px' }}>
         {sortedTags.map(([tag, count]) => {
-          const colors = getTagColor(count, maxCount);
+          const c = getTagColor(count, maxCount);
           return (
             <button
               key={tag}
               onClick={() => onTagClick(tag)}
-              className="px-3 py-1 text-sm rounded-full transition-opacity hover:opacity-80"
-              style={{
-                backgroundColor: colors.bg,
-                color: colors.text,
-              }}
+              className="tag-pill"
+              style={{ backgroundColor: c.bg, color: c.text, border: 0, cursor: 'pointer' }}
             >
               <span>{tag}</span>
-              <span className="ml-1.5 text-gray-400">{count}</span>
+              <span className="tag-count">{count}</span>
             </button>
           );
         })}
       </div>
-    </div>
+    </main>
   );
 }

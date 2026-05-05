@@ -25,10 +25,10 @@ const Categories = lazy(() => import('./components/Categories').then(m => ({ def
 const CategoryArticles = lazy(() => import('./components/CategoryArticles').then(m => ({ default: m.CategoryArticles })));
 const Admin = lazy(() => import('./components/Admin').then(m => ({ default: m.Admin })));
 
-// Loading fallback component
+// Loading fallback component — quiet, matching editorial tone.
 const LoadingSpinner = () => (
-  <div className="flex items-center justify-center min-h-screen">
-    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+  <div className="editorial" style={{ paddingTop: '4rem', paddingBottom: '4rem' }}>
+    <p className="meta" style={{ textAlign: 'center' }}>Loading…</p>
   </div>
 );
 
@@ -173,27 +173,34 @@ export default function App() {
       )}
       
       {currentView === 'home' ? (
-        <main className="max-w-3xl mx-auto px-6 py-16">
+        <main className="editorial fade-in" style={{ paddingTop: '3rem', paddingBottom: '4rem' }}>
           {loading ? (
-            <div className="text-center py-20 text-gray-500">
-              <div className="inline-block animate-pulse">Loading posts...</div>
-            </div>
+            <p className="meta" style={{ textAlign: 'center', padding: '4rem 0' }}>Loading posts…</p>
           ) : postsFromHook.length === 0 ? (
-            <div className="text-center py-20">
-              <p className="text-gray-500 mb-6">No blog posts yet.</p>
+            <div style={{ textAlign: 'center', padding: '4rem 0' }}>
+              <p className="body-text" style={{ marginBottom: '1.5rem' }}>No posts yet.</p>
               {(import.meta as any).env.DEV && (
                 <button
                   onClick={() => handleNavigate('admin')}
-                  className="px-6 py-3 bg-black text-white rounded-md hover:bg-gray-800 transition-colors"
+                  className="link-accent"
+                  style={{ background: 'none', border: 0, cursor: 'pointer' }}
                 >
-                  Create Your First Post
+                  Create your first post
                 </button>
               )}
             </div>
           ) : (
-            <div className="space-y-16">
-              {postsFromHook.map((post) => (
-                <BlogPost key={post.id} post={post} onClick={() => handleArticleClick(post.id)} tagFrequencies={tagFrequencies} maxTagCount={maxTagCount} />
+            <div>
+              {postsFromHook.map((post, i) => (
+                <div key={post.id}>
+                  {i > 0 && <hr className="rule" style={{ margin: '2.75rem 0' }} />}
+                  <BlogPost
+                    post={post}
+                    onClick={() => handleArticleClick(post.id)}
+                    tagFrequencies={tagFrequencies}
+                    maxTagCount={maxTagCount}
+                  />
+                </div>
               ))}
             </div>
           )}
@@ -212,21 +219,21 @@ export default function App() {
         </Suspense>
       ) : currentView === 'article' ? (
         loadingArticle ? (
-           <div className="max-w-3xl mx-auto px-6 py-16 text-center text-gray-500">
-              <div className="inline-block animate-pulse">Loading article...</div>
+           <div className="editorial" style={{ padding: '4rem 0', textAlign: 'center' }}>
+              <p className="meta">Loading article…</p>
            </div>
         ) : currentArticle ? (
           <Suspense fallback={<LoadingSpinner />}>
-            <Article 
-              post={currentArticle} 
-              onBack={handleBackToHome} 
+            <Article
+              post={currentArticle}
+              onBack={handleBackToHome}
               onCategoryClick={handleCategoryClick}
               onTagClick={handleTagClick}
             />
           </Suspense>
         ) : (
-           <div className="max-w-3xl mx-auto px-6 py-16 text-center text-gray-500">
-              Article not found.
+           <div className="editorial" style={{ padding: '4rem 0', textAlign: 'center' }}>
+              <p className="meta">Article not found.</p>
            </div>
         )
       ) : currentView === 'tagged' && selectedTag ? (

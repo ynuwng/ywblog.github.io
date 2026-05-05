@@ -1,13 +1,15 @@
+import React from 'react';
 import { BlogPost } from './BlogPost';
-import { ArrowLeft, Tag } from 'lucide-react';
 
 interface Post {
   id: string;
   title: string;
   date: string;
+  author: string;
   excerpt: string;
   readTime: string;
   tags: string[];
+  category: string;
 }
 
 interface TaggedArticlesProps {
@@ -17,27 +19,44 @@ interface TaggedArticlesProps {
   onArticleClick: (articleId: string) => void;
 }
 
-export function TaggedArticles({ tag, posts, onBack, onArticleClick }: TaggedArticlesProps) {
+export function TaggedArticles({ tag, posts, onArticleClick }: TaggedArticlesProps) {
   const filteredPosts = posts.filter(post => post.tags.includes(tag));
 
   return (
-    <main className="max-w-3xl mx-auto px-6 py-16">
-      
-      {/* Tag Header */}
-      <div className="mb-12">
-        <h1 className="mb-2 flex items-center gap-2 not-italic font-bold font-normal">
-          <Tag className="w-6 h-6" />
-          {tag}
+    <main className="editorial fade-in" style={{ paddingTop: '2.5rem', paddingBottom: '4rem' }}>
+      <div style={{ marginBottom: '2rem' }}>
+        <p className="meta" style={{ marginBottom: '4px' }}>Tag</p>
+        <h1
+          style={{
+            fontSize: '24px',
+            fontWeight: 600,
+            letterSpacing: '-0.01em',
+            color: 'var(--ink)',
+            marginBottom: '6px',
+          }}
+        >
+          #{tag}
         </h1>
-        <p className="text-gray-500">{filteredPosts.length} {filteredPosts.length === 1 ? 'article' : 'articles'}</p>
+        <p className="meta">
+          {filteredPosts.length} {filteredPosts.length === 1 ? 'article' : 'articles'}
+        </p>
       </div>
+      <hr className="rule" style={{ marginBottom: '2.25rem' }} />
 
-      {/* Articles List */}
-      <div className="space-y-16">
-        {filteredPosts.map((post) => (
-          <BlogPost key={post.id} post={post} onClick={() => onArticleClick(post.id)} />
+      <div>
+        {filteredPosts.map((post, i) => (
+          <div key={post.id}>
+            {i > 0 && <hr className="rule" style={{ margin: '2.5rem 0' }} />}
+            <BlogPost post={post} onClick={() => onArticleClick(post.id)} />
+          </div>
         ))}
       </div>
+
+      {filteredPosts.length === 0 && (
+        <p className="meta" style={{ textAlign: 'center', padding: '2rem 0' }}>
+          No articles with this tag.
+        </p>
+      )}
     </main>
   );
 }

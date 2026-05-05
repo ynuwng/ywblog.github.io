@@ -1,5 +1,4 @@
 import React from 'react';
-import { Calendar, Clock } from 'lucide-react';
 import { BlogPost as BlogPostType } from '../types';
 
 interface BlogPostProps {
@@ -9,71 +8,77 @@ interface BlogPostProps {
   maxTagCount?: number;
 }
 
-// 3-tier grey: most frequent = deepest, once = lightest
+// Unified 3-tier monochrome tag system, driven by CSS variables so that
+// Home, Tags page, Article footer and TaggedArticles all match.
 const tagTierColors = [
-  { bg: 'var(--tag-light-bg)', text: 'var(--tag-light-text)' }, // light — appears once
-  { bg: 'var(--tag-mid-bg)',   text: 'var(--tag-mid-text)'   }, // medium — in between
-  { bg: 'var(--tag-dark-bg)',  text: 'var(--tag-dark-text)'  }, // deepest — most frequent
+  { bg: 'var(--tag-light-bg)', text: 'var(--tag-light-text)' },
+  { bg: 'var(--tag-mid-bg)',   text: 'var(--tag-mid-text)'   },
+  { bg: 'var(--tag-dark-bg)',  text: 'var(--tag-dark-text)'  },
 ];
 
-function getTagColor(tag: string, frequencies?: Record<string, number>, maxCount?: number): { bg: string; text: string } {
+function getTagColor(tag: string, frequencies?: Record<string, number>, maxCount?: number) {
   const count = frequencies?.[tag] ?? 1;
   const max = maxCount ?? 1;
-  if (count === 1) return tagTierColors[0];
-  if (count >= max) return tagTierColors[2];
+  if (count === 1)   return tagTierColors[0];
+  if (count >= max)  return tagTierColors[2];
   return tagTierColors[1];
 }
 
 export function BlogPost({ post, onClick, tagFrequencies, maxTagCount }: BlogPostProps) {
   return (
-    <article className="group cursor-pointer" onClick={onClick}>
-      <h2 className="mb-3 text-2xl font-bold text-foreground group-hover:text-gray-500 transition-colors">
-        {post.title}
+    <article className="group cursor-pointer fade-in" onClick={onClick}>
+      <h2
+        className="transition-colors"
+        style={{
+          fontSize: '22px',
+          lineHeight: 1.35,
+          fontWeight: 600,
+          letterSpacing: '-0.005em',
+          color: 'var(--ink)',
+          marginBottom: '8px',
+        }}
+      >
+        <span className="group-hover:opacity-70 transition-opacity">{post.title}</span>
       </h2>
-      
-      <div className="flex items-center gap-4 mb-4 text-gray-500 text-sm">
-        <div className="flex items-center gap-1.5">
-          <Calendar className="w-4 h-4" />
-          <time dateTime={post.date}>{formatDate(post.date)}</time>
+
+      <div className="meta" style={{ marginBottom: '14px' }}>
+        <time dateTime={post.date}>{formatDate(post.date)}</time>
+        <span className="meta-sep" />
+        <span>{post.readTime}</span>
+      </div>
+
+      <p
+        className="body-text"
+        style={{ marginBottom: '18px' }}
+      >
+        {post.excerpt}
+      </p>
+
+      {post.tags.length > 0 && (
+        <div className="flex flex-wrap" style={{ gap: '6px' }}>
+          {post.tags.map((tag) => {
+            const c = getTagColor(tag, tagFrequencies, maxTagCount);
+            return (
+              <span
+                key={tag}
+                className="tag-pill"
+                style={{ backgroundColor: c.bg, color: c.text }}
+              >
+                {tag}
+              </span>
+            );
+          })}
         </div>
-        <div className="flex items-center gap-1.5">
-          <Clock className="w-4 h-4" />
-          <span>{post.readTime}</span>
-        </div>
-      </div>
-      
-      <div className="bg-muted rounded-lg p-6 mb-4 border border-border">
-        <p className="text-gray-600 leading-relaxed text-[16px]">
-          {post.excerpt}
-        </p>
-      </div>
-      
-      <div className="flex gap-2">
-        {post.tags.map((tag) => {
-          const colors = getTagColor(tag, tagFrequencies, maxTagCount);
-          return (
-            <span 
-              key={tag}
-              className="px-3 py-1 text-sm rounded-full"
-              style={{ 
-                backgroundColor: colors.bg,
-                color: colors.text
-              }}
-            >
-              {tag}
-            </span>
-          );
-        })}
-      </div>
+      )}
     </article>
   );
 }
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', { 
-    month: 'short', 
-    day: 'numeric', 
-    year: 'numeric' 
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
   });
 }

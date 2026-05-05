@@ -1,5 +1,5 @@
+import React from 'react';
 import { BlogPost } from './BlogPost';
-import { ChevronLeft } from 'lucide-react';
 
 interface Post {
   id: string;
@@ -19,22 +19,43 @@ interface CategoryArticlesProps {
   onArticleClick: (id: string) => void;
 }
 
-export function CategoryArticles({ category, posts, onBack, onArticleClick }: CategoryArticlesProps) {
+export function CategoryArticles({ category, posts, onArticleClick }: CategoryArticlesProps) {
   const filteredPosts = posts.filter(post => post.category === category);
 
   return (
-    <main className="max-w-3xl mx-auto px-6 py-16">
-      
-      <h1 className="mb-2 text-[20px] text-[rgb(35,83,71)] font-bold font-normal">{category}</h1>
+    <main className="editorial fade-in" style={{ paddingTop: '2.5rem', paddingBottom: '4rem' }}>
+      <div style={{ marginBottom: '2rem' }}>
+        <p className="meta" style={{ marginBottom: '4px' }}>Category</p>
+        <h1
+          style={{
+            fontSize: '24px',
+            fontWeight: 600,
+            letterSpacing: '-0.01em',
+            color: 'var(--ink)',
+            marginBottom: '6px',
+          }}
+        >
+          {category}
+        </h1>
+        <p className="meta">
+          {filteredPosts.length} {filteredPosts.length === 1 ? 'article' : 'articles'}
+        </p>
+      </div>
+      <hr className="rule" style={{ marginBottom: '2.25rem' }} />
 
-      <div className="space-y-16">
-        {filteredPosts.map((post) => (
-          <BlogPost key={post.id} post={post} onClick={() => onArticleClick(post.id)} />
+      <div>
+        {filteredPosts.map((post, i) => (
+          <div key={post.id}>
+            {i > 0 && <hr className="rule" style={{ margin: '2.5rem 0' }} />}
+            <BlogPost post={post} onClick={() => onArticleClick(post.id)} />
+          </div>
         ))}
       </div>
 
       {filteredPosts.length === 0 && (
-        <p className="text-gray-500 text-center py-8">No articles found in this category.</p>
+        <p className="meta" style={{ textAlign: 'center', padding: '2rem 0' }}>
+          No articles in this category.
+        </p>
       )}
     </main>
   );

@@ -1517,3 +1517,442 @@ html {
     opacity: .5;
   }
 }
+
+/* =====================================================================
+   Editorial design system — unified tokens & components
+   ---------------------------------------------------------------------
+   One accent (forest green), one muted surface, one hairline rule,
+   one consistent type scale. Used across Home, Article, Archives,
+   Categories, Tags, About.
+   ===================================================================== */
+
+:root {
+  /* Ink hierarchy */
+  --ink:        #1d1d1f;
+  --ink-muted:  #5a5d61;
+  --ink-faint:  #8a8d91;
+
+  /* Surfaces */
+  --paper:        #ffffff;
+  --paper-tinted: #fafaf8;   /* subtle warm off-white for code/quote backgrounds */
+  --rule:         rgba(0, 0, 0, 0.08);
+  --rule-strong:  rgba(0, 0, 0, 0.14);
+
+  /* Single accent — forest green, used for links and active nav */
+  --accent:        #235347;
+  --accent-soft:   rgba(35, 83, 71, 0.08);
+  --accent-hover:  #1a3f36;
+
+  /* Tag tier (frequency-based, monochrome) */
+  --tag-light-bg:   #f1f1ef;
+  --tag-light-text: #6b6e72;
+  --tag-mid-bg:     #d9d9d6;
+  --tag-mid-text:   #3a3d40;
+  --tag-dark-bg:    #2c2c2e;
+  --tag-dark-text:  #f5f5f3;
+
+  /* Typography scale (editorial) */
+  --prose-measure:    34rem;   /* ~62ch reading width */
+  --prose-body-size:  17px;
+  --prose-body-lh:    1.78;
+  --prose-meta-size:  13px;
+
+  /* Override muted token to match our paper tone */
+  --muted: var(--paper-tinted);
+  --border: var(--rule);
+}
+
+.dark {
+  --ink:        #ededed;
+  --ink-muted:  #a3a6aa;
+  --ink-faint:  #6c6f73;
+
+  --paper:        #0e0e10;
+  --paper-tinted: #161618;
+  --rule:         rgba(255, 255, 255, 0.10);
+  --rule-strong:  rgba(255, 255, 255, 0.18);
+
+  --accent:        #7fb8a6;
+  --accent-soft:   rgba(127, 184, 166, 0.12);
+  --accent-hover:  #9ccfbe;
+
+  --tag-light-bg:   #1f1f22;
+  --tag-light-text: #9aa0a6;
+  --tag-mid-bg:     #36363a;
+  --tag-mid-text:   #d6d8db;
+  --tag-dark-bg:    #d6d6d3;
+  --tag-dark-text:  #1a1a1c;
+
+  --muted:  var(--paper-tinted);
+  --border: var(--rule);
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+}
+
+:root {
+  --background: var(--paper);
+  --foreground: var(--ink);
+}
+
+html, body {
+  background-color: var(--paper);
+  color: var(--ink);
+}
+
+body {
+  font-feature-settings: "kern", "liga", "calt", "ss01";
+  text-rendering: optimizeLegibility;
+}
+
+/* Selection */
+::selection {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+/* ----- Editorial container ----- */
+.editorial {
+  max-width: var(--prose-measure);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+/* ----- Hairline divider ----- */
+.rule {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 0;
+}
+
+/* ----- Meta line (date • read time • etc.) ----- */
+.meta {
+  font-size: var(--prose-meta-size);
+  color: var(--ink-faint);
+  letter-spacing: 0.02em;
+}
+
+.meta-sep {
+  display: inline-block;
+  width: 3px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--ink-faint);
+  margin-inline: 0.6em;
+  vertical-align: middle;
+  opacity: 0.6;
+}
+
+/* ----- Accent link ----- */
+.link-accent {
+  color: var(--accent);
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0 1px;
+  transition: background-size 0.2s ease, color 0.15s ease;
+}
+.link-accent:hover {
+  background-size: 100% 1px;
+  color: var(--accent-hover);
+}
+
+/* ----- Unified tag pill ----- */
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 2px 9px;
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  line-height: 1.6;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  user-select: none;
+}
+.tag-pill:hover {
+  opacity: 0.85;
+}
+.tag-pill .tag-count {
+  color: inherit;
+  opacity: 0.55;
+  font-variant-numeric: tabular-nums;
+  margin-left: 2px;
+}
+
+/* ----- Editorial prose (Article body) -----
+   Applied to a wrapper so it doesn't leak. Targets markdown output.    */
+.prose {
+  color: var(--ink);
+  font-size: var(--prose-body-size);
+  line-height: var(--prose-body-lh);
+}
+.prose p {
+  margin: 0 0 1.4em;
+  color: var(--ink);
+}
+.prose p:first-of-type::first-letter {
+  /* subtle drop-cap-ish initial — kept restrained */
+  font-weight: 500;
+}
+.prose h2 {
+  font-size: 22px;
+  line-height: 1.4;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  margin: 2.4em 0 0.6em;
+}
+.prose h3 {
+  font-size: 18px;
+  line-height: 1.45;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 2em 0 0.5em;
+}
+.prose h2 + p,
+.prose h3 + p { margin-top: 0; }
+
+.prose a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule-strong);
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.prose a:hover {
+  color: var(--accent-hover);
+  border-bottom-color: var(--accent);
+}
+
+.prose ul, .prose ol {
+  margin: 0 0 1.4em;
+  padding-left: 1.4em;
+  color: var(--ink);
+}
+.prose ul { list-style: disc; }
+.prose ol { list-style: decimal; }
+.prose li { margin-bottom: 0.4em; }
+.prose li::marker { color: var(--ink-faint); }
+
+.prose blockquote {
+  margin: 1.8em 0;
+  padding: 0.2em 0 0.2em 1.2em;
+  border-left: 2px solid var(--accent);
+  color: var(--ink-muted);
+  font-style: italic;
+  font-size: 16px;
+  line-height: 1.7;
+}
+.prose blockquote p { margin-bottom: 0.6em; }
+.prose blockquote p:last-child { margin-bottom: 0; }
+
+.prose strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  padding: 0.1em 0.4em;
+  background: var(--paper-tinted);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  color: var(--ink);
+}
+
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 2.4em auto;
+  width: 60%;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  margin: 1.6em 0;
+}
+.prose th, .prose td {
+  padding: 0.6em 0.9em;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+}
+.prose th {
+  font-weight: 600;
+  color: var(--ink);
+  border-bottom-color: var(--rule-strong);
+}
+.prose td { color: var(--ink); }
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  margin: 1.6em auto;
+}
+
+/* Code block (used by CodeBlock component) — light & quiet chrome */
+.code-block-wrapper {
+  margin: 1.6em 0;
+  border-radius: 8px;
+  border: 1px solid var(--rule);
+  background: var(--paper-tinted);
+  overflow: hidden;
+}
+.code-block-wrapper .cb-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--ink-faint);
+  border-bottom: 1px solid var(--rule);
+  background: transparent;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.code-block-wrapper .cb-copy {
+  color: var(--ink-faint);
+  transition: color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.code-block-wrapper .cb-copy:hover { color: var(--ink); }
+
+/* Nav: subtle, editorial */
+.nav-link {
+  position: relative;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-muted);
+  letter-spacing: 0.01em;
+  padding: 4px 0;
+  transition: color 0.15s ease;
+}
+.nav-link:hover { color: var(--ink); }
+.nav-link.is-active {
+  color: var(--ink);
+}
+.nav-link.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -3px;
+  height: 1px;
+  background: var(--accent);
+}
+
+/* Wordmark — refined letterspacing */
+.wordmark {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.wordmark .dot {
+  color: var(--accent);
+  margin-left: 1px;
+}
+
+/* Tagline */
+.tagline {
+  font-size: 14px;
+  color: var(--ink-faint);
+  font-style: italic;
+  margin-top: 4px;
+}
+
+/* Social row */
+.social-link {
+  color: var(--ink-faint);
+  transition: color 0.15s ease;
+}
+.social-link:hover { color: var(--ink); }
+
+/* Year heading on Archives */
+.year-head {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* List row (Categories, Archives entries) */
+.list-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--rule);
+  transition: padding 0.2s ease;
+}
+.list-row:hover { padding-left: 4px; }
+.list-row .list-row-title {
+  color: var(--ink);
+  font-size: 16px;
+  flex: 1;
+  min-width: 0;
+}
+.list-row .list-row-meta {
+  font-size: 13px;
+  color: var(--ink-faint);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Theme toggle button */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  color: var(--ink-faint);
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.icon-btn:hover {
+  color: var(--ink);
+  background: var(--paper-tinted);
+}
+
+/* Subtle entrance — used on view changes */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in {
+  animation: fadeUp 0.35s ease both;
+}
+
+/* Editorial body text utility (used by BlogPost excerpts, About) */
+.body-text {
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--ink-muted);
+}
+
+/* Header bar */
+.site-header {
+  border-bottom: 1px solid var(--rule);
+}
+
+/* Footer */
+.site-footer {
+  border-top: 1px solid var(--rule);
+  margin-top: 6rem;
+}
+.site-footer .copy {
+  font-size: 12px;
+  color: var(--ink-faint);
+  letter-spacing: 0.04em;
+}

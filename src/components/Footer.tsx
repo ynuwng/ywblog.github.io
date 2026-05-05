@@ -1,11 +1,12 @@
-import { Github, Twitter, Linkedin, Mail } from 'lucide-react';
+import React from 'react';
 
 export function Footer() {
+  const year = new Date().getFullYear();
   return (
-    <footer className="border-t border-gray-200 mt-24">
-      <div className="max-w-3xl mx-auto px-6 py-12">
-        <p className="text-gray-500 text-sm text-center">
-          © 2025 Yuan Wang. All rights reserved.
+    <footer className="site-footer">
+      <div className="editorial" style={{ paddingTop: '1.5rem', paddingBottom: '1.75rem' }}>
+        <p className="copy" style={{ textAlign: 'center', margin: 0 }}>
+          © {year} Yuan Wang &nbsp;·&nbsp; Oaks from little acorns grown.
         </p>
       </div>
     </footer>

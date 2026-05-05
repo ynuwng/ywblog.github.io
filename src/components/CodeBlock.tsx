@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomOneLight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { Copy, Check } from 'lucide-react';
 
-// Import only the languages we actually use to reduce bundle size
 import javascript from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript';
 import typescript from 'react-syntax-highlighter/dist/esm/languages/hljs/typescript';
 import python from 'react-syntax-highlighter/dist/esm/languages/hljs/python';
@@ -13,7 +12,6 @@ import json from 'react-syntax-highlighter/dist/esm/languages/hljs/json';
 import markdown from 'react-syntax-highlighter/dist/esm/languages/hljs/markdown';
 import sql from 'react-syntax-highlighter/dist/esm/languages/hljs/sql';
 
-// Register only the languages we need
 SyntaxHighlighter.registerLanguage('javascript', javascript);
 SyntaxHighlighter.registerLanguage('typescript', typescript);
 SyntaxHighlighter.registerLanguage('python', python);
@@ -31,25 +29,40 @@ interface CodeBlockProps {
   children: string;
 }
 
-// Custom light theme matching Chirpy style (using atomOneLight as base)
-const chirpyLightTheme = {
+const editorialTheme = {
   ...atomOneLight,
-  'hljs': {
+  hljs: {
     ...atomOneLight['hljs'],
-    color: '#24292e',
-    background: '#f6f8fa',
-    fontFamily: "'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Menlo', 'Courier New', monospace",
-    fontSize: '0.875rem',
-    lineHeight: '1.6',
-    padding: '1rem',
+    color: 'var(--ink)',
+    background: 'transparent',
+    fontFamily:
+      "'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+    fontSize: '13.5px',
+    lineHeight: 1.65,
+    padding: '14px 16px',
     margin: 0,
     overflow: 'auto',
-    borderRadius: '0 0 0.5rem 0.5rem',
+    borderRadius: 0,
   },
+};
+
+const languageDisplayMap: Record<string, string> = {
+  javascript: 'JavaScript',
+  typescript: 'TypeScript',
+  python: 'Python',
+  bash: 'Bash',
+  shell: 'Shell',
+  css: 'CSS',
+  json: 'JSON',
+  markdown: 'Markdown',
+  sql: 'SQL',
+  tsx: 'TSX',
+  jsx: 'JSX',
 };
 
 export function CodeBlock({ language, children }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
+  const display = languageDisplayMap[language?.toLowerCase()] || language || 'code';
 
   const handleCopy = () => {
     navigator.clipboard.writeText(children);
@@ -57,76 +70,39 @@ export function CodeBlock({ language, children }: CodeBlockProps) {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Language display mapping
-  const languageDisplayMap: { [key: string]: string } = {
-    javascript: 'JavaScript',
-    typescript: 'TypeScript',
-    python: 'Python',
-    java: 'Java',
-    cpp: 'C++',
-    c: 'C',
-    csharp: 'C#',
-    ruby: 'Ruby',
-    go: 'Go',
-    rust: 'Rust',
-    php: 'PHP',
-    swift: 'Swift',
-    kotlin: 'Kotlin',
-    sql: 'SQL',
-    bash: 'Bash',
-    shell: 'Shell',
-    html: 'HTML',
-    css: 'CSS',
-    json: 'JSON',
-    yaml: 'YAML',
-    markdown: 'Markdown',
-    tsx: 'TSX',
-    jsx: 'JSX',
-  };
-
-  const displayLanguage = languageDisplayMap[language.toLowerCase()] || language;
-
   return (
-    <div className="code-block-wrapper my-6 rounded-lg border border-gray-200 overflow-hidden">
-      {/* Header with language and copy button */}
-      <div className="flex items-center justify-between px-4 py-2 bg-gray-100 border-b border-gray-200">
-        <div className="flex items-center gap-2">
-          <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-          </svg>
-          <span className="text-sm text-gray-600">{displayLanguage}</span>
-        </div>
-        
-        <button
-          onClick={handleCopy}
-          className="flex items-center gap-1.5 px-2 py-1 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded transition-colors"
-          title="Copy code"
-        >
+    <div className="code-block-wrapper">
+      <div className="cb-bar">
+        <span>{display}</span>
+        <button onClick={handleCopy} className="cb-copy" aria-label="Copy code">
           {copied ? (
             <>
-              <Check className="w-3.5 h-3.5" />
-              <span className="text-xs">Copied!</span>
+              <Check className="w-3 h-3" />
+              <span>Copied</span>
             </>
           ) : (
-            <Copy className="w-3.5 h-3.5" />
+            <>
+              <Copy className="w-3 h-3" />
+              <span>Copy</span>
+            </>
           )}
         </button>
       </div>
 
-      {/* Code content */}
       <SyntaxHighlighter
         language={language}
-        style={chirpyLightTheme}
+        style={editorialTheme}
         showLineNumbers={true}
         customStyle={{
           margin: 0,
           borderRadius: 0,
-          background: '#f6f8fa',
+          background: 'transparent',
         }}
         lineNumberStyle={{
           minWidth: '2.5em',
           paddingRight: '1em',
-          color: '#8b949e',
+          color: 'var(--ink-faint)',
+          opacity: 0.55,
           userSelect: 'none',
         }}
       >

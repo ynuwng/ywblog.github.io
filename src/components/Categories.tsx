@@ -1,4 +1,4 @@
-import { Folder, ChevronRight } from 'lucide-react';
+import React from 'react';
 
 interface Post {
   id: string;
@@ -12,38 +12,31 @@ interface CategoriesProps {
 }
 
 export function Categories({ posts, onCategoryClick }: CategoriesProps) {
-  // Count posts per category
   const categoryCount = posts.reduce((acc, post) => {
     acc[post.category] = (acc[post.category] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
 
-  const categories = Object.entries(categoryCount).map(([name, count]) => ({
-    name,
-    count
-  }));
+  const categories = Object.entries(categoryCount).sort(([a], [b]) => a.localeCompare(b));
 
   return (
-    <main className="max-w-3xl mx-auto px-6 py-16">
-      
-      <div className="space-y-4">
-        {categories.map((category) => (
-          <button
-            key={category.name}
-            onClick={() => onCategoryClick(category.name)}
-            className="w-full flex items-center gap-3 p-6 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors text-left group text-[15px]"
-          >
-            <Folder className="w-5 h-5 text-gray-400 flex-shrink-0" />
-            <span className="text-[#002fa7] flex-1 text-[15px]">
-              {category.name}
-            </span>
-            <span className="text-gray-500 text-sm mr-2">
-              {category.count} post{category.count > 1 ? 's' : ''}
-            </span>
-            <ChevronRight className="w-5 h-5 text-gray-400 flex-shrink-0" />
-          </button>
+    <main className="editorial fade-in" style={{ paddingTop: '2.5rem', paddingBottom: '4rem' }}>
+      <h1 className="year-head" style={{ marginBottom: '1rem' }}>Categories</h1>
+      <hr className="rule" />
+      <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+        {categories.map(([name, count]) => (
+          <li key={name}>
+            <button
+              onClick={() => onCategoryClick(name)}
+              className="list-row"
+              style={{ width: '100%', background: 'none', border: 0, cursor: 'pointer', textAlign: 'left', borderBottom: '1px solid var(--rule)' }}
+            >
+              <span className="list-row-title">{name}</span>
+              <span className="list-row-meta">{count} {count === 1 ? 'post' : 'posts'}</span>
+            </button>
+          </li>
         ))}
-      </div>
+      </ul>
     </main>
   );
 }

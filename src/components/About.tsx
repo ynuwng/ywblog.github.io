@@ -1,4 +1,4 @@
-import { ImageWithFallback } from './figma/ImageWithFallback';
+import React from 'react';
 
 export function About() {
   const pandaAscii = `
@@ -44,27 +44,43 @@ Y88888b         \`888888888b,      \`""""^                \`Y8888888P'       d88
                               \`Y888888888888888888b   \`Y8888888P"^
                                 "Y8888888888888888P     \`""""^
                                   \`"YY88888888888P'
-                                       ^""""""""'
-  `;
+                                       ^""""""""'`;
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-16">
-      {/* ASCII Art Panda */}
-      <div className="flex justify-center mb-12">
-        <pre className="text-gray-900 text-[6px] sm:text-[8px] md:text-xs leading-tight font-mono whitespace-pre overflow-x-auto">
-{pandaAscii}
-        </pre>
+    <main className="editorial fade-in" style={{ paddingTop: '2.5rem', paddingBottom: '4rem' }}>
+      <h1 className="year-head" style={{ marginBottom: '1.25rem' }}>About</h1>
+      <hr className="rule" style={{ marginBottom: '2rem' }} />
+
+      <div className="prose">
+        <p>
+          Hi, I'm <strong>Yuan Wang</strong> — a software engineer drawn to scalable systems
+          and elegant solutions to messy problems. Over the years I've worked across distributed
+          systems, full-stack development, and cloud architecture, on products serving millions of
+          users.
+        </p>
+        <p>
+          When I'm not coding or writing here, you'll find me poking at new languages, reading
+          system-design papers, or contributing back to the open-source projects I depend on.
+          This blog is a kind of working notebook — a place to think out loud, distill what I've
+          learned, and trade notes with anyone walking the same path.
+        </p>
+        <p style={{ color: 'var(--ink-muted)', fontStyle: 'italic' }}>
+          If any of this resonates, drop me a line.
+        </p>
       </div>
 
-      {/* Self Introduction */}
-      <div className="space-y-6 text-gray-600 leading-relaxed">
-        <p>
-          &gt; Hi, I'm Yuan Wang, a software engineer passionate about building scalable systems and elegant solutions to complex problems. <br></br>&gt; With years of experience in distributed systems, full-stack development, and cloud architecture, I've had the privilege of working on projects that serve millions of users and push the boundaries of what's possible with modern technology. <br></br>&gt; My journey in tech has been driven by curiosity and a relentless pursuit of excellence.
-        </p>
-        <p>
-          &gt; When I'm not coding or writing about technology, you'll find me exploring new programming languages, contributing to open-source projects, or diving deep into system design patterns. <br></br>&gt; I believe in the power of sharing knowledge and learning from the community, which is why I maintain this blog to document my experiences, insights, and lessons learned along the way. <br></br>&gt; Feel free to reach out if you'd like to discuss technology, collaborate on interesting projects, or just have a conversation about the future of software engineering.
-        </p>
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '4rem', opacity: 0.45 }}>
+        <pre
+          className="font-mono whitespace-pre overflow-x-auto"
+          style={{
+            fontSize: '6px',
+            lineHeight: 1.05,
+            color: 'var(--ink-faint)',
+          }}
+        >
+          {pandaAscii}
+        </pre>
       </div>
-    </div>
+    </main>
   );
 }
