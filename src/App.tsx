@@ -1,5 +1,5 @@
 import { BlogHeader } from './components/BlogHeader';
-import { BlogPost } from './components/BlogPost';
+import { YearGroupedList } from './components/YearGroupedList';
 import { Footer } from './components/Footer';
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Toaster } from 'sonner';
@@ -142,12 +142,6 @@ export default function App() {
     }
   };
 
-  const tagFrequencies = postsFromHook.reduce((acc, post) => {
-    post.tags.forEach(tag => { acc[tag] = (acc[tag] || 0) + 1; });
-    return acc;
-  }, {} as Record<string, number>);
-  const maxTagCount = Math.max(1, ...Object.values(tagFrequencies));
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Toaster position="top-right" />
@@ -159,50 +153,57 @@ export default function App() {
         onToggleTheme={toggleTheme}
       />
       
-      {/* Admin access button - only visible in development */}
+      {/* Admin access button — dev only, quiet styling */}
       {(import.meta as any).env.DEV && (
         <button
           onClick={() => handleNavigate('admin')}
-          className="fixed bottom-6 right-6 w-12 h-12 bg-black text-white rounded-full hover:bg-gray-800 transition-colors shadow-lg flex items-center justify-center z-50"
           title="Admin Panel"
+          style={{
+            position: 'fixed', bottom: '20px', right: '20px',
+            width: '34px', height: '34px',
+            borderRadius: '999px',
+            background: 'var(--bg-surface)',
+            color: 'var(--text-tertiary)',
+            border: '0.5px solid var(--border-default)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', zIndex: 50,
+            fontFamily: 'var(--font-mono)', fontSize: '16px', lineHeight: 1,
+          }}
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
+          +
         </button>
       )}
       
       {currentView === 'home' ? (
-        <main className="editorial fade-in" style={{ paddingTop: '3rem', paddingBottom: '4rem' }}>
+        <main className="editorial fade-in">
+          {/* Hero */}
+          <h1 className="hero">Yuan Wang</h1>
+          <p className="hero-tagline">
+            Writing on AI, quantitative research, and signal processing —
+            notes, derivations, and the occasional dead end.
+          </p>
+
           {loading ? (
-            <p className="meta" style={{ textAlign: 'center', padding: '4rem 0' }}>Loading posts…</p>
+            <p className="meta" style={{ textAlign: 'center', padding: '3rem 0' }}>Loading posts…</p>
           ) : postsFromHook.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '4rem 0' }}>
-              <p className="body-text" style={{ marginBottom: '1.5rem' }}>No posts yet.</p>
+            <div style={{ textAlign: 'center', padding: '3rem 0' }}>
+              <p className="text-secondary" style={{ marginBottom: '1.25rem' }}>No posts yet.</p>
               {(import.meta as any).env.DEV && (
                 <button
                   onClick={() => handleNavigate('admin')}
-                  className="link-accent"
-                  style={{ background: 'none', border: 0, cursor: 'pointer' }}
+                  className="accent"
+                  style={{ background: 'none', border: 0, cursor: 'pointer', font: 'inherit' }}
                 >
                   Create your first post
                 </button>
               )}
             </div>
           ) : (
-            <div>
-              {postsFromHook.map((post, i) => (
-                <div key={post.id}>
-                  {i > 0 && <hr className="rule" style={{ margin: '2.75rem 0' }} />}
-                  <BlogPost
-                    post={post}
-                    onClick={() => handleArticleClick(post.id)}
-                    tagFrequencies={tagFrequencies}
-                    maxTagCount={maxTagCount}
-                  />
-                </div>
-              ))}
-            </div>
+            <YearGroupedList
+              posts={postsFromHook}
+              onClick={handleArticleClick}
+              onTagClick={handleTagClick}
+            />
           )}
         </main>
       ) : currentView === 'archives' ? (

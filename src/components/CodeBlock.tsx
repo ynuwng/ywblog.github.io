@@ -7,7 +7,7 @@ import javascript from 'react-syntax-highlighter/dist/esm/languages/hljs/javascr
 import typescript from 'react-syntax-highlighter/dist/esm/languages/hljs/typescript';
 import python from 'react-syntax-highlighter/dist/esm/languages/hljs/python';
 import bash from 'react-syntax-highlighter/dist/esm/languages/hljs/bash';
-import css from 'react-syntax-highlighter/dist/esm/languages/hljs/css';
+import cssLang from 'react-syntax-highlighter/dist/esm/languages/hljs/css';
 import json from 'react-syntax-highlighter/dist/esm/languages/hljs/json';
 import markdown from 'react-syntax-highlighter/dist/esm/languages/hljs/markdown';
 import sql from 'react-syntax-highlighter/dist/esm/languages/hljs/sql';
@@ -17,7 +17,7 @@ SyntaxHighlighter.registerLanguage('typescript', typescript);
 SyntaxHighlighter.registerLanguage('python', python);
 SyntaxHighlighter.registerLanguage('bash', bash);
 SyntaxHighlighter.registerLanguage('shell', bash);
-SyntaxHighlighter.registerLanguage('css', css);
+SyntaxHighlighter.registerLanguage('css', cssLang);
 SyntaxHighlighter.registerLanguage('json', json);
 SyntaxHighlighter.registerLanguage('markdown', markdown);
 SyntaxHighlighter.registerLanguage('sql', sql);
@@ -33,13 +33,12 @@ const editorialTheme = {
   ...atomOneLight,
   hljs: {
     ...atomOneLight['hljs'],
-    color: 'var(--ink)',
+    color: 'var(--text-primary)',
     background: 'transparent',
-    fontFamily:
-      "'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
-    fontSize: '13.5px',
-    lineHeight: 1.65,
-    padding: '14px 16px',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '14px',
+    lineHeight: 1.55,
+    padding: '14px 18px',
     margin: 0,
     overflow: 'auto',
     borderRadius: 0,
@@ -47,17 +46,17 @@ const editorialTheme = {
 };
 
 const languageDisplayMap: Record<string, string> = {
-  javascript: 'JavaScript',
-  typescript: 'TypeScript',
-  python: 'Python',
-  bash: 'Bash',
-  shell: 'Shell',
-  css: 'CSS',
-  json: 'JSON',
-  markdown: 'Markdown',
-  sql: 'SQL',
-  tsx: 'TSX',
-  jsx: 'JSX',
+  javascript: 'js',
+  typescript: 'ts',
+  python: 'py',
+  bash: 'sh',
+  shell: 'sh',
+  css: 'css',
+  json: 'json',
+  markdown: 'md',
+  sql: 'sql',
+  tsx: 'tsx',
+  jsx: 'jsx',
 };
 
 export function CodeBlock({ language, children }: CodeBlockProps) {
@@ -78,12 +77,12 @@ export function CodeBlock({ language, children }: CodeBlockProps) {
           {copied ? (
             <>
               <Check className="w-3 h-3" />
-              <span>Copied</span>
+              <span>copied</span>
             </>
           ) : (
             <>
               <Copy className="w-3 h-3" />
-              <span>Copy</span>
+              <span>copy</span>
             </>
           )}
         </button>
@@ -93,15 +92,11 @@ export function CodeBlock({ language, children }: CodeBlockProps) {
         language={language}
         style={editorialTheme}
         showLineNumbers={true}
-        customStyle={{
-          margin: 0,
-          borderRadius: 0,
-          background: 'transparent',
-        }}
+        customStyle={{ margin: 0, borderRadius: 0, background: 'transparent' }}
         lineNumberStyle={{
           minWidth: '2.5em',
           paddingRight: '1em',
-          color: 'var(--ink-faint)',
+          color: 'var(--text-tertiary)',
           opacity: 0.55,
           userSelect: 'none',
         }}

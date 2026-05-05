@@ -1,6 +1,5 @@
-import { Github, Linkedin, Mail, Sun, Moon } from 'lucide-react';
 import React from 'react';
-import { XIcon } from './XIcon';
+import { Sun, Moon } from 'lucide-react';
 
 type View =
   | 'home'
@@ -27,69 +26,46 @@ const NAV_ITEMS: { key: View; label: string }[] = [
   { key: 'about',      label: 'About' },
 ];
 
-// Map sub-views back to the parent nav item that should appear active.
 function effectiveNav(view: View): View {
-  if (view === 'tagged') return 'tags';
+  if (view === 'tagged')   return 'tags';
   if (view === 'category') return 'categories';
   return view;
 }
 
 export function BlogHeader({ onNavigate, currentView, theme, onToggleTheme }: BlogHeaderProps) {
-  const isInside = currentView === 'article';
   const active = effectiveNav(currentView);
 
   return (
     <header className="site-header">
-      <div className="editorial">
-        {/* Top row: wordmark + theme toggle. Stays even inside articles. */}
-        <div className="flex items-center justify-between" style={{ paddingTop: '1.75rem', paddingBottom: isInside ? '1.25rem' : '0.5rem' }}>
-          <button
-            onClick={() => onNavigate('home')}
-            className="wordmark"
-            aria-label="Go home"
-            style={{ background: 'none', border: 0, cursor: 'pointer', padding: 0 }}
-          >
-            Yuan Wang<span className="dot">.</span>
-          </button>
+      <div className="site-header-inner">
+        {/* Wordmark — mono uppercase signature with em-dash tagline */}
+        <button onClick={() => onNavigate('home')} className="wordmark" aria-label="Go home">
+          YUAN WANG
+          <span className="em-dash">—</span>
+          <span className="domains">ai · quant · signal</span>
+        </button>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
+          <nav className="site-nav">
+            {NAV_ITEMS.map((item) => (
+              <button
+                key={item.key}
+                onClick={() => onNavigate(item.key)}
+                className={`nav-link ${active === item.key ? 'is-active' : ''}`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </nav>
           <button
             onClick={onToggleTheme}
             className="icon-btn"
             aria-label="Toggle theme"
             title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
           >
-            {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
         </div>
-
-        {/* Tagline + social — hidden inside the article view to keep the page focused */}
-        {!isInside && (
-          <div style={{ paddingBottom: '1.5rem' }}>
-            <p className="tagline">Oaks from little acorns grown.</p>
-            <div className="flex gap-4" style={{ marginTop: '0.75rem' }}>
-              <a href="#" className="social-link" aria-label="GitHub"><Github className="w-[18px] h-[18px]" /></a>
-              <a href="#" className="social-link" aria-label="Twitter"><XIcon className="w-[18px] h-[18px]" /></a>
-              <a href="#" className="social-link" aria-label="LinkedIn"><Linkedin className="w-[18px] h-[18px]" /></a>
-              <a href="#" className="social-link" aria-label="Email"><Mail className="w-[18px] h-[18px]" /></a>
-            </div>
-          </div>
-        )}
-
-        {/* Nav row — restrained, with a thin underline indicator */}
-        <nav
-          className="flex flex-wrap"
-          style={{ gap: '1.5rem', paddingTop: '0.25rem', paddingBottom: '1.25rem' }}
-        >
-          {NAV_ITEMS.map(item => (
-            <button
-              key={item.key}
-              onClick={() => onNavigate(item.key)}
-              className={`nav-link ${active === item.key ? 'is-active' : ''}`}
-              style={{ background: 'none', border: 0, cursor: 'pointer' }}
-            >
-              {item.label}
-            </button>
-          ))}
-        </nav>
       </div>
     </header>
   );

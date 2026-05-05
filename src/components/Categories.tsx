@@ -12,27 +12,27 @@ interface CategoriesProps {
 }
 
 export function Categories({ posts, onCategoryClick }: CategoriesProps) {
-  const categoryCount = posts.reduce((acc, post) => {
+  const counts = posts.reduce((acc, post) => {
     acc[post.category] = (acc[post.category] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
 
-  const categories = Object.entries(categoryCount).sort(([a], [b]) => a.localeCompare(b));
+  const categories = Object.entries(counts).sort(([a], [b]) => a.localeCompare(b));
 
   return (
-    <main className="editorial fade-in" style={{ paddingTop: '2.5rem', paddingBottom: '4rem' }}>
-      <h1 className="year-head" style={{ marginBottom: '1rem' }}>Categories</h1>
-      <hr className="rule" />
-      <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+    <main className="editorial fade-in">
+      <h2 className="rail-label">Categories</h2>
+      <p className="hero-tagline" style={{ fontSize: '14px', marginBottom: '24px' }}>
+        Posts grouped by topic.
+      </p>
+      <ul className="list-rows">
         {categories.map(([name, count]) => (
           <li key={name}>
-            <button
-              onClick={() => onCategoryClick(name)}
-              className="list-row"
-              style={{ width: '100%', background: 'none', border: 0, cursor: 'pointer', textAlign: 'left', borderBottom: '1px solid var(--rule)' }}
-            >
+            <button onClick={() => onCategoryClick(name)} className="list-row">
               <span className="list-row-title">{name}</span>
-              <span className="list-row-meta">{count} {count === 1 ? 'post' : 'posts'}</span>
+              <span className="list-row-meta">
+                {count} {count === 1 ? 'post' : 'posts'}
+              </span>
             </button>
           </li>
         ))}

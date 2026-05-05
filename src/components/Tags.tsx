@@ -14,45 +14,32 @@ interface TagsProps {
   onTagClick: (tag: string) => void;
 }
 
-const tagTierColors = [
-  { bg: 'var(--tag-light-bg)', text: 'var(--tag-light-text)' },
-  { bg: 'var(--tag-mid-bg)',   text: 'var(--tag-mid-text)'   },
-  { bg: 'var(--tag-dark-bg)',  text: 'var(--tag-dark-text)'  },
-];
-
-function getTagColor(count: number, maxCount: number) {
-  if (count === 1)        return tagTierColors[0];
-  if (count >= maxCount)  return tagTierColors[2];
-  return tagTierColors[1];
-}
-
 export function Tags({ posts, onTagClick }: TagsProps) {
-  const tagCounts = posts.reduce((acc, post) => {
-    post.tags.forEach(tag => { acc[tag] = (acc[tag] || 0) + 1; });
+  const counts = posts.reduce((acc, post) => {
+    post.tags.forEach((t) => { acc[t] = (acc[t] || 0) + 1; });
     return acc;
   }, {} as Record<string, number>);
 
-  const maxCount = Math.max(1, ...Object.values(tagCounts));
-  const sortedTags = Object.entries(tagCounts).sort(([a], [b]) => a.localeCompare(b));
+  const sorted = Object.entries(counts).sort(([a], [b]) => a.localeCompare(b));
 
   return (
-    <main className="editorial fade-in" style={{ paddingTop: '2.5rem', paddingBottom: '4rem' }}>
-      <h1 className="year-head" style={{ marginBottom: '1.25rem' }}>Tags</h1>
-      <div className="flex flex-wrap" style={{ gap: '8px' }}>
-        {sortedTags.map(([tag, count]) => {
-          const c = getTagColor(count, maxCount);
-          return (
-            <button
-              key={tag}
-              onClick={() => onTagClick(tag)}
-              className="tag-pill"
-              style={{ backgroundColor: c.bg, color: c.text, border: 0, cursor: 'pointer' }}
-            >
-              <span>{tag}</span>
-              <span className="tag-count">{count}</span>
+    <main className="editorial fade-in">
+      <h2 className="rail-label">Tags</h2>
+      <p className="hero-tagline" style={{ fontSize: '14px', marginBottom: '24px' }}>
+        Browse by topic.
+      </p>
+
+      {/* Inline tag cloud — mono, lowercase, `·` separated */}
+      <div className="tag-strip" style={{ fontSize: '13px', lineHeight: 2 }}>
+        {sorted.map(([tag, count], i) => (
+          <React.Fragment key={tag}>
+            {i > 0 && <span className="sep">·</span>}
+            <button onClick={() => onTagClick(tag)}>
+              {tag}
+              <span style={{ marginLeft: '3px', opacity: 0.6, fontSize: '11px' }}>{count}</span>
             </button>
-          );
-        })}
+          </React.Fragment>
+        ))}
       </div>
     </main>
   );

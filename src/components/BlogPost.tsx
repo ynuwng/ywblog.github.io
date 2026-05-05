@@ -4,81 +4,60 @@ import { BlogPost as BlogPostType } from '../types';
 interface BlogPostProps {
   post: BlogPostType;
   onClick?: () => void;
+  /** Kept for prop compatibility with previous design; tags are now inline mono */
   tagFrequencies?: Record<string, number>;
   maxTagCount?: number;
+  onTagClick?: (tag: string) => void;
 }
 
-// Unified 3-tier monochrome tag system, driven by CSS variables so that
-// Home, Tags page, Article footer and TaggedArticles all match.
-const tagTierColors = [
-  { bg: 'var(--tag-light-bg)', text: 'var(--tag-light-text)' },
-  { bg: 'var(--tag-mid-bg)',   text: 'var(--tag-mid-text)'   },
-  { bg: 'var(--tag-dark-bg)',  text: 'var(--tag-dark-text)'  },
-];
+/**
+ * Flat post row used on Home, Archives, TaggedArticles, CategoryArticles.
+ * 56px mono date column · serif title + description · `·`-separated mono meta strip.
+ */
+export function BlogPost({ post, onClick, onTagClick }: BlogPostProps) {
+  const { day, month } = formatDate(post.date);
+  const meta: React.ReactNode[] = [];
 
-function getTagColor(tag: string, frequencies?: Record<string, number>, maxCount?: number) {
-  const count = frequencies?.[tag] ?? 1;
-  const max = maxCount ?? 1;
-  if (count === 1)   return tagTierColors[0];
-  if (count >= max)  return tagTierColors[2];
-  return tagTierColors[1];
-}
+  post.tags?.forEach((tag, i) => {
+    if (i > 0) meta.push(<span className="sep" key={`s-${i}`}>·</span>);
+    meta.push(
+      onTagClick ? (
+        <button
+          key={`t-${tag}`}
+          onClick={(e) => { e.stopPropagation(); onTagClick(tag); }}
+          style={{ background: 'none', border: 0, padding: 0, font: 'inherit', color: 'inherit', cursor: 'pointer' }}
+        >
+          {tag}
+        </button>
+      ) : (
+        <span key={`t-${tag}`}>{tag}</span>
+      )
+    );
+  });
+  if (post.readTime) {
+    if (meta.length) meta.push(<span className="sep" key="s-rt">·</span>);
+    meta.push(<span key="rt">{post.readTime}</span>);
+  }
 
-export function BlogPost({ post, onClick, tagFrequencies, maxTagCount }: BlogPostProps) {
   return (
-    <article className="group cursor-pointer fade-in" onClick={onClick}>
-      <h2
-        className="transition-colors"
-        style={{
-          fontSize: '22px',
-          lineHeight: 1.35,
-          fontWeight: 600,
-          letterSpacing: '-0.005em',
-          color: 'var(--ink)',
-          marginBottom: '8px',
-        }}
-      >
-        <span className="group-hover:opacity-70 transition-opacity">{post.title}</span>
-      </h2>
-
-      <div className="meta" style={{ marginBottom: '14px' }}>
-        <time dateTime={post.date}>{formatDate(post.date)}</time>
-        <span className="meta-sep" />
-        <span>{post.readTime}</span>
+    <article className="post-row fade-in" onClick={onClick}>
+      <div className="post-date">
+        {month} {day}
       </div>
-
-      <p
-        className="body-text"
-        style={{ marginBottom: '18px' }}
-      >
-        {post.excerpt}
-      </p>
-
-      {post.tags.length > 0 && (
-        <div className="flex flex-wrap" style={{ gap: '6px' }}>
-          {post.tags.map((tag) => {
-            const c = getTagColor(tag, tagFrequencies, maxTagCount);
-            return (
-              <span
-                key={tag}
-                className="tag-pill"
-                style={{ backgroundColor: c.bg, color: c.text }}
-              >
-                {tag}
-              </span>
-            );
-          })}
-        </div>
-      )}
+      <div>
+        <h2 className="post-title">{post.title}</h2>
+        {post.excerpt && <p className="post-desc">{post.excerpt}</p>}
+        {meta.length > 0 && (
+          <div className="post-meta-row">{meta}</div>
+        )}
+      </div>
     </article>
   );
 }
 
-function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
+function formatDate(s: string) {
+  const d = new Date(s);
+  const month = d.toLocaleDateString('en-US', { month: 'short' }).toLowerCase();
+  const day = String(d.getDate()).padStart(2, '0');
+  return { day, month };
 }
