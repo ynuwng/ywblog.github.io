@@ -168,11 +168,18 @@ export function Article({ post, onCategoryClick, onTagClick }: ArticleProps) {
                 const id = slugify(text);
                 return <h3 id={id}>{children}</h3>;
               },
-              /* Render images as proper <figure>s — alt-text becomes the caption. */
+              /* Render images as proper <figure>s — alt-text becomes the caption.
+                 Absolute paths (`/figures/...`) are rewritten to respect Vite's
+                 deploy base, so subpath deploys (GitHub Pages, etc.) work. */
               img({ src, alt, ...rest }) {
+                const base = (import.meta as any).env?.BASE_URL || '/';
+                const resolved =
+                  typeof src === 'string' && src.startsWith('/') && !src.startsWith('//')
+                    ? base.replace(/\/$/, '') + src
+                    : src;
                 return (
                   <figure>
-                    <img src={src} alt={alt} {...rest} />
+                    <img src={resolved} alt={alt} {...rest} />
                     {alt && <figcaption>{alt}</figcaption>}
                   </figure>
                 );
