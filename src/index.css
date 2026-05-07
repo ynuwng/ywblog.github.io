@@ -1556,23 +1556,23 @@ html {
   --c-grid:  #D3D1C7;
 
   /* Type scale */
-  --text-display:           28px;
+  --text-display:           32px;
   --text-display-line:      1.25;
   --text-display-tracking:  -0.01em;
 
-  --text-h1: 24px;
-  --text-h2: 20px;
-  --text-h3: 17px;
-  --text-h4: 15px;
+  --text-h1: 28px;
+  --text-h2: 24px;
+  --text-h3: 20px;
+  --text-h4: 17px;
 
-  --text-body:        17px;
+  --text-body:        19px;
   --text-body-line:   1.65;
-  --text-body-ui:     15px;
-  --text-small:       13px;
-  --text-meta:        11px;
+  --text-body-ui:     17px;
+  --text-small:       15px;
+  --text-meta:        12px;
   --text-meta-tracking: 0.08em;
 
-  --text-code-block:  14px;
+  --text-code-block:  16px;
   --text-code-inline: 0.9em;
 
   /* Spacing */

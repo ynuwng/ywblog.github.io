@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" preserveAspectRatio="xMidYMid meet">
+  <style>
+    .ax    { stroke: #8A8A85; stroke-width: 0.5; fill: none; }
+    .ref   { stroke: #D3D1C7; stroke-width: 0.5; stroke-dasharray: 3 4; fill: none; }
+    .lbl   { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; fill: #8A8A85; letter-spacing: 0.04em; }
+    .axt   { font-family: 'STIX Two Text', 'Source Serif Pro', Georgia, serif; font-size: 12px; fill: #555555; font-style: italic; }
+    .c1    { fill: none; stroke: #1D9E75; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+    .c2    { fill: none; stroke: #D85A30; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+    .c3    { fill: none; stroke: #7F77DD; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+    .c4    { fill: none; stroke: #888780; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+    .lg    { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: 0.04em; }
+    @media (prefers-color-scheme: dark) {
+      .ax, .ref { stroke: #4A4A45; }
+      .lbl, .axt { fill: #8A8A85; }
+      .c4 { stroke: #B4B2A9; }
+    }
+  </style>
+
+  <line class="ref" x1="315" y1="30" x2="315" y2="310"/>
+
+  <line class="ax" x1="60" y1="310" x2="570" y2="310"/>
+  <line class="ax" x1="60"  y1="30"  x2="60"  y2="310"/>
+
+  <text class="lbl" x="55" y="294" text-anchor="end">0.16</text>
+  <text class="lbl" x="55" y="247" text-anchor="end">0.18</text>
+  <text class="lbl" x="55" y="200" text-anchor="end">0.20</text>
+  <text class="lbl" x="55" y="154" text-anchor="end">0.22</text>
+  <text class="lbl" x="55" y="107" text-anchor="end">0.24</text>
+  <text class="lbl" x="55"  y="60" text-anchor="end">0.26</text>
+
+  <text class="lbl" x="60"  y="325" text-anchor="middle">-0.30</text>
+  <text class="lbl" x="145" y="325" text-anchor="middle">-0.20</text>
+  <text class="lbl" x="230" y="325" text-anchor="middle">-0.10</text>
+  <text class="lbl" x="315" y="325" text-anchor="middle">ATM</text>
+  <text class="lbl" x="400" y="325" text-anchor="middle">+0.10</text>
+  <text class="lbl" x="485" y="325" text-anchor="middle">+0.20</text>
+  <text class="lbl" x="570" y="325" text-anchor="middle">+0.30</text>
+
+  <text class="axt" x="315" y="350" text-anchor="middle">log-moneyness  k</text>
+  <text class="axt" x="22"  y="170" text-anchor="middle" transform="rotate(-90 22 170)">implied vol  σ(k)</text>
+
+  <path class="c1" d="M 60 51  L 145 114 L 230 163 L 315 193 L 400 210 L 485 207 L 570 191"/>
+  <path class="c2" d="M 60 81  L 145 128 L 230 165 L 315 193 L 400 212 L 485 221 L 570 221"/>
+  <path class="c3" d="M 60 93  L 145 133 L 230 168 L 315 193 L 400 214 L 485 226 L 570 233"/>
+  <path class="c4" d="M 60 102 L 145 137 L 230 168 L 315 193 L 400 214 L 485 231 L 570 242"/>
+
+  <g transform="translate(415, 50)">
+    <line class="c1" x1="0" y1="0" x2="22" y2="0"/>
+    <text class="lg" x="28" y="3" fill="#1D9E75">T = 1m</text>
+    <line class="c2" x1="0" y1="14" x2="22" y2="14"/>
+    <text class="lg" x="28" y="17" fill="#D85A30">T = 3m</text>
+    <line class="c3" x1="0" y1="28" x2="22" y2="28"/>
+    <text class="lg" x="28" y="31" fill="#7F77DD">T = 6m</text>
+    <line class="c4" x1="0" y1="42" x2="22" y2="42"/>
+    <text class="lg" x="28" y="45" fill="#888780">T = 1y</text>
+  </g>
+</svg>

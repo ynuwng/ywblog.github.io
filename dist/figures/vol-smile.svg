@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" preserveAspectRatio="xMidYMid meet">
+  <style>
+    .ax    { stroke: #8A8A85; stroke-width: 0.5; fill: none; }
+    .grid  { stroke: #D3D1C7; stroke-width: 0.5; }
+    .ref   { stroke: #D3D1C7; stroke-width: 0.5; stroke-dasharray: 3 4; fill: none; }
+    .lbl   { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; fill: #8A8A85; letter-spacing: 0.04em; }
+    .axt   { font-family: 'STIX Two Text', 'Source Serif Pro', Georgia, serif; font-size: 12px; fill: #555555; font-style: italic; }
+    .curve { fill: none; stroke: #1D9E75; stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
+    .pt    { fill: #1D9E75; }
+    .ann   { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; fill: #1D9E75; letter-spacing: 0.04em; }
+    @media (prefers-color-scheme: dark) {
+      .ax, .grid, .ref { stroke: #4A4A45; }
+      .lbl, .axt { fill: #8A8A85; }
+    }
+  </style>
+
+  <line class="ref" x1="315" y1="30" x2="315" y2="310"/>
+
+  <line class="ax" x1="60" y1="310" x2="570" y2="310"/>
+  <line class="ax" x1="60"  y1="30"  x2="60"  y2="310"/>
+
+  <text class="lbl" x="55" y="294" text-anchor="end">0.16</text>
+  <text class="lbl" x="55" y="247" text-anchor="end">0.18</text>
+  <text class="lbl" x="55" y="200" text-anchor="end">0.20</text>
+  <text class="lbl" x="55" y="154" text-anchor="end">0.22</text>
+  <text class="lbl" x="55" y="107" text-anchor="end">0.24</text>
+  <text class="lbl" x="55"  y="60" text-anchor="end">0.26</text>
+
+  <text class="lbl" x="60"  y="325" text-anchor="middle">-0.30</text>
+  <text class="lbl" x="145" y="325" text-anchor="middle">-0.20</text>
+  <text class="lbl" x="230" y="325" text-anchor="middle">-0.10</text>
+  <text class="lbl" x="315" y="325" text-anchor="middle">ATM</text>
+  <text class="lbl" x="400" y="325" text-anchor="middle">+0.10</text>
+  <text class="lbl" x="485" y="325" text-anchor="middle">+0.20</text>
+  <text class="lbl" x="570" y="325" text-anchor="middle">+0.30</text>
+
+  <text class="axt" x="315" y="350" text-anchor="middle">log-moneyness  k = log(K / F)</text>
+  <text class="axt" x="22"  y="170" text-anchor="middle" transform="rotate(-90 22 170)">implied vol  σ(k)</text>
+
+  <path class="curve" d="M 60 60 L 102 91 L 145 119 L 188 142 L 230 163 L 273 179 L 315 193 L 358 203 L 400 210 L 443 212 L 485 212 L 528 207 L 570 200"/>
+
+  <circle class="pt" cx="315" cy="193" r="2.4"/>
+  <text class="ann" x="322" y="190">σ_atm = 20%</text>
+
+  <text class="ann" x="565" y="195" text-anchor="end">T = 3m</text>
+</svg>
