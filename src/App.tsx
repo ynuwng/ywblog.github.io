@@ -34,15 +34,22 @@ const LoadingSpinner = () => (
 
 type ViewType = 'home' | 'archives' | 'categories' | 'tags' | 'about' | 'article' | 'tagged' | 'category' | 'admin';
 
-// Parse hash from URL to get initial state
-function parseHash(): { view: ViewType; articleId?: string; tag?: string; category?: string } {
-  const hash = window.location.hash.slice(1); // Remove the '#'
-  if (!hash || hash === '/') return { view: 'home' };
-  
-  const parts = hash.split('/').filter(Boolean);
-  
+/* ============================================================
+   History API routing — clean URLs, no `#`.
+   - Reads window.location.pathname to determine the current view.
+   - Navigate via pushState; popstate handles back/forward.
+   - 404.html + index.html bootstrap script handle deep-link reloads.
+   ============================================================ */
+
+function parsePath(): { view: ViewType; articleId?: string; tag?: string; category?: string } {
+  const pathname = window.location.pathname;
+  // strip leading slash and trailing slash, then split
+  const parts = pathname.replace(/^\/+|\/+$/g, '').split('/').filter(Boolean);
+
+  if (parts.length === 0) return { view: 'home' };
+
   if (parts[0] === 'article' && parts[1]) {
-    return { view: 'article', articleId: parts[1] };
+    return { view: 'article', articleId: decodeURIComponent(parts[1]) };
   }
   if (parts[0] === 'tag' && parts[1]) {
     return { view: 'tagged', tag: decodeURIComponent(parts[1]) };
@@ -50,13 +57,20 @@ function parseHash(): { view: ViewType; articleId?: string; tag?: string; catego
   if (parts[0] === 'category' && parts[1]) {
     return { view: 'category', category: decodeURIComponent(parts[1]) };
   }
-  if (parts[0] === 'archives') return { view: 'archives' };
+  if (parts[0] === 'archives')   return { view: 'archives' };
   if (parts[0] === 'categories') return { view: 'categories' };
-  if (parts[0] === 'tags') return { view: 'tags' };
-  if (parts[0] === 'about') return { view: 'about' };
-  if (parts[0] === 'admin') return { view: 'admin' };
-  
+  if (parts[0] === 'tags')       return { view: 'tags' };
+  if (parts[0] === 'about')      return { view: 'about' };
+  if (parts[0] === 'admin')      return { view: 'admin' };
+
   return { view: 'home' };
+}
+
+/** Push a new URL without reloading. */
+function pushPath(path: string) {
+  if (path !== window.location.pathname + window.location.search) {
+    window.history.pushState(null, '', path);
+  }
 }
 
 export default function App() {
@@ -69,8 +83,8 @@ export default function App() {
 
   const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
 
-  // Initialize state from URL hash
-  const initialState = parseHash();
+  // Initialize state from URL pathname
+  const initialState = parsePath();
   const [currentView, setCurrentView] = useState<ViewType>(initialState.view);
   const [selectedArticle, setSelectedArticle] = useState<string | null>(initialState.articleId || null);
   const [selectedTag, setSelectedTag] = useState<string | null>(initialState.tag || null);
@@ -92,55 +106,35 @@ export default function App() {
   // Decide which article object to use
   const currentArticle = hasContent ? postInList : fetchedPost;
 
-  // Handle hash changes (back/forward navigation)
-  useEffect(() => {
-    const handleHashChange = () => {
-      const state = parseHash();
-      setCurrentView(state.view);
-      setSelectedArticle(state.articleId || null);
-      setSelectedTag(state.tag || null);
-      setSelectedCategory(state.category || null);
-    };
-
-    window.addEventListener('hashchange', handleHashChange);
-
-    return () => {
-      window.removeEventListener('hashchange', handleHashChange);
-    };
+  // Single re-syncer: read URL → update React state. Used by both popstate
+  // (browser back/forward) and our own pushPath helper after navigation.
+  const syncFromLocation = React.useCallback(() => {
+    const state = parsePath();
+    setCurrentView(state.view);
+    setSelectedArticle(state.articleId || null);
+    setSelectedTag(state.tag || null);
+    setSelectedCategory(state.category || null);
   }, []);
 
-  const handleArticleClick = (articleId: string) => {
-    window.location.hash = `#/article/${articleId}`;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  useEffect(() => {
+    window.addEventListener('popstate', syncFromLocation);
+    return () => window.removeEventListener('popstate', syncFromLocation);
+  }, [syncFromLocation]);
 
-  const handleBackToHome = () => {
-    window.location.hash = '#/';
-  };
+  /** Navigate to a clean URL and update React state. */
+  const go = React.useCallback((path: string, scrollTop = false) => {
+    pushPath(path);
+    syncFromLocation();
+    if (scrollTop) window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [syncFromLocation]);
 
-  const handleTagClick = (tag: string) => {
-    window.location.hash = `#/tag/${encodeURIComponent(tag)}`;
-  };
-
-  const handleBackToTags = () => {
-    window.location.hash = '#/tags';
-  };
-
-  const handleCategoryClick = (category: string) => {
-    window.location.hash = `#/category/${encodeURIComponent(category)}`;
-  };
-
-  const handleBackToCategories = () => {
-    window.location.hash = '#/categories';
-  };
-
-  const handleNavigate = (view: ViewType) => {
-    if (view === 'home') {
-      window.location.hash = '#/';
-    } else {
-      window.location.hash = `#/${view}`;
-    }
-  };
+  const handleArticleClick    = (id: string)       => go(`/article/${encodeURIComponent(id)}`, true);
+  const handleBackToHome      = ()                 => go('/');
+  const handleTagClick        = (tag: string)      => go(`/tag/${encodeURIComponent(tag)}`);
+  const handleBackToTags      = ()                 => go('/tags');
+  const handleCategoryClick   = (cat: string)      => go(`/category/${encodeURIComponent(cat)}`);
+  const handleBackToCategories= ()                 => go('/categories');
+  const handleNavigate        = (view: ViewType)   => go(view === 'home' ? '/' : `/${view}`);
 
   return (
     <div className="min-h-screen bg-background text-foreground">

@@ -129,23 +129,34 @@ export function Article({ post, onCategoryClick, onTagClick }: ArticleProps) {
 
                 const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
                   if (isHashOnly) {
+                    // In-page TOC anchor — smooth-scroll.
                     e.preventDefault();
                     const el = document.getElementById(href.slice(1));
                     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   } else if (isInternalArticle) {
+                    // Internal article link — clean URL via history API.
                     e.preventDefault();
-                    const path = href.startsWith('/article/') || href.startsWith('article/')
-                      ? (href.startsWith('/') ? href.slice(1) : href)
-                      : `article/${href.startsWith('/') ? href.slice(1) : href}`;
-                    window.location.hash = `#/${path}`;
+                    let path = href.startsWith('/') ? href : '/' + href;
+                    if (!/^\/article\//.test(path)) path = '/article' + path; // bare ID → /article/<id>
+                    window.history.pushState(null, '', path);
+                    window.dispatchEvent(new PopStateEvent('popstate'));
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }
                 };
 
+                // For internal links, present the canonical clean URL in the href attribute
+                // so middle-click / "open in new tab" still works.
+                let displayHref = href;
+                if (isInternalArticle) {
+                  let path = href.startsWith('/') ? href : '/' + href;
+                  if (!/^\/article\//.test(path)) path = '/article' + path;
+                  displayHref = path;
+                }
+
                 return (
                   <a
                     {...props}
-                    href={href}
+                    href={displayHref}
                     onClick={handleClick}
                     target={isExternal ? '_blank' : undefined}
                     rel={isExternal ? 'noopener noreferrer' : undefined}

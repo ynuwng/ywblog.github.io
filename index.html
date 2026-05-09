@@ -18,6 +18,30 @@
     <meta name="color-scheme" content="light dark" />
 
     <!--
+      SPA on GitHub Pages — path-restore + legacy hash redirect.
+      Must run before main.tsx so React boots with the correct URL.
+      (Adapted from https://github.com/rafgraph/spa-github-pages, MIT.)
+    -->
+    <script>
+      (function () {
+        var l = window.location;
+        // (1) Decode the path that 404.html packed into the query string.
+        if (l.search && l.search[1] === '/') {
+          var decoded = l.search.slice(1).split('&').map(function (s) {
+            return s.replace(/~and~/g, '&');
+          }).join('?');
+          window.history.replaceState(null, '', l.pathname.slice(0, -1) + decoded + l.hash);
+        }
+        // (2) Backward compatibility: rewrite any legacy /#/article/foo link
+        //     to the new clean URL form /article/foo.
+        if (l.hash && l.hash.indexOf('#/') === 0) {
+          var newPath = l.hash.slice(1) || '/';
+          window.history.replaceState(null, '', newPath);
+        }
+      })();
+    </script>
+
+    <!--
       Stripe-Press-leaning serif system:
         Source Serif 4  — body & display serif (closest free analog to Domaine Text)
         Inter           — UI / chrome (used sparingly)

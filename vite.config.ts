@@ -64,9 +64,10 @@ export default defineConfig({
     // Enable CSS code splitting
     cssCodeSplit: true,
   },
-  // Set base to relative path for better compatibility with GitHub Pages
-  // (works if repo is at root or subdirectory)
-  base: './',
+  // Absolute base required for clean URLs (history routing) — when a user
+  // is at /article/foo, relative asset paths would resolve into the article
+  // path. With base '/' all assets and figures load from the domain root.
+  base: '/',
   server: {
     port: 3000,
     open: true,

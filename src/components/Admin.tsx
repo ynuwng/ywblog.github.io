@@ -539,7 +539,7 @@ export function Admin({ refreshPosts }: AdminProps) {
               To link to another article, you need its Article ID. You can find it in the article list above or in your browser's address bar when viewing an article.
             </p>
             <p className="text-sm text-blue-800 mb-2">
-              <strong>Example:</strong> If you see <code className="bg-white px-2 py-1 rounded">http://localhost:3000/#/article/2</code> in the URL, the article ID is <code className="bg-white px-2 py-1 rounded">2</code>
+              <strong>Example:</strong> If you see <code className="bg-white px-2 py-1 rounded">http://localhost:3000/article/2</code> in the URL, the article ID is <code className="bg-white px-2 py-1 rounded">2</code>
             </p>
             <p className="text-sm text-blue-800">
               Then use: <code className="bg-white px-2 py-1 rounded">[Article Title](2)</code> or <code className="bg-white px-2 py-1 rounded">[Article Title](/article/2)</code>
