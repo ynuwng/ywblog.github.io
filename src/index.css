@@ -1526,10 +1526,17 @@ html {
 
 /* ---------- Tokens ---------- */
 :root {
-  /* Fonts — Stripe Press lineage (Source Serif as the Domaine analog) */
-  --font-serif: 'Source Serif 4', 'Source Serif Pro', 'Charter', 'Iowan Old Style', Georgia, 'Noto Sans SC', serif;
-  --font-sans:  'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif;
-  --font-mono:  'JetBrains Mono', 'IBM Plex Mono', 'SF Mono', Menlo, Monaco, Consolas, monospace;
+  /* Fonts — Apple-first system stack.
+     • Serif: New York (installed on macOS/iOS, designed by Klim — same lineage
+       as Domaine) → Source Serif 4 fallback for non-Apple platforms.
+     • Sans:  SF on Apple, Segoe UI Variable on Windows, Roboto on Android. */
+  --font-serif: 'New York', 'Source Serif 4', 'Source Serif Pro', 'Charter',
+                'Iowan Old Style', Georgia, 'Noto Sans SC', serif;
+  --font-sans:  -apple-system, BlinkMacSystemFont, 'Segoe UI Variable',
+                'Segoe UI', system-ui, Roboto, 'Helvetica Neue',
+                'Noto Sans SC', sans-serif;
+  --font-mono:  'JetBrains Mono', 'IBM Plex Mono', ui-monospace, 'SF Mono',
+                Menlo, Monaco, Consolas, monospace;
 
   /* Surfaces */
   --bg-page:    #FAFAF9;

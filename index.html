@@ -42,23 +42,24 @@
     </script>
 
     <!--
-      Stripe-Press-leaning serif system:
-        Source Serif 4  — body & display serif (closest free analog to Domaine Text)
-        Inter           — UI / chrome (used sparingly)
-        JetBrains Mono  — metadata, code, equation tags
-      Noto Sans SC kept for any Chinese content fallback.
+      Apple-first font system, with cross-platform fallbacks:
+        Body serif    — New York on Apple devices (system); Source Serif 4 elsewhere (loaded)
+        UI sans       — SF Pro on Apple, Segoe UI on Windows, Roboto on Android (all system)
+        Metadata/code — JetBrains Mono (loaded)
+      Inter is no longer loaded — UI uses platform system font.
+      Noto Sans SC kept for Chinese fallback.
       font-display=swap so prose paints immediately.
     -->
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500&display=swap"
       media="print"
       onload="this.media='all'"
     />
     <noscript>
       <link
         rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500&display=swap"
       />
     </noscript>
   </head>
