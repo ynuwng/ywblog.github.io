@@ -1526,8 +1526,8 @@ html {
 
 /* ---------- Tokens ---------- */
 :root {
-  /* Fonts */
-  --font-serif: 'STIX Two Text', 'Source Serif 4', 'Source Serif Pro', 'Charter', Georgia, 'Noto Sans SC', serif;
+  /* Fonts — Stripe Press lineage (Source Serif as the Domaine analog) */
+  --font-serif: 'Source Serif 4', 'Source Serif Pro', 'Charter', 'Iowan Old Style', Georgia, 'Noto Sans SC', serif;
   --font-sans:  'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif;
   --font-mono:  'JetBrains Mono', 'IBM Plex Mono', 'SF Mono', Menlo, Monaco, Consolas, monospace;
 
@@ -1555,24 +1555,24 @@ html {
   --c-bayes: #7F77DD;
   --c-grid:  #D3D1C7;
 
-  /* Type scale */
-  --text-display:           32px;
-  --text-display-line:      1.25;
-  --text-display-tracking:  -0.01em;
+  /* Type scale — Stripe Press measurements (large display, snug body leading) */
+  --text-display:           42px;     /* article titles, hero — Stripe Press ~44–48 */
+  --text-display-line:      1.12;
+  --text-display-tracking:  -0.02em;
 
-  --text-h1: 28px;
+  --text-h1: 30px;
   --text-h2: 24px;
   --text-h3: 20px;
   --text-h4: 17px;
 
-  --text-body:        19px;
-  --text-body-line:   1.65;
+  --text-body:        19px;            /* book-weight body */
+  --text-body-line:   1.55;            /* tighter, more like a printed page */
   --text-body-ui:     17px;
   --text-small:       15px;
   --text-meta:        12px;
   --text-meta-tracking: 0.08em;
 
-  --text-code-block:  16px;
+  --text-code-block:  15px;
   --text-code-inline: 0.9em;
 
   /* Spacing */
@@ -1630,7 +1630,8 @@ body {
   font-size: var(--text-body);
   line-height: var(--text-body-line);
   font-weight: 400;
-  font-feature-settings: "kern", "liga", "calt", "onum", "ss01";
+  /* Source Serif: enable old-style figures + contextual alternates for a printed feel */
+  font-feature-settings: "kern", "liga", "calt", "onum";
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -1806,16 +1807,16 @@ body {
   line-height: var(--text-display-line);
   letter-spacing: var(--text-display-tracking);
   color: var(--text-primary);
-  font-weight: 500;
-  margin: 0 0 8px;
+  font-weight: 600;                       /* book-cover weight, Stripe Press style */
+  margin: 0 0 14px;
 }
 .hero-tagline {
   font-family: var(--font-serif);
-  font-size: var(--text-body-ui);
-  line-height: 1.55;
+  font-size: 19px;                         /* matches body, italic */
+  line-height: 1.5;
   color: var(--text-secondary);
   font-style: italic;
-  margin: 0 0 28px;
+  margin: 0 0 36px;
   max-width: 560px;
 }
 .hero-social {
@@ -1859,17 +1860,18 @@ body {
 }
 .post-row .post-title {
   font-family: var(--font-serif);
-  font-size: var(--text-h3);
-  font-weight: 500;
-  line-height: 1.35;
+  font-size: var(--text-h3);              /* 20px */
+  font-weight: 600;                        /* Stripe Press headline weight */
+  line-height: 1.25;
+  letter-spacing: -0.005em;
   color: var(--text-primary);
-  margin: 0 0 4px;
+  margin: 0 0 6px;
   transition: color 0.15s ease;
 }
 .post-row .post-desc {
   font-family: var(--font-serif);
-  font-size: var(--text-small);
-  line-height: 1.55;
+  font-size: var(--text-small);            /* 15px */
+  line-height: 1.5;
   color: var(--text-secondary);
   margin: 0;
 }
@@ -1935,24 +1937,24 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* ---------- Article — prose ---------- */
+/* ---------- Article — prose (Stripe Press measurements) ---------- */
 .prose {
   font-family: var(--font-serif);
-  font-size: var(--text-body);
-  line-height: var(--text-body-line);
+  font-size: var(--text-body);          /* 19px */
+  line-height: var(--text-body-line);   /* 1.55 */
   color: var(--text-primary);
 }
-.prose p { margin: 0 0 1em; }
+.prose p { margin: 0 0 1.25em; }
 .prose p + p { margin-top: 0; }
 
 .prose h2 {
   font-family: var(--font-serif);
-  font-size: var(--text-h2);
-  line-height: 1.3;
-  font-weight: 500;
-  color: var(--accent);
-  margin: 2rem 0 0.75rem;
-  letter-spacing: -0.005em;
+  font-size: var(--text-h2);            /* 24px */
+  line-height: 1.2;
+  font-weight: 600;                     /* book-cover weight */
+  color: var(--text-primary);
+  margin: 2.4rem 0 0.6rem;
+  letter-spacing: -0.012em;
 }
 .prose h2 .section-number {
   font-family: var(--font-mono);
@@ -1965,11 +1967,12 @@ body {
 }
 .prose h3 {
   font-family: var(--font-serif);
-  font-size: var(--text-h3);
-  line-height: 1.4;
-  font-weight: 500;
+  font-size: var(--text-h3);            /* 20px */
+  line-height: 1.3;
+  font-weight: 600;
   color: var(--text-primary);
-  margin: 1.6rem 0 0.6rem;
+  margin: 1.8rem 0 0.5rem;
+  letter-spacing: -0.005em;
 }
 .prose h2 + p, .prose h3 + p { margin-top: 0; }
 
@@ -1982,25 +1985,25 @@ body {
 .prose a:hover { opacity: 0.7; }
 
 .prose ul, .prose ol {
-  margin: 0 0 1.2em;
+  margin: 0 0 1.4em;
   padding-left: 1.4em;
 }
 .prose ul { list-style: disc; }
 .prose ol { list-style: decimal; }
-.prose li { margin-bottom: 0.35em; }
+.prose li { margin-bottom: 0.45em; }
 .prose li::marker { color: var(--text-tertiary); }
 
 .prose blockquote {
-  margin: 1.4em 0;
-  padding: 0.1em 0 0.1em 1.1em;
+  margin: 1.6em 0;
+  padding: 0.1em 0 0.1em 1.2em;
   border-left: 2px solid var(--border-default);
   color: var(--text-secondary);
   font-style: italic;
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 18px;
+  line-height: 1.5;
 }
 
-.prose strong { font-weight: 500; color: var(--text-primary); }
+.prose strong { font-weight: 600; color: var(--text-primary); }
 .prose em { font-style: italic; }
 
 /* Inline code only — strictly excluded from the highlighted code block. */
@@ -2068,21 +2071,21 @@ body {
   letter-spacing: 0.04em;
 }
 
-/* Figures */
+/* Figures (Stripe-Press caption: serif italic, slightly larger) */
 .prose figure {
   background: var(--bg-subtle);
   border-radius: 6px;
-  padding: 18px 18px 14px;
-  margin: 1.6em 0;
+  padding: 20px 20px 16px;
+  margin: 2em 0;
   border: 0.5px solid var(--border-faint);
 }
 .prose figcaption {
   font-family: var(--font-serif);
-  font-size: 13px;
-  line-height: 1.55;
+  font-size: 15px;
+  line-height: 1.5;
   color: var(--text-secondary);
   font-style: italic;
-  margin-top: 12px;
+  margin-top: 14px;
 }
 .prose figcaption .figure-label {
   font-family: var(--font-mono);
@@ -2095,15 +2098,15 @@ body {
 }
 
 /* ---------- Article header ---------- */
-.article-head { margin-bottom: 28px; }
+.article-head { margin-bottom: 36px; }
 .article-title {
   font-family: var(--font-serif);
-  font-size: var(--text-display);
-  line-height: var(--text-display-line);
+  font-size: var(--text-display);            /* 42px */
+  line-height: var(--text-display-line);     /* 1.12 */
   letter-spacing: var(--text-display-tracking);
-  font-weight: 500;
+  font-weight: 600;                          /* book-cover weight */
   color: var(--text-primary);
-  margin: 0 0 14px;
+  margin: 0 0 18px;
 }
 .article-meta {
   font-family: var(--font-mono);
