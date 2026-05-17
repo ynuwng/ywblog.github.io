@@ -1,11 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Folder, Copy, Check } from 'lucide-react';
-import { CodeBlock } from './CodeBlock';
+import { Copy, Check } from 'lucide-react';
 import { BlogPost } from '../types';
 import remarkGfm from 'remark-gfm';
-import remarkMath from 'remark-math';
-import rehypeKatex from 'rehype-katex';
+
+/* Heavy renderers are pulled in only when the article content actually needs them:
+   - KaTeX (remark-math + rehype-katex + ~50KB CSS) only when $...$ or $$...$$ is present.
+   - Syntax highlighter (react-syntax-highlighter + hljs themes) only when ``` fences exist.
+   This keeps math-free / code-free posts cheap. */
+
+const HAS_MATH = /(^|[^\\])\$[^$\n]+\$|^\$\$|\n\$\$/;
+const HAS_CODE = /^```|\n```/;
 
 const loadKatexCSS = () => {
   if (typeof document !== 'undefined' && !document.querySelector('link[href*="katex"]')) {
@@ -17,6 +22,9 @@ const loadKatexCSS = () => {
     document.head.appendChild(link);
   }
 };
+
+type MathPlugins = { remark: any; rehype: any };
+type CodeBlockComp = React.ComponentType<{ language: string; children: string }>;
 
 interface ArticleProps {
   post: BlogPost;
@@ -55,9 +63,36 @@ function extractH2s(md: string): { id: string; text: string }[] {
 export function Article({ post, onCategoryClick, onTagClick }: ArticleProps) {
   const [copied, setCopied] = useState(false);
 
-  useEffect(() => { loadKatexCSS(); }, []);
+  const content = post.content || '';
+  const hasMath = useMemo(() => HAS_MATH.test(content), [content]);
+  const hasCode = useMemo(() => HAS_CODE.test(content), [content]);
 
-  const outline = useMemo(() => extractH2s(post.content || ''), [post.content]);
+  const [mathPlugins, setMathPlugins] = useState<MathPlugins | null>(null);
+  const [CodeBlock, setCodeBlock] = useState<CodeBlockComp | null>(null);
+
+  useEffect(() => {
+    if (!hasMath) return;
+    loadKatexCSS();
+    Promise.all([import('remark-math'), import('rehype-katex')]).then(([r, h]) => {
+      setMathPlugins({ remark: r.default, rehype: h.default });
+    });
+  }, [hasMath]);
+
+  useEffect(() => {
+    if (!hasCode) return;
+    import('./CodeBlock').then(m => setCodeBlock(() => m.CodeBlock));
+  }, [hasCode]);
+
+  const remarkPlugins = useMemo(
+    () => (mathPlugins ? [remarkGfm, mathPlugins.remark] : [remarkGfm]),
+    [mathPlugins]
+  );
+  const rehypePlugins = useMemo(
+    () => (mathPlugins ? [mathPlugins.rehype] : []),
+    [mathPlugins]
+  );
+
+  const outline = useMemo(() => extractH2s(content), [content]);
   const showRails = outline.length >= 2;
 
   return (
@@ -108,17 +143,24 @@ export function Article({ post, onCategoryClick, onTagClick }: ArticleProps) {
         {/* Body */}
         <div className="prose">
           <ReactMarkdown
-            remarkPlugins={[remarkGfm, remarkMath]}
-            rehypePlugins={[rehypeKatex]}
+            remarkPlugins={remarkPlugins}
+            rehypePlugins={rehypePlugins}
             components={{
               code({ node, className, children, ...props }) {
                 const match = /language-(\w+)/.exec(className || '');
                 const codeString = String(children).replace(/\n$/, '');
                 const isInline = !match && !(node?.properties?.className as string[] | undefined)?.length;
-                return !isInline && match ? (
+                if (isInline || !match) {
+                  return <code {...props}>{children}</code>;
+                }
+                // Fenced block: render via lazy-loaded highlighter once available,
+                // otherwise fall back to a styled <pre> so the page paints immediately.
+                return CodeBlock ? (
                   <CodeBlock language={match[1]}>{codeString}</CodeBlock>
                 ) : (
-                  <code {...props}>{children}</code>
+                  <pre className="code-block-wrapper" style={{ padding: '14px 18px', fontFamily: 'var(--font-mono)', fontSize: '14px', lineHeight: 1.55, overflow: 'auto', margin: '1.4em 0' }}>
+                    <code>{codeString}</code>
+                  </pre>
                 );
               },
               a({ node, children, ...props }) {

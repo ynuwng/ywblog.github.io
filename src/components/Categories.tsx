@@ -23,7 +23,7 @@ export function Categories({ posts, onCategoryClick }: CategoriesProps) {
     <main className="editorial fade-in">
       <h2 className="rail-label">Categories</h2>
       <p className="hero-tagline" style={{ fontSize: '14px', marginBottom: '24px' }}>
-        Posts grouped by topic.
+        &nbsp;
       </p>
       <ul className="list-rows">
         {categories.map(([name, count]) => (

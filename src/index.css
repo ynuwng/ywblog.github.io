@@ -2225,3 +2225,112 @@ body {
 .text-tertiary  { color: var(--text-tertiary); }
 .accent         { color: var(--accent); }
 
+/* ============================================================
+   Mobile — single column already kicks in at ≤980px. Below
+   that we additionally rescale type and tighten chrome so
+   reading on a phone feels like reading, not zooming.
+   ============================================================ */
+
+/* Prevent horizontal scroll caused by stray inline styles or wide tables. */
+html, body { overflow-x: hidden; }
+body { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+/* iOS: stop tap highlight flashes; we provide our own hover styles. */
+button, a { -webkit-tap-highlight-color: transparent; }
+
+/* Tablet & narrow desktop (≤768px) — tighten container padding, scale display. */
+@media (max-width: 768px) {
+  .site-header-inner,
+  .site-footer-inner { padding-left: 20px; padding-right: 20px; }
+  .editorial         { padding: 28px 20px 64px; }
+  .main-col          { padding: 28px 0 64px; }
+  .article-head      { margin-bottom: 28px; }
+
+  :root {
+    --text-display: 34px;
+    --text-h1: 26px;
+    --text-h2: 22px;
+    --text-h3: 19px;
+  }
+}
+
+/* Phone (≤640px) — drop body/measure to comfortable phone scale. */
+@media (max-width: 640px) {
+  :root {
+    --text-display: 30px;
+    --text-h1: 24px;
+    --text-h2: 21px;
+    --text-h3: 18px;
+    --text-body: 17px;
+    --text-body-ui: 16px;
+    --text-small: 14.5px;
+  }
+
+  body { line-height: 1.6; }            /* a hair more air at smaller size */
+
+  .editorial,
+  .layout            { padding-left: 18px; padding-right: 18px; }
+  .main-col          { padding-top: 24px; padding-bottom: 56px; }
+  .editorial         { padding-top: 24px; padding-bottom: 56px; }
+
+  /* Header — wordmark stays, tagline drops to free up nav room */
+  .wordmark .domains,
+  .wordmark .em-dash { display: none; }
+  .site-header-inner { padding-top: 12px; padding-bottom: 12px; gap: 12px; }
+  .site-nav          { gap: 14px; }
+  .nav-link          { padding: 8px 0; font-size: 13px; }   /* ≥40px touch via line-height + padding */
+  .icon-btn          { width: 38px; height: 38px; }
+
+  /* Post rows — narrower date column, snug grid */
+  .post-row {
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 12px;
+    padding: 12px 0;
+  }
+  .post-row .post-title { font-size: 17px; }
+  .post-row .post-desc  { font-size: 14px; }
+
+  /* Hero */
+  .hero         { margin-bottom: 10px; }
+  .hero-tagline { font-size: 16px; margin-bottom: 28px; }
+
+  /* Prose tightening */
+  .prose p              { margin-bottom: 1.1em; }
+  .prose h2             { margin: 1.9rem 0 0.5rem; }
+  .prose h3             { margin: 1.5rem 0 0.4rem; }
+  .prose blockquote     { font-size: 16px; padding-left: 0.9em; margin: 1.3em 0; }
+  .prose figure         { padding: 14px 14px 12px; margin: 1.5em 0; border-radius: 4px; }
+  .prose figcaption     { font-size: 14px; margin-top: 10px; }
+  .prose ul, .prose ol  { padding-left: 1.2em; }
+
+  /* Code blocks — fit on the screen, reasonable font size */
+  .code-block-wrapper { margin: 1.2em -18px; border-radius: 0; border-left: 0; border-right: 0; }
+  .code-block-wrapper .cb-bar { padding: 6px 16px; }
+
+  /* Tables overflow horizontally rather than overflowing the page */
+  .prose table { display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* Article tail — looser tap targets */
+  .article-tail-row .accent-link { padding: 6px 0; font-size: 15px; }
+  .tag-strip button { padding: 4px 0; }
+
+  /* Footer wraps to two rows comfortably */
+  .site-footer-inner { padding-top: 16px; padding-bottom: 16px; gap: 12px; }
+}
+
+/* Extra-narrow phones (≤380px) — final squeeze */
+@media (max-width: 380px) {
+  :root {
+    --text-display: 26px;
+  }
+  .editorial, .layout { padding-left: 14px; padding-right: 14px; }
+  .post-row { grid-template-columns: 40px minmax(0, 1fr); gap: 10px; }
+  .code-block-wrapper { margin-left: -14px; margin-right: -14px; }
+}
+
+/* Honor reduced-motion preferences (kill fade animation). */
+@media (prefers-reduced-motion: reduce) {
+  .fade-in { animation: none; }
+  * { transition: none !important; }
+}
+

@@ -26,7 +26,7 @@ export function Tags({ posts, onTagClick }: TagsProps) {
     <main className="editorial fade-in">
       <h2 className="rail-label">Tags</h2>
       <p className="hero-tagline" style={{ fontSize: '14px', marginBottom: '24px' }}>
-        Browse by topic.
+        &nbsp;
       </p>
 
       {/* Inline tag cloud — mono, lowercase, `·` separated */}

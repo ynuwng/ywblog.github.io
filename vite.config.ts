@@ -50,12 +50,12 @@ export default defineConfig({
     // Code splitting configuration
     rollupOptions: {
       output: {
-        // Manual chunk splitting for better caching
+        // Manual chunks for libs that always ship. The math/syntax-highlighter
+        // deps are intentionally omitted so Vite splits them per dynamic import
+        // — articles without math/code never pay for them.
         manualChunks: {
-          // Vendor chunks
           'react-vendor': ['react', 'react-dom'],
-          'markdown-vendor': ['react-markdown', 'remark-gfm', 'remark-math', 'rehype-katex'],
-          'syntax-vendor': ['react-syntax-highlighter'],
+          'markdown-vendor': ['react-markdown', 'remark-gfm'],
         },
       },
     },
