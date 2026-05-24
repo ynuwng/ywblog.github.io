@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
-
-const ADMIN_KEY = import.meta.env.VITE_ADMIN_KEY;
-const SESSION_KEY = 'blog_admin_authed';
+import { ADMIN_SESSION_KEY, setAdminKey } from '../lib/adminSession';
 
 function isAuthed(): boolean {
-  if (import.meta.env.DEV) return true;
-  if (!ADMIN_KEY) return false;
-  return sessionStorage.getItem(SESSION_KEY) === '1';
+  return Boolean(sessionStorage.getItem(ADMIN_SESSION_KEY));
 }
 
 export function AdminGate({ children }: { children: React.ReactNode }) {
@@ -16,13 +12,11 @@ export function AdminGate({ children }: { children: React.ReactNode }) {
 
   if (authed) return <>{children}</>;
 
-  // Production with no key configured — admin is inaccessible by design.
-  if (!ADMIN_KEY) return null;
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (input === ADMIN_KEY) {
-      sessionStorage.setItem(SESSION_KEY, '1');
+    const key = input.trim();
+    if (key) {
+      setAdminKey(key);
       setAuthed(true);
     } else {
       setError(true);

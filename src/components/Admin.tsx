@@ -1,45 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { projectId, publicAnonKey } from '../utils/supabase/info';
 import { toast } from 'sonner';
 import { MigratePosts } from './MigratePosts';
 import { BlogPost } from '../types';
-
-// Recognized frontmatter keys: title, date, author, category, tags, readTime, excerpt.
-// Tags accept "a, b, c" or YAML "[a, b, c]".
-function parseFrontmatter(raw: string): {
-  meta: Partial<BlogPost & { tagsString?: string }>;
-  body: string;
-} {
-  const fmMatch = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/m.exec(raw);
-  if (!fmMatch) return { meta: {}, body: raw };
-  const [, fmRaw, body] = fmMatch;
-
-  const meta: Partial<BlogPost & { tagsString?: string }> = {};
-  fmRaw.split('\n').forEach((line) => {
-    const m = /^([\w-]+)\s*:\s*(.*)$/.exec(line);
-    if (!m) return;
-    const key = m[1].trim().toLowerCase();
-    let val = m[2].trim();
-    // Strip wrapping quotes
-    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
-      val = val.slice(1, -1);
-    }
-    switch (key) {
-      case 'title':    meta.title = val; break;
-      case 'date':     meta.date = val; break;
-      case 'author':   meta.author = val; break;
-      case 'category': meta.category = val; break;
-      case 'readtime': meta.readTime = val; break;
-      case 'excerpt':  meta.excerpt = val; break;
-      case 'tags': {
-        const stripped = val.replace(/^\[|\]$/g, '');
-        meta.tagsString = stripped.split(/[,\s]+/).map((t) => t.replace(/['"]/g, '').trim()).filter(Boolean).join(', ');
-        break;
-      }
-    }
-  });
-  return { meta, body: body.trim() };
-}
+import { createPost, deletePost, getPost, listPosts, updatePost } from '../lib/blogApi';
+import { parseFrontmatter } from '../lib/frontmatter';
 
 interface AdminProps {
   refreshPosts: () => Promise<void>;
@@ -68,7 +32,7 @@ export function Admin({ refreshPosts }: AdminProps) {
       if (meta.excerpt)  setExcerpt(meta.excerpt);
       if (meta.readTime) setReadTime(meta.readTime);
       if (meta.category) setCategory(meta.category);
-      if ((meta as any).tagsString) setTags((meta as any).tagsString);
+      if (meta.tagsString) setTags(meta.tagsString);
       setContent(body);
       toast.success(`Loaded ${file.name}${meta.title ? ` — “${meta.title}”` : ''}`);
     } catch (err) {
@@ -88,18 +52,11 @@ export function Admin({ refreshPosts }: AdminProps) {
   const fetchArticles = async () => {
     setLoadingArticles(true);
     try {
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-860c354e/posts`,
-        {
-          headers: {
-            'Authorization': `Bearer ${publicAnonKey}`,
-          },
-        }
-      );
-
-      const data = await response.json();
+      const data = await listPosts();
       if (data.success) {
         setArticles(data.posts || []);
+      } else {
+        toast.error(data.error || 'Failed to load articles');
       }
     } catch (error) {
       console.error('Error fetching articles:', error);
@@ -116,16 +73,7 @@ export function Admin({ refreshPosts }: AdminProps) {
     if (!fullContent) {
       const loadingToast = toast.loading('Loading article content...');
       try {
-        const response = await fetch(
-          `https://${projectId}.supabase.co/functions/v1/make-server-860c354e/posts/${article.id}`,
-          {
-            headers: {
-              'Authorization': `Bearer ${publicAnonKey}`,
-            },
-          }
-        );
-        
-        const data = await response.json();
+        const data = await getPost(article.id);
         if (data.success && data.post) {
           fullContent = data.post.content;
           toast.dismiss(loadingToast);
@@ -159,17 +107,7 @@ export function Admin({ refreshPosts }: AdminProps) {
     }
 
     try {
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-860c354e/posts/${id}`,
-        {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${publicAnonKey}`,
-          },
-        }
-      );
-
-      const data = await response.json();
+      const data = await deletePost(id);
 
       if (data.success) {
         toast.success('Article deleted successfully!');
@@ -203,29 +141,20 @@ export function Admin({ refreshPosts }: AdminProps) {
     setSubmitting(true);
 
     try {
-      const url = editingId
-        ? `https://${projectId}.supabase.co/functions/v1/make-server-860c354e/posts/${editingId}`
-        : `https://${projectId}.supabase.co/functions/v1/make-server-860c354e/posts`;
+      const post = {
+        title,
+        date,
+        author,
+        excerpt,
+        readTime,
+        tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+        category,
+        content,
+      };
 
-      const response = await fetch(url, {
-        method: editingId ? 'PUT' : 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${publicAnonKey}`,
-        },
-        body: JSON.stringify({
-          title,
-          date,
-          author,
-          excerpt,
-          readTime,
-          tags: tags.split(',').map(t => t.trim()).filter(Boolean),
-          category,
-          content,
-        }),
-      });
-
-      const data = await response.json();
+      const data = editingId
+        ? await updatePost(editingId, post)
+        : await createPost(post);
 
       if (data.success) {
         toast.success(editingId ? 'Article updated successfully!' : 'Article published successfully!');

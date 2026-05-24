@@ -58,9 +58,6 @@ export default function App() {
 
   const currentArticle = hasContent ? postInList : fetchedPost;
 
-  // show the admin button in dev, or in prod when VITE_ADMIN_KEY is configured
-  const canAccessAdmin = import.meta.env.DEV || Boolean(import.meta.env.VITE_ADMIN_KEY);
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Toaster position="top-right" />
@@ -72,25 +69,23 @@ export default function App() {
       />
 
       {/* Admin access button — quiet styling */}
-      {canAccessAdmin && (
-        <button
-          onClick={() => navigate('admin')}
-          title="Admin Panel"
-          style={{
-            position: 'fixed', bottom: '20px', right: '20px',
-            width: '34px', height: '34px',
-            borderRadius: '999px',
-            background: 'var(--bg-surface)',
-            color: 'var(--text-tertiary)',
-            border: '0.5px solid var(--border-default)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer', zIndex: 50,
-            fontFamily: 'var(--font-mono)', fontSize: '16px', lineHeight: 1,
-          }}
-        >
-          +
-        </button>
-      )}
+      <button
+        onClick={() => navigate('admin')}
+        title="Admin Panel"
+        style={{
+          position: 'fixed', bottom: '20px', right: '20px',
+          width: '34px', height: '34px',
+          borderRadius: '999px',
+          background: 'var(--bg-surface)',
+          color: 'var(--text-tertiary)',
+          border: '0.5px solid var(--border-default)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer', zIndex: 50,
+          fontFamily: 'var(--font-mono)', fontSize: '16px', lineHeight: 1,
+        }}
+      >
+        +
+      </button>
 
       {currentView === 'home' ? (
         <main className="editorial fade-in">

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { BlogPost } from '../types';
 import { fallbackPosts } from '../data/fallbackPosts';
-import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { listPosts } from '../lib/blogApi';
 
 interface UseBlogPostsReturn {
   blogPosts: BlogPost[];
@@ -18,20 +18,7 @@ export function useBlogPosts(): UseBlogPostsReturn {
   const fetchPosts = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-860c354e/posts`,
-        {
-          headers: {
-            'Authorization': `Bearer ${publicAnonKey}`,
-          },
-        }
-      );
-      
-      if (!response.ok) {
-        throw new Error(`Failed to fetch posts: ${response.status}`);
-      }
-      
-      const data = await response.json();
+      const data = await listPosts();
       
       if (data.success && data.posts && data.posts.length > 0) {
         setBlogPosts(data.posts);
@@ -54,4 +41,3 @@ export function useBlogPosts(): UseBlogPostsReturn {
 
   return { blogPosts, loading, hasFetchedFromDB, refreshPosts: fetchPosts };
 }
-

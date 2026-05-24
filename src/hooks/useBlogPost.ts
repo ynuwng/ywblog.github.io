@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { BlogPost } from '../types';
-import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { getPost } from '../lib/blogApi';
 
 export function useBlogPost(id: string | null, options: { enabled?: boolean } = {}) {
   const { enabled = true } = options;
@@ -18,24 +18,11 @@ export function useBlogPost(id: string | null, options: { enabled?: boolean } = 
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(
-          `https://${projectId}.supabase.co/functions/v1/make-server-860c354e/posts/${id}`,
-          {
-            headers: {
-              'Authorization': `Bearer ${publicAnonKey}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch post: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = await getPost(id);
         if (data.success && data.post) {
           setPost(data.post);
         } else {
-          setError('Post not found');
+          setError(data.error || 'Post not found');
         }
       } catch (err) {
         console.error(err);

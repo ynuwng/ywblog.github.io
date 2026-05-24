@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { projectId, publicAnonKey } from '../utils/supabase/info';
 import { toast } from 'sonner';
+import { createPost } from '../lib/blogApi';
 
 // These are your existing posts that we'll migrate to Supabase
 const postsToMigrate = [
@@ -392,19 +392,7 @@ export function MigratePosts() {
       const post = postsToMigrate[i];
       
       try {
-        const response = await fetch(
-          `https://${projectId}.supabase.co/functions/v1/make-server-860c354e/posts`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${publicAnonKey}`,
-            },
-            body: JSON.stringify(post),
-          }
-        );
-
-        const data = await response.json();
+        const data = await createPost(post);
 
         if (data.success) {
           successCount++;

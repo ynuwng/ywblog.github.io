@@ -12,6 +12,20 @@ function getDB() {
   return createClient(url, key);
 }
 
+function requireAdmin(c: any) {
+  const expected = Deno.env.get("BLOG_ADMIN_KEY") || Deno.env.get("ADMIN_KEY");
+  if (!expected) {
+    return c.json({ success: false, error: "Admin writes are not configured" }, 503);
+  }
+
+  const actual = c.req.header("x-admin-key");
+  if (actual !== expected) {
+    return c.json({ success: false, error: "Unauthorized" }, 401);
+  }
+
+  return null;
+}
+
 // DB rows use snake_case; the frontend contract uses camelCase readTime.
 function toPost(row: Record<string, unknown>) {
   const { read_time, created_at: _ca, ...rest } = row as any;
@@ -24,7 +38,7 @@ app.use(
   "/*",
   cors({
     origin: "*",
-    allowHeaders: ["Content-Type", "Authorization"],
+    allowHeaders: ["Content-Type", "Authorization", "x-admin-key"],
     allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     exposeHeaders: ["Content-Length"],
     maxAge: 600,
@@ -70,6 +84,9 @@ app.get("/make-server-860c354e/posts/:id", async (c) => {
 
 app.post("/make-server-860c354e/posts", async (c) => {
   try {
+    const unauthorized = requireAdmin(c);
+    if (unauthorized) return unauthorized;
+
     const { title, date, author, excerpt, readTime, tags, category, content } = await c.req.json();
 
     if (!title || !date || !author || !excerpt || !content) {
@@ -105,6 +122,9 @@ app.post("/make-server-860c354e/posts", async (c) => {
 
 app.put("/make-server-860c354e/posts/:id", async (c) => {
   try {
+    const unauthorized = requireAdmin(c);
+    if (unauthorized) return unauthorized;
+
     const id = c.req.param("id");
     const db = getDB();
 
@@ -133,6 +153,9 @@ app.put("/make-server-860c354e/posts/:id", async (c) => {
 
 app.delete("/make-server-860c354e/posts/:id", async (c) => {
   try {
+    const unauthorized = requireAdmin(c);
+    if (unauthorized) return unauthorized;
+
     const id = c.req.param("id");
     const db = getDB();
 
