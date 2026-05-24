@@ -4,11 +4,8 @@ import { toast } from 'sonner';
 import { MigratePosts } from './MigratePosts';
 import { BlogPost } from '../types';
 
-/**
- * Parse a markdown file with YAML-style frontmatter.
- * Recognized keys: title, date, author, category, tags, readTime, excerpt.
- * Tags accept "a, b, c" or YAML "[a, b, c]".
- */
+// Recognized frontmatter keys: title, date, author, category, tags, readTime, excerpt.
+// Tags accept "a, b, c" or YAML "[a, b, c]".
 function parseFrontmatter(raw: string): {
   meta: Partial<BlogPost & { tagsString?: string }>;
   body: string;
@@ -61,7 +58,6 @@ export function Admin({ refreshPosts }: AdminProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Read a .md file with YAML frontmatter and populate the form fields.
   const handleImportMarkdown = async (file: File) => {
     try {
       const text = await file.text();
@@ -81,12 +77,10 @@ export function Admin({ refreshPosts }: AdminProps) {
     }
   };
   
-  // Article list management
   const [articles, setArticles] = useState<BlogPost[]>([]);
   const [loadingArticles, setLoadingArticles] = useState(true);
   const [showArticleList, setShowArticleList] = useState(true);
 
-  // Fetch articles on mount
   useEffect(() => {
     fetchArticles();
   }, []);
@@ -203,7 +197,8 @@ export function Admin({ refreshPosts }: AdminProps) {
     setShowArticleList(true);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit
+ = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
 
@@ -236,7 +231,6 @@ export function Admin({ refreshPosts }: AdminProps) {
         toast.success(editingId ? 'Article updated successfully!' : 'Article published successfully!');
         await refreshPosts();
         await fetchArticles();
-        // Clear form
         setEditingId(null);
         setTitle('');
         setDate('');
@@ -273,21 +267,18 @@ export function Admin({ refreshPosts }: AdminProps) {
         )}
       </div>
 
-      {/* Migration section */}
       {showArticleList && (
         <div className="mb-12">
           <MigratePosts />
         </div>
       )}
 
-      {/* Article List */}
       {showArticleList && (
         <div className="mb-12">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl">Published Articles</h2>
             <button
               onClick={() => {
-                // Clear form fields
                 setEditingId(null);
                 setTitle('');
                 setDate('');
@@ -297,7 +288,6 @@ export function Admin({ refreshPosts }: AdminProps) {
                 setTags('');
                 setCategory('');
                 setContent('');
-                // Show the form
                 setShowArticleList(false);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
@@ -354,10 +344,8 @@ export function Admin({ refreshPosts }: AdminProps) {
         </div>
       )}
 
-      {/* Article Form */}
       {!showArticleList && (
         <>
-          {/* Markdown import — read a .md file with YAML frontmatter and auto-fill the form */}
           <div
             className="mb-6 p-4 border border-gray-200 rounded-lg bg-gray-50 flex items-center justify-between"
             onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; }}

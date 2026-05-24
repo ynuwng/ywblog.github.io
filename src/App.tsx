@@ -1,11 +1,12 @@
 import { BlogHeader } from './components/BlogHeader';
 import { YearGroupedList } from './components/YearGroupedList';
 import { Footer } from './components/Footer';
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import { AdminGate } from './components/AdminGate';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { Toaster } from 'sonner';
 import { useBlogPosts } from './hooks/useBlogPosts';
 import { useBlogPost } from './hooks/useBlogPost';
-import { fallbackPosts } from './data/fallbackPosts';
+import { useRouter } from './hooks/useRouter';
 
 type Theme = 'light' | 'dark';
 
@@ -15,63 +16,21 @@ function getInitialTheme(): Theme {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
-// Lazy load heavy components that aren't needed immediately
-const Archives = lazy(() => import('./components/Archives').then(m => ({ default: m.Archives })));
-const Tags = lazy(() => import('./components/Tags').then(m => ({ default: m.Tags })));
-const About = lazy(() => import('./components/About').then(m => ({ default: m.About })));
-const Article = lazy(() => import('./components/Article').then(m => ({ default: m.Article })));
-const TaggedArticles = lazy(() => import('./components/TaggedArticles').then(m => ({ default: m.TaggedArticles })));
-const Categories = lazy(() => import('./components/Categories').then(m => ({ default: m.Categories })));
+const Archives        = lazy(() => import('./components/Archives').then(m => ({ default: m.Archives })));
+const Tags            = lazy(() => import('./components/Tags').then(m => ({ default: m.Tags })));
+const About           = lazy(() => import('./components/About').then(m => ({ default: m.About })));
+const Article         = lazy(() => import('./components/Article').then(m => ({ default: m.Article })));
+const TaggedArticles  = lazy(() => import('./components/TaggedArticles').then(m => ({ default: m.TaggedArticles })));
+const Categories      = lazy(() => import('./components/Categories').then(m => ({ default: m.Categories })));
 const CategoryArticles = lazy(() => import('./components/CategoryArticles').then(m => ({ default: m.CategoryArticles })));
-const Admin = lazy(() => import('./components/Admin').then(m => ({ default: m.Admin })));
+const Admin           = lazy(() => import('./components/Admin').then(m => ({ default: m.Admin })));
 
-// Loading fallback component — quiet, matching editorial tone.
+// Quiet loading fallback — matches editorial tone.
 const LoadingSpinner = () => (
   <div className="editorial" style={{ paddingTop: '4rem', paddingBottom: '4rem' }}>
     <p className="meta" style={{ textAlign: 'center' }}>Loading…</p>
   </div>
 );
-
-type ViewType = 'home' | 'archives' | 'categories' | 'tags' | 'about' | 'article' | 'tagged' | 'category' | 'admin';
-
-/* ============================================================
-   History API routing — clean URLs, no `#`.
-   - Reads window.location.pathname to determine the current view.
-   - Navigate via pushState; popstate handles back/forward.
-   - 404.html + index.html bootstrap script handle deep-link reloads.
-   ============================================================ */
-
-function parsePath(): { view: ViewType; articleId?: string; tag?: string; category?: string } {
-  const pathname = window.location.pathname;
-  // strip leading slash and trailing slash, then split
-  const parts = pathname.replace(/^\/+|\/+$/g, '').split('/').filter(Boolean);
-
-  if (parts.length === 0) return { view: 'home' };
-
-  if (parts[0] === 'article' && parts[1]) {
-    return { view: 'article', articleId: decodeURIComponent(parts[1]) };
-  }
-  if (parts[0] === 'tag' && parts[1]) {
-    return { view: 'tagged', tag: decodeURIComponent(parts[1]) };
-  }
-  if (parts[0] === 'category' && parts[1]) {
-    return { view: 'category', category: decodeURIComponent(parts[1]) };
-  }
-  if (parts[0] === 'archives')   return { view: 'archives' };
-  if (parts[0] === 'categories') return { view: 'categories' };
-  if (parts[0] === 'tags')       return { view: 'tags' };
-  if (parts[0] === 'about')      return { view: 'about' };
-  if (parts[0] === 'admin')      return { view: 'admin' };
-
-  return { view: 'home' };
-}
-
-/** Push a new URL without reloading. */
-function pushPath(path: string) {
-  if (path !== window.location.pathname + window.location.search) {
-    window.history.pushState(null, '', path);
-  }
-}
 
 export default function App() {
   const [theme, setTheme] = useState<Theme>(getInitialTheme);
@@ -81,76 +40,41 @@ export default function App() {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-  const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
+  const {
+    currentView, selectedArticle, selectedTag, selectedCategory,
+    navigate, goArticle, goTag, goCategory, goHome, goTags, goCategories,
+  } = useRouter();
 
-  // Initialize state from URL pathname
-  const initialState = parsePath();
-  const [currentView, setCurrentView] = useState<ViewType>(initialState.view);
-  const [selectedArticle, setSelectedArticle] = useState<string | null>(initialState.articleId || null);
-  const [selectedTag, setSelectedTag] = useState<string | null>(initialState.tag || null);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(initialState.category || null);
-  
-  // Use custom hook for data fetching
-  const { blogPosts: postsFromHook, loading, refreshPosts } = useBlogPosts();
-  
-  // Determine if the selected post already has content (e.g. fallback data)
-  const postInList = postsFromHook.find(p => p.id === selectedArticle);
+  const { blogPosts, loading, refreshPosts } = useBlogPosts();
+
+  const postInList = blogPosts.find(p => p.id === selectedArticle);
   const hasContent = Boolean(postInList?.content);
-  
-  // Only fetch if we're in article view, have an ID, and don't already have content
+
+  // only fetch individually when the list view didn't already include content
   const { post: fetchedPost, loading: loadingArticle } = useBlogPost(
     currentView === 'article' ? selectedArticle : null,
     { enabled: !hasContent }
   );
-  
-  // Decide which article object to use
+
   const currentArticle = hasContent ? postInList : fetchedPost;
 
-  // Single re-syncer: read URL → update React state. Used by both popstate
-  // (browser back/forward) and our own pushPath helper after navigation.
-  const syncFromLocation = React.useCallback(() => {
-    const state = parsePath();
-    setCurrentView(state.view);
-    setSelectedArticle(state.articleId || null);
-    setSelectedTag(state.tag || null);
-    setSelectedCategory(state.category || null);
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('popstate', syncFromLocation);
-    return () => window.removeEventListener('popstate', syncFromLocation);
-  }, [syncFromLocation]);
-
-  /** Navigate to a clean URL and update React state. */
-  const go = React.useCallback((path: string, scrollTop = false) => {
-    pushPath(path);
-    syncFromLocation();
-    if (scrollTop) window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [syncFromLocation]);
-
-  const handleArticleClick    = (id: string)       => go(`/article/${encodeURIComponent(id)}`, true);
-  const handleBackToHome      = ()                 => go('/');
-  const handleTagClick        = (tag: string)      => go(`/tag/${encodeURIComponent(tag)}`);
-  const handleBackToTags      = ()                 => go('/tags');
-  const handleCategoryClick   = (cat: string)      => go(`/category/${encodeURIComponent(cat)}`);
-  const handleBackToCategories= ()                 => go('/categories');
-  const handleNavigate        = (view: ViewType)   => go(view === 'home' ? '/' : `/${view}`);
+  // show the admin button in dev, or in prod when VITE_ADMIN_KEY is configured
+  const canAccessAdmin = import.meta.env.DEV || Boolean(import.meta.env.VITE_ADMIN_KEY);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Toaster position="top-right" />
       <BlogHeader
-        onNavigate={handleNavigate}
-        // @ts-expect-error: 'admin' is not a valid currentView for BlogHeader, but we support it at the App level
+        onNavigate={navigate}
         currentView={currentView}
         theme={theme}
-        onToggleTheme={toggleTheme}
+        onToggleTheme={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}
       />
-      
-      {/* Admin access button — dev only, quiet styling */}
-      {(import.meta as any).env.DEV && (
+
+      {/* Admin access button — quiet styling */}
+      {canAccessAdmin && (
         <button
-          onClick={() => handleNavigate('admin')}
+          onClick={() => navigate('admin')}
           title="Admin Panel"
           style={{
             position: 'fixed', bottom: '20px', right: '20px',
@@ -167,10 +91,9 @@ export default function App() {
           +
         </button>
       )}
-      
+
       {currentView === 'home' ? (
         <main className="editorial fade-in">
-          {/* Hero */}
           <h1 className="hero">Yuan Wang</h1>
           <p className="hero-tagline">
             Writing on AI, quantitative research, and signal processing —
@@ -179,12 +102,12 @@ export default function App() {
 
           {loading ? (
             <p className="meta" style={{ textAlign: 'center', padding: '3rem 0' }}>Loading posts…</p>
-          ) : postsFromHook.length === 0 ? (
+          ) : blogPosts.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '3rem 0' }}>
               <p className="text-secondary" style={{ marginBottom: '1.25rem' }}>No posts yet.</p>
-              {(import.meta as any).env.DEV && (
+              {import.meta.env.DEV && (
                 <button
-                  onClick={() => handleNavigate('admin')}
+                  onClick={() => navigate('admin')}
                   className="accent"
                   style={{ background: 'none', border: 0, cursor: 'pointer', font: 'inherit' }}
                 >
@@ -193,20 +116,16 @@ export default function App() {
               )}
             </div>
           ) : (
-            <YearGroupedList
-              posts={postsFromHook}
-              onClick={handleArticleClick}
-              onTagClick={handleTagClick}
-            />
+            <YearGroupedList posts={blogPosts} onClick={goArticle} onTagClick={goTag} />
           )}
         </main>
       ) : currentView === 'archives' ? (
         <Suspense fallback={<LoadingSpinner />}>
-          <Archives posts={postsFromHook} onNavigateHome={handleBackToHome} onArticleClick={handleArticleClick} />
+          <Archives posts={blogPosts} onNavigateHome={goHome} onArticleClick={goArticle} />
         </Suspense>
       ) : currentView === 'tags' ? (
         <Suspense fallback={<LoadingSpinner />}>
-          <Tags posts={postsFromHook} onTagClick={handleTagClick} />
+          <Tags posts={blogPosts} onTagClick={goTag} />
         </Suspense>
       ) : currentView === 'about' ? (
         <Suspense fallback={<LoadingSpinner />}>
@@ -214,39 +133,41 @@ export default function App() {
         </Suspense>
       ) : currentView === 'article' ? (
         loadingArticle ? (
-           <div className="editorial" style={{ padding: '4rem 0', textAlign: 'center' }}>
-              <p className="meta">Loading article…</p>
-           </div>
+          <div className="editorial" style={{ padding: '4rem 0', textAlign: 'center' }}>
+            <p className="meta">Loading article…</p>
+          </div>
         ) : currentArticle ? (
           <Suspense fallback={<LoadingSpinner />}>
             <Article
               post={currentArticle}
-              onBack={handleBackToHome}
-              onCategoryClick={handleCategoryClick}
-              onTagClick={handleTagClick}
+              onBack={goHome}
+              onCategoryClick={goCategory}
+              onTagClick={goTag}
             />
           </Suspense>
         ) : (
-           <div className="editorial" style={{ padding: '4rem 0', textAlign: 'center' }}>
-              <p className="meta">Article not found.</p>
-           </div>
+          <div className="editorial" style={{ padding: '4rem 0', textAlign: 'center' }}>
+            <p className="meta">Article not found.</p>
+          </div>
         )
       ) : currentView === 'tagged' && selectedTag ? (
         <Suspense fallback={<LoadingSpinner />}>
-          <TaggedArticles tag={selectedTag} posts={postsFromHook} onBack={handleBackToTags} onArticleClick={handleArticleClick} />
+          <TaggedArticles tag={selectedTag} posts={blogPosts} onBack={goTags} onArticleClick={goArticle} />
         </Suspense>
       ) : currentView === 'categories' ? (
         <Suspense fallback={<LoadingSpinner />}>
-          <Categories posts={postsFromHook} onCategoryClick={handleCategoryClick} />
+          <Categories posts={blogPosts} onCategoryClick={goCategory} />
         </Suspense>
       ) : currentView === 'category' && selectedCategory ? (
         <Suspense fallback={<LoadingSpinner />}>
-          <CategoryArticles category={selectedCategory} posts={postsFromHook} onBack={handleBackToCategories} onArticleClick={handleArticleClick} />
+          <CategoryArticles category={selectedCategory} posts={blogPosts} onBack={goCategories} onArticleClick={goArticle} />
         </Suspense>
-      ) : currentView === 'admin' && (import.meta as any).env.DEV ? (
-        <Suspense fallback={<LoadingSpinner />}>
-          <Admin refreshPosts={refreshPosts} />
-        </Suspense>
+      ) : currentView === 'admin' ? (
+        <AdminGate>
+          <Suspense fallback={<LoadingSpinner />}>
+            <Admin refreshPosts={refreshPosts} />
+          </Suspense>
+        </AdminGate>
       ) : null}
 
       <Footer />

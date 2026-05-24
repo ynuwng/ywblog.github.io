@@ -37,16 +37,11 @@ export function useBlogPosts(): UseBlogPostsReturn {
         setBlogPosts(data.posts);
         setHasFetchedFromDB(true);
       } else {
-        // If no posts in database, keep using fallback data
-        console.log('No posts found in database, using fallback data');
-        // Only set fallback if we haven't already (initially set)
-        // But if DB returns empty, we might want to show empty or fallback depending on policy.
-        // Current logic: use fallback if DB empty.
-        setHasFetchedFromDB(true); 
+        // DB returned empty — keep showing fallback posts rather than a blank page
+        setHasFetchedFromDB(true);
       }
     } catch (error) {
       console.error('Error fetching posts from Supabase:', error);
-      // Keep using fallback data on error
       setHasFetchedFromDB(true);
     } finally {
       setLoading(false);

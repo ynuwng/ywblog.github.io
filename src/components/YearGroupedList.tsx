@@ -21,7 +21,6 @@ export function YearGroupedList({ posts, onClick, onTagClick }: YearGroupedListP
 
   const years = Object.keys(byYear).map(Number).sort((a, b) => b - a);
 
-  // Sort posts within each year by date desc
   years.forEach((y) => byYear[y].sort((a, b) => +new Date(b.date) - +new Date(a.date)));
 
   return (

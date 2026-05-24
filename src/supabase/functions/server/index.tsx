@@ -1,13 +1,25 @@
 import { Hono } from "npm:hono";
 import { cors } from "npm:hono/cors";
 import { logger } from "npm:hono/logger";
-import * as kv from "./kv_store.tsx";
+import { createClient } from "jsr:@supabase/supabase-js@2.49.8";
+
 const app = new Hono();
 
-// Enable logger
+function getDB() {
+  const url = Deno.env.get("SUPABASE_URL");
+  const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!url || !key) throw new Error("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
+  return createClient(url, key);
+}
+
+// DB rows use snake_case; the frontend contract uses camelCase readTime.
+function toPost(row: Record<string, unknown>) {
+  const { read_time, created_at: _ca, ...rest } = row as any;
+  return { ...rest, readTime: read_time };
+}
+
 app.use('*', logger(console.log));
 
-// Enable CORS for all routes and methods
 app.use(
   "/*",
   cors({
@@ -19,132 +31,117 @@ app.use(
   }),
 );
 
-// Health check endpoint
 app.get("/make-server-860c354e/health", (c) => {
   return c.json({ status: "ok" });
 });
 
-// Blog Post Routes
-
-// Get all blog posts (summary only)
 app.get("/make-server-860c354e/posts", async (c) => {
   try {
-    const posts = await kv.getByPrefix("post:");
-    // Sort posts by date (newest first)
-    const sortedPosts = posts.sort((a: any, b: any) => {
-      return new Date(b.date).getTime() - new Date(a.date).getTime();
-    });
+    const { data, error } = await getDB()
+      .from("posts")
+      // strip content — list view should not pay for full post bodies
+      .select("id, title, date, author, excerpt, read_time, tags, category")
+      .order("date", { ascending: false });
 
-    // Optimize: Strip content for list view to reduce payload size
-    const postsSummary = sortedPosts.map((post: any) => {
-      // Destructure to separate content from the rest
-      const { content, ...rest } = post;
-      return rest;
-    });
-
-    return c.json({ success: true, posts: postsSummary });
+    if (error) throw error;
+    return c.json({ success: true, posts: (data ?? []).map(toPost) });
   } catch (error) {
     console.log("Error fetching posts:", error);
     return c.json({ success: false, error: String(error) }, 500);
   }
 });
 
-// Get a single blog post by ID
 app.get("/make-server-860c354e/posts/:id", async (c) => {
   try {
-    const id = c.req.param("id");
-    const post = await kv.get(`post:${id}`);
-    
-    if (!post) {
-      return c.json({ success: false, error: "Post not found" }, 404);
-    }
-    
-    return c.json({ success: true, post });
+    const { data, error } = await getDB()
+      .from("posts")
+      .select("*")
+      .eq("id", c.req.param("id"))
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!data) return c.json({ success: false, error: "Post not found" }, 404);
+    return c.json({ success: true, post: toPost(data) });
   } catch (error) {
     console.log("Error fetching post:", error);
     return c.json({ success: false, error: String(error) }, 500);
   }
 });
 
-// Create a new blog post
 app.post("/make-server-860c354e/posts", async (c) => {
   try {
-    const body = await c.req.json();
-    const { title, date, author, excerpt, readTime, tags, category, content } = body;
-    
-    // Validate required fields
+    const { title, date, author, excerpt, readTime, tags, category, content } = await c.req.json();
+
     if (!title || !date || !author || !excerpt || !content) {
-      return c.json({ 
-        success: false, 
-        error: "Missing required fields: title, date, author, excerpt, content" 
+      return c.json({
+        success: false,
+        error: "Missing required fields: title, date, author, excerpt, content",
       }, 400);
     }
-    
-    // Generate a unique ID (timestamp-based)
-    const id = `${Date.now()}`;
-    
-    const post = {
-      id,
-      title,
-      date,
-      author,
-      excerpt,
-      readTime: readTime || "5 min read",
-      tags: tags || [],
-      category: category || "Uncategorized",
-      content,
-    };
-    
-    await kv.set(`post:${id}`, post);
-    
-    return c.json({ success: true, post });
+
+    const { data, error } = await getDB()
+      .from("posts")
+      .insert({
+        id: crypto.randomUUID(),
+        title,
+        date,
+        author,
+        excerpt,
+        read_time: readTime ?? "5 min read",
+        tags: tags ?? [],
+        category: category ?? "Uncategorized",
+        content,
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return c.json({ success: true, post: toPost(data) });
   } catch (error) {
     console.log("Error creating post:", error);
     return c.json({ success: false, error: String(error) }, 500);
   }
 });
 
-// Update an existing blog post
 app.put("/make-server-860c354e/posts/:id", async (c) => {
   try {
     const id = c.req.param("id");
-    const body = await c.req.json();
-    
-    // Check if post exists
-    const existingPost = await kv.get(`post:${id}`);
-    if (!existingPost) {
-      return c.json({ success: false, error: "Post not found" }, 404);
-    }
-    
-    // Merge with existing post
-    const updatedPost = {
-      ...existingPost,
-      ...body,
-      id, // Ensure ID cannot be changed
-    };
-    
-    await kv.set(`post:${id}`, updatedPost);
-    
-    return c.json({ success: true, post: updatedPost });
+    const db = getDB();
+
+    const { data: existing } = await db.from("posts").select("id").eq("id", id).maybeSingle();
+    if (!existing) return c.json({ success: false, error: "Post not found" }, 404);
+
+    // readTime → read_time; drop id and created_at so they can't be overwritten
+    const { readTime, id: _id, created_at: _ca, ...fields } = await c.req.json();
+    const patch: Record<string, unknown> = { ...fields };
+    if (readTime !== undefined) patch.read_time = readTime;
+
+    const { data, error } = await db
+      .from("posts")
+      .update(patch)
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return c.json({ success: true, post: toPost(data) });
   } catch (error) {
     console.log("Error updating post:", error);
     return c.json({ success: false, error: String(error) }, 500);
   }
 });
 
-// Delete a blog post
 app.delete("/make-server-860c354e/posts/:id", async (c) => {
   try {
     const id = c.req.param("id");
-    
-    // Check if post exists
-    const existingPost = await kv.get(`post:${id}`);
-    if (!existingPost) {
-      return c.json({ success: false, error: "Post not found" }, 404);
-    }
-    
-    await kv.del(`post:${id}`);
-    
+    const db = getDB();
+
+    const { data: existing } = await db.from("posts").select("id").eq("id", id).maybeSingle();
+    if (!existing) return c.json({ success: false, error: "Post not found" }, 404);
+
+    const { error } = await db.from("posts").delete().eq("id", id);
+    if (error) throw error;
+
     return c.json({ success: true, message: "Post deleted successfully" });
   } catch (error) {
     console.log("Error deleting post:", error);

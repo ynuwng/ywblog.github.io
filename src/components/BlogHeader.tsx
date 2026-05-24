@@ -9,7 +9,8 @@ type View =
   | 'about'
   | 'article'
   | 'tagged'
-  | 'category';
+  | 'category'
+  | 'admin';
 
 interface BlogHeaderProps {
   onNavigate: (view: View) => void;
