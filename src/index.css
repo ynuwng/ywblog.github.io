@@ -2236,7 +2236,7 @@ body {
    ============================================================ */
 
 /* Prevent horizontal scroll caused by stray inline styles or wide tables. */
-html, body { overflow-x: hidden; }
+html, body { overflow-x: clip; }
 body { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 
 /* iOS: stop tap highlight flashes; we provide our own hover styles. */
