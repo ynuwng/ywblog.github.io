@@ -41,9 +41,7 @@ export function BlogHeader({ onNavigate, currentView, theme, onToggleTheme }: Bl
       <div className="site-header-inner">
         {/* Wordmark — mono uppercase signature with em-dash tagline */}
         <button onClick={() => onNavigate('home')} className="wordmark" aria-label="Go home">
-          YUAN WANG
-          <span className="em-dash">—</span>
-          <span className="domains">ai · quant · signal</span>
+          YUAN'S BLOG
         </button>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>

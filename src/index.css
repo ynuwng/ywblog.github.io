@@ -368,29 +368,32 @@
     font-optical-sizing: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* Optimized font stack: Noto Sans SC (for Chinese) + System Fonts (for speed) */
-    font-family: Noto Sans SC, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    font-family: var(--font-serif);
   }
 
   :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) h1 {
+    font-family: var(--font-heading);
     font-size: 24px;
     font-weight: var(--font-weight-medium);
     line-height: 1.5;
   }
 
   :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) h2 {
+    font-family: var(--font-heading);
     font-size: var(--text-xl);
     font-weight: var(--font-weight-medium);
     line-height: 1.5;
   }
 
   :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) h3 {
+    font-family: var(--font-heading);
     font-size: var(--text-lg);
     font-weight: var(--font-weight-medium);
     line-height: 1.5;
   }
 
   :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) h4, :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) label, :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) button {
+    font-family: var(--font-heading);
     font-size: var(--text-base);
     font-weight: var(--font-weight-medium);
     line-height: 1.5;
@@ -1526,30 +1529,22 @@ html {
 
 /* ---------- Tokens ---------- */
 :root {
-  /* Fonts — humanist sans, Jane Street blog style.
-     • --font-serif keeps its name (drives editorial body + headings) but now
-       resolves to a humanist sans (Source Sans 3) approximating Alright Sans
-       LTV, the proprietary face Jane Street uses. Helvetica Neue is the same
-       fallback they ship.
-     • Code: Source Code Pro — the exact face Jane Street uses. */
-  --font-serif: 'Source Sans 3', 'Source Sans Pro', -apple-system,
-                BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial,
-                'Noto Sans SC', sans-serif;
-  --font-sans:  'Source Sans 3', 'Source Sans Pro', -apple-system,
-                BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial,
-                'Noto Sans SC', sans-serif;
-  --font-mono:  'Source Code Pro', ui-monospace, 'SF Mono', Menlo, Monaco,
+  /* Heading + Body: Inter · Code: JetBrains Mono */
+  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --font-serif:   'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --font-sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --font-mono:  'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Monaco,
                 Consolas, monospace;
 
   /* Surfaces */
-  --bg-page:    #FAFAF9;
+  --bg-page:    #FFFFFF;
   --bg-surface: #FFFFFF;
-  --bg-subtle:  #F4F3EF;
+  --bg-subtle:  #F5F5F5;
 
   /* Text */
-  --text-primary:   #1A1A1A;
-  --text-secondary: #6D6D6D;   /* Jane Street prose gray */
-  --text-tertiary:  #8A8A85;
+  --text-primary:   #000000;
+  --text-secondary: #555555;
+  --text-tertiary:  #888888;
 
   /* Borders */
   --border-faint:   rgba(0, 0, 0, 0.08);
@@ -1812,12 +1807,12 @@ body {
 
 /* ---------- Homepage hero ---------- */
 .hero {
-  font-family: var(--font-serif);
+  font-family: var(--font-heading);
   font-size: var(--text-display);
-  line-height: var(--text-display-line);
-  letter-spacing: var(--text-display-tracking);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
   color: var(--text-primary);
-  font-weight: 600;                       /* book-cover weight, Stripe Press style */
+  font-weight: 400;
   margin: 0 0 14px;
 }
 .hero-tagline {
@@ -1869,12 +1864,12 @@ body {
   padding-top: 2px;
 }
 .post-row .post-title {
-  font-family: var(--font-serif);
+  font-family: var(--font-heading);
   font-size: var(--text-h3);              /* 20px */
-  font-weight: 600;                        /* Stripe Press headline weight */
-  line-height: 1.25;
+  font-weight: 400;
+  line-height: 1.3;
   letter-spacing: -0.005em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--text-primary);
   margin: 0 0 6px;
   transition: color 0.15s ease;
@@ -2110,12 +2105,12 @@ body {
 /* ---------- Article header ---------- */
 .article-head { margin-bottom: 36px; }
 .article-title {
-  font-family: var(--font-serif);
+  font-family: var(--font-heading);
   font-size: var(--text-display);            /* 42px */
-  line-height: var(--text-display-line);     /* 1.12 */
-  letter-spacing: var(--text-display-tracking);
-  font-weight: 600;                          /* book-cover weight */
-  text-transform: uppercase;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-weight: 400;
+  text-transform: none;
   color: var(--text-primary);
   margin: 0 0 18px;
 }

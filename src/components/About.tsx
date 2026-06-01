@@ -43,7 +43,7 @@ export function About() {
         }}
       >
         <p className="meta" style={{ margin: 0 }}>
-          Yuan Wang · ai · quant · signal
+          Yuan's Blog
         </p>
       </div>
     </main>
