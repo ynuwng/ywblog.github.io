@@ -1,0 +1,2028 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "Tech Style Personal Blog",
+    "languages": [
+      "TypeScript",
+      "CSS",
+      "HTML",
+      "SQL",
+      "YAML",
+      "Markdown",
+      "JSON"
+    ],
+    "frameworks": [
+      "React",
+      "Vite",
+      "Hono",
+      "Supabase"
+    ],
+    "description": "React/Vite personal blog with custom History API routing, Supabase-backed posts, markdown rendering, dark mode, and a development admin panel.",
+    "analyzedAt": "2026-05-24T21:31:47.932Z",
+    "gitCommitHash": "1652cc796842a841fb5433915d2c6ba2f3cf6951"
+  },
+  "nodes": [
+    {
+      "id": "file:src/App.tsx",
+      "type": "file",
+      "name": "App.tsx",
+      "filePath": "src/App.tsx",
+      "summary": "Root React component that owns all routing state, lazy-loads per-route chunks via React.lazy/Suspense, orchestrates data fetching through useBlogPosts and useBlogPost, and renders the correct view based on the URL-derived ViewType.",
+      "tags": [
+        "routing",
+        "react",
+        "spa",
+        "lazy-loading",
+        "data-fetching"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/App.tsx:App",
+      "type": "function",
+      "name": "App",
+      "filePath": "src/App.tsx",
+      "summary": "Default export function: reads router state, conditionally renders home/archives/tags/about/article/tagged/categories/category/admin views wrapped in BlogHeader and Footer.",
+      "tags": [
+        "react-component",
+        "routing"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/App.tsx:getInitialTheme",
+      "type": "function",
+      "name": "getInitialTheme",
+      "filePath": "src/App.tsx",
+      "summary": "Reads localStorage for saved theme and applies the dark class to document.documentElement before first render to avoid flash.",
+      "tags": [
+        "theme",
+        "dark-mode"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/main.tsx",
+      "type": "file",
+      "name": "main.tsx",
+      "filePath": "src/main.tsx",
+      "summary": "Vite entry point: mounts the React app into the #root DOM element with StrictMode.",
+      "tags": [
+        "entry-point",
+        "react",
+        "vite"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/hooks/useRouter.ts",
+      "type": "file",
+      "name": "useRouter.ts",
+      "filePath": "src/hooks/useRouter.ts",
+      "summary": "Custom hook implementing client-side routing via the History API. Parses pathname to ViewType, pushes URL state, and listens for popstate events for browser back/forward support.",
+      "tags": [
+        "routing",
+        "history-api",
+        "hook",
+        "spa"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/hooks/useRouter.ts:useRouter",
+      "type": "function",
+      "name": "useRouter",
+      "filePath": "src/hooks/useRouter.ts",
+      "summary": "Hook that returns currentView, selectedArticle/Tag/Category state and navigation functions (navigate, goArticle, goTag, goCategory, goHome, goTags, goCategories).",
+      "tags": [
+        "hook",
+        "routing"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/hooks/useRouter.ts:parsePath",
+      "type": "function",
+      "name": "parsePath",
+      "filePath": "src/hooks/useRouter.ts",
+      "summary": "Maps window.location.pathname to a ViewType object with optional articleId, tag, or category parameters.",
+      "tags": [
+        "routing",
+        "url-parsing"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/hooks/useRouter.ts:pushPath",
+      "type": "function",
+      "name": "pushPath",
+      "filePath": "src/hooks/useRouter.ts",
+      "summary": "Pushes a new URL to browser history only if it differs from the current pathname to avoid duplicate entries.",
+      "tags": [
+        "routing",
+        "history-api"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/lib/adminSession.ts",
+      "type": "file",
+      "name": "adminSession.ts",
+      "filePath": "src/lib/adminSession.ts",
+      "summary": "Manages the admin key in sessionStorage — provides get, set, and clear functions. Key is scoped to the browser session for security.",
+      "tags": [
+        "admin",
+        "session",
+        "security",
+        "auth"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/adminSession.ts:getAdminKey",
+      "type": "function",
+      "name": "getAdminKey",
+      "filePath": "src/lib/adminSession.ts",
+      "summary": "Returns the admin key from sessionStorage or null.",
+      "tags": [
+        "admin",
+        "auth"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/adminSession.ts:setAdminKey",
+      "type": "function",
+      "name": "setAdminKey",
+      "filePath": "src/lib/adminSession.ts",
+      "summary": "Stores the admin key in sessionStorage.",
+      "tags": [
+        "admin",
+        "auth"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/adminSession.ts:clearAdminKey",
+      "type": "function",
+      "name": "clearAdminKey",
+      "filePath": "src/lib/adminSession.ts",
+      "summary": "Removes the admin key from sessionStorage.",
+      "tags": [
+        "admin",
+        "auth"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/AdminGate.tsx",
+      "type": "file",
+      "name": "AdminGate.tsx",
+      "filePath": "src/components/AdminGate.tsx",
+      "summary": "Gate component rendered only in DEV that shows a floating '+' button to open the admin panel; reads adminSession to check auth state.",
+      "tags": [
+        "admin",
+        "dev-only",
+        "react-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/AdminGate.tsx:AdminGate",
+      "type": "function",
+      "name": "AdminGate",
+      "filePath": "src/components/AdminGate.tsx",
+      "summary": "Renders the floating admin toggle button; calls isAuthed to conditionally show admin UI.",
+      "tags": [
+        "admin",
+        "react-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/BlogHeader.tsx",
+      "type": "file",
+      "name": "BlogHeader.tsx",
+      "filePath": "src/components/BlogHeader.tsx",
+      "summary": "Top navigation bar with blog title, nav links (home, archives, categories, tags, about), dark-mode toggle, and responsive mobile menu.",
+      "tags": [
+        "navigation",
+        "header",
+        "dark-mode",
+        "react-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/BlogHeader.tsx:BlogHeader",
+      "type": "function",
+      "name": "BlogHeader",
+      "filePath": "src/components/BlogHeader.tsx",
+      "summary": "Renders the site header with logo, desktop nav links, mobile hamburger menu, and theme toggle button.",
+      "tags": [
+        "react-component",
+        "navigation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/Footer.tsx",
+      "type": "file",
+      "name": "Footer.tsx",
+      "filePath": "src/components/Footer.tsx",
+      "summary": "Simple site footer with copyright and social links.",
+      "tags": [
+        "footer",
+        "react-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/Footer.tsx:Footer",
+      "type": "function",
+      "name": "Footer",
+      "filePath": "src/components/Footer.tsx",
+      "summary": "Renders the static site footer.",
+      "tags": [
+        "react-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/XIcon.tsx",
+      "type": "file",
+      "name": "XIcon.tsx",
+      "filePath": "src/components/XIcon.tsx",
+      "summary": "Minimal SVG component for the X (Twitter) social icon.",
+      "tags": [
+        "icon",
+        "react-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/types.ts",
+      "type": "file",
+      "name": "types.ts",
+      "filePath": "src/types.ts",
+      "summary": "Defines the central BlogPost interface shared across the entire frontend and backend boundary.",
+      "tags": [
+        "types",
+        "interfaces",
+        "data-model"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/Archives.tsx",
+      "type": "file",
+      "name": "Archives.tsx",
+      "filePath": "src/components/Archives.tsx",
+      "summary": "Archives view that renders all posts grouped by year using YearGroupedList, with a back button to navigate home.",
+      "tags": [
+        "view",
+        "archives",
+        "react-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/Archives.tsx:Archives",
+      "type": "function",
+      "name": "Archives",
+      "filePath": "src/components/Archives.tsx",
+      "summary": "Renders the archives page: all posts in chronological groups via YearGroupedList.",
+      "tags": [
+        "react-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/Article.tsx",
+      "type": "file",
+      "name": "Article.tsx",
+      "filePath": "src/components/Article.tsx",
+      "summary": "Full article viewer that renders markdown with optional KaTeX math and syntax highlighting dynamically imported on demand. Generates a table of contents from H2 headings and rewrites internal links to use the History API.",
+      "tags": [
+        "markdown",
+        "katex",
+        "syntax-highlighting",
+        "react-component",
+        "lazy-loading"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/components/Article.tsx:Article",
+      "type": "function",
+      "name": "Article",
+      "filePath": "src/components/Article.tsx",
+      "summary": "Main article component: detects math/code in content, dynamically imports KaTeX/highlighter, renders with react-markdown and generates TOC.",
+      "tags": [
+        "react-component",
+        "markdown"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/components/Article.tsx:slugify",
+      "type": "function",
+      "name": "slugify",
+      "filePath": "src/components/Article.tsx",
+      "summary": "Converts heading text to a URL-safe slug for anchor links.",
+      "tags": [
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/Article.tsx:extractH2s",
+      "type": "function",
+      "name": "extractH2s",
+      "filePath": "src/components/Article.tsx",
+      "summary": "Parses markdown content to extract H2 headings for the table of contents.",
+      "tags": [
+        "markdown",
+        "toc"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/Article.tsx:loadKatexCSS",
+      "type": "function",
+      "name": "loadKatexCSS",
+      "filePath": "src/components/Article.tsx",
+      "summary": "Dynamically injects the KaTeX CSS stylesheet into the document head on first use.",
+      "tags": [
+        "katex",
+        "dynamic-import"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/BlogPost.tsx",
+      "type": "file",
+      "name": "BlogPost.tsx",
+      "filePath": "src/components/BlogPost.tsx",
+      "summary": "Reusable post-row component displaying title, date, excerpt, category, read time and tags in a flat list item layout.",
+      "tags": [
+        "post-card",
+        "react-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/BlogPost.tsx:BlogPost",
+      "type": "function",
+      "name": "BlogPost",
+      "filePath": "src/components/BlogPost.tsx",
+      "summary": "Renders a single post row with clickable title and tag chips.",
+      "tags": [
+        "react-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/CategoryArticles.tsx",
+      "type": "file",
+      "name": "CategoryArticles.tsx",
+      "filePath": "src/components/CategoryArticles.tsx",
+      "summary": "Category-filtered view that shows all posts belonging to a specific category using YearGroupedList.",
+      "tags": [
+        "categories",
+        "filter",
+        "react-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/CategoryArticles.tsx:CategoryArticles",
+      "type": "function",
+      "name": "CategoryArticles",
+      "filePath": "src/components/CategoryArticles.tsx",
+      "summary": "Filters posts by category and renders them in year-grouped list.",
+      "tags": [
+        "react-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/TaggedArticles.tsx",
+      "type": "file",
+      "name": "TaggedArticles.tsx",
+      "filePath": "src/components/TaggedArticles.tsx",
+      "summary": "Tag-filtered view that shows all posts with a specific tag using YearGroupedList.",
+      "tags": [
+        "tags",
+        "filter",
+        "react-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/TaggedArticles.tsx:TaggedArticles",
+      "type": "function",
+      "name": "TaggedArticles",
+      "filePath": "src/components/TaggedArticles.tsx",
+      "summary": "Filters posts by tag and renders them in year-grouped list.",
+      "tags": [
+        "react-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/YearGroupedList.tsx",
+      "type": "file",
+      "name": "YearGroupedList.tsx",
+      "filePath": "src/components/YearGroupedList.tsx",
+      "summary": "Shared list component that groups posts by year and renders them as BlogPost rows. Used by Archives, CategoryArticles, and TaggedArticles.",
+      "tags": [
+        "list",
+        "grouping",
+        "shared",
+        "react-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/YearGroupedList.tsx:YearGroupedList",
+      "type": "function",
+      "name": "YearGroupedList",
+      "filePath": "src/components/YearGroupedList.tsx",
+      "summary": "Groups posts by year and renders each year's posts as BlogPost rows with the year as a heading.",
+      "tags": [
+        "react-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/utils/supabase/info.tsx",
+      "type": "file",
+      "name": "info.tsx",
+      "filePath": "src/utils/supabase/info.tsx",
+      "summary": "Autogenerated file exporting the Supabase project ID and public anon key used to construct the API base URL. Must not be edited manually.",
+      "tags": [
+        "supabase",
+        "config",
+        "autogenerated"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/lib/blogApi.ts",
+      "type": "file",
+      "name": "blogApi.ts",
+      "filePath": "src/lib/blogApi.ts",
+      "summary": "HTTP client module for the Supabase Edge Function REST API. Exports listPosts, getPost, createPost, updatePost, deletePost using fetch with anon/admin auth headers.",
+      "tags": [
+        "api-client",
+        "supabase",
+        "http",
+        "crud"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/lib/blogApi.ts:listPosts",
+      "type": "function",
+      "name": "listPosts",
+      "filePath": "src/lib/blogApi.ts",
+      "summary": "Fetches the list of all posts from the server (content stripped server-side).",
+      "tags": [
+        "api-client",
+        "posts"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/blogApi.ts:getPost",
+      "type": "function",
+      "name": "getPost",
+      "filePath": "src/lib/blogApi.ts",
+      "summary": "Fetches a single post by ID with full content from the server.",
+      "tags": [
+        "api-client",
+        "posts"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/blogApi.ts:createPost",
+      "type": "function",
+      "name": "createPost",
+      "filePath": "src/lib/blogApi.ts",
+      "summary": "Creates a new post via POST with admin auth header.",
+      "tags": [
+        "api-client",
+        "admin",
+        "posts"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/blogApi.ts:updatePost",
+      "type": "function",
+      "name": "updatePost",
+      "filePath": "src/lib/blogApi.ts",
+      "summary": "Updates an existing post by ID via PUT with admin auth header.",
+      "tags": [
+        "api-client",
+        "admin",
+        "posts"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/blogApi.ts:deletePost",
+      "type": "function",
+      "name": "deletePost",
+      "filePath": "src/lib/blogApi.ts",
+      "summary": "Deletes a post by ID via DELETE with admin auth header.",
+      "tags": [
+        "api-client",
+        "admin",
+        "posts"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/blogApi.ts:authHeaders",
+      "type": "function",
+      "name": "authHeaders",
+      "filePath": "src/lib/blogApi.ts",
+      "summary": "Builds request headers with the anon key Bearer token and optionally the x-admin-key header for admin operations.",
+      "tags": [
+        "auth",
+        "headers"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/lib/frontmatter.ts",
+      "type": "file",
+      "name": "frontmatter.ts",
+      "filePath": "src/lib/frontmatter.ts",
+      "summary": "Parses YAML frontmatter from raw markdown strings, extracting title, date, author, category, tags, readTime, and excerpt into a typed BlogPost metadata object.",
+      "tags": [
+        "markdown",
+        "frontmatter",
+        "parsing",
+        "yaml"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/frontmatter.ts:parseFrontmatter",
+      "type": "function",
+      "name": "parseFrontmatter",
+      "filePath": "src/lib/frontmatter.ts",
+      "summary": "Splits a raw markdown string on the --- delimiters and maps YAML key-value pairs to BlogPost metadata fields.",
+      "tags": [
+        "parsing",
+        "yaml",
+        "frontmatter"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/hooks/useBlogPost.ts",
+      "type": "file",
+      "name": "useBlogPost.ts",
+      "filePath": "src/hooks/useBlogPost.ts",
+      "summary": "Custom hook that fetches a single blog post by ID from the API. Skips the fetch when the post is already in memory with full content.",
+      "tags": [
+        "hook",
+        "data-fetching",
+        "posts"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/hooks/useBlogPost.ts:useBlogPost",
+      "type": "function",
+      "name": "useBlogPost",
+      "filePath": "src/hooks/useBlogPost.ts",
+      "summary": "Hook that returns the fetched post, loading state, and error for a given post ID.",
+      "tags": [
+        "hook",
+        "data-fetching"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/Admin.tsx",
+      "type": "file",
+      "name": "Admin.tsx",
+      "filePath": "src/components/Admin.tsx",
+      "summary": "Full-featured admin panel for creating, editing, and deleting blog posts. Only rendered in DEV. Includes markdown import from file, form validation, and auth key management.",
+      "tags": [
+        "admin",
+        "crud",
+        "dev-only",
+        "react-component"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/components/Admin.tsx:Admin",
+      "type": "function",
+      "name": "Admin",
+      "filePath": "src/components/Admin.tsx",
+      "summary": "Admin panel component managing auth, post CRUD forms, markdown file import, and post list with edit/delete actions.",
+      "tags": [
+        "react-component",
+        "admin"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/components/MigratePosts.tsx",
+      "type": "file",
+      "name": "MigratePosts.tsx",
+      "filePath": "src/components/MigratePosts.tsx",
+      "summary": "Admin sub-component providing a one-time migration UI to bulk-import posts from the old KV store to the new Postgres database.",
+      "tags": [
+        "admin",
+        "migration",
+        "dev-only",
+        "react-component"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/components/MigratePosts.tsx:MigratePosts",
+      "type": "function",
+      "name": "MigratePosts",
+      "filePath": "src/components/MigratePosts.tsx",
+      "summary": "Renders migration controls and status for bulk importing posts from legacy KV store.",
+      "tags": [
+        "react-component",
+        "migration"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "pipeline:.github/workflows/deploy.yml",
+      "type": "pipeline",
+      "name": "deploy.yml",
+      "filePath": ".github/workflows/deploy.yml",
+      "summary": "GitHub Actions workflow that builds the Vite app with Node 20 and deploys the dist artifact to GitHub Pages on every push to main, with concurrency control to cancel in-progress runs.",
+      "tags": [
+        "ci-cd",
+        "deployment",
+        "build-system",
+        "infrastructure"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "pipeline:.github/workflows/deploy.yml:build",
+      "type": "pipeline",
+      "name": "build",
+      "filePath": ".github/workflows/deploy.yml",
+      "summary": "CI job that checks out the repo, sets up Node 20 with npm cache, runs npm ci and npm run build, then uploads the dist directory as a Pages artifact.",
+      "tags": [
+        "ci-cd",
+        "build-system"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "pipeline:.github/workflows/deploy.yml:deploy",
+      "type": "pipeline",
+      "name": "deploy",
+      "filePath": ".github/workflows/deploy.yml",
+      "summary": "CI job that depends on the build job and deploys the uploaded Pages artifact to the github-pages environment using actions/deploy-pages.",
+      "tags": [
+        "ci-cd",
+        "deployment"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "README.md",
+      "summary": "Project overview: describes the React/Vite personal blog, available npm commands, and explains how admin write routes are protected by the BLOG_ADMIN_KEY Supabase secret.",
+      "tags": [
+        "documentation",
+        "setup",
+        "admin"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:AGENTS.md",
+      "type": "document",
+      "name": "AGENTS.md",
+      "filePath": "AGENTS.md",
+      "summary": "AI agent guidance file with project conventions and contribution notes for automated coding tools.",
+      "tags": [
+        "documentation",
+        "ai-agents"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:CLAUDE.md",
+      "type": "document",
+      "name": "CLAUDE.md",
+      "filePath": "CLAUDE.md",
+      "summary": "Claude Code project instructions: documents build commands, custom History API routing architecture, data layer hooks, backend Edge Function, admin panel, styling system, and Vite bundle strategy.",
+      "tags": [
+        "documentation",
+        "claude-code",
+        "architecture"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:.env.example",
+      "type": "config",
+      "name": ".env.example",
+      "filePath": ".env.example",
+      "summary": "Example environment file showing the VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY variables needed for local development.",
+      "tags": [
+        "config",
+        "environment",
+        "supabase"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:package.json",
+      "type": "config",
+      "name": "package.json",
+      "filePath": "package.json",
+      "summary": "npm project manifest defining dependencies (React 18, Hono, Supabase JS, react-markdown, KaTeX, lucide-react, sonner), devDependencies (Vite, TypeScript tooling), and dev/build scripts.",
+      "tags": [
+        "config",
+        "dependencies",
+        "npm"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:tsconfig.json",
+      "type": "config",
+      "name": "tsconfig.json",
+      "filePath": "tsconfig.json",
+      "summary": "TypeScript compiler configuration for the React/Vite project with strict mode, JSX transform, and path aliases.",
+      "tags": [
+        "config",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:index.html",
+      "type": "file",
+      "name": "index.html",
+      "filePath": "index.html",
+      "summary": "Vite HTML entry point with root div mount target, favicon link, and script module reference to src/main.tsx.",
+      "tags": [
+        "html",
+        "entry-point",
+        "vite"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "table:migration.sql:posts",
+      "type": "table",
+      "name": "posts",
+      "filePath": "migration.sql",
+      "summary": "Supabase Postgres migration creating the posts table with TEXT PK id, title, date, author, excerpt, content, read_time, tags TEXT[], category, and created_at TIMESTAMPTZ. Also includes RLS policies and data migration from legacy KV store.",
+      "tags": [
+        "database",
+        "schema",
+        "migration",
+        "supabase",
+        "postgres"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/components/About.tsx",
+      "type": "file",
+      "name": "About.tsx",
+      "filePath": "src/components/About.tsx",
+      "summary": "Static about page component with editorial layout displaying profile information, background, and links.",
+      "tags": [
+        "about",
+        "static",
+        "react-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/About.tsx:About",
+      "type": "function",
+      "name": "About",
+      "filePath": "src/components/About.tsx",
+      "summary": "Renders the static about page with profile and bio content.",
+      "tags": [
+        "react-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/Categories.tsx",
+      "type": "file",
+      "name": "Categories.tsx",
+      "filePath": "src/components/Categories.tsx",
+      "summary": "Aggregates post-to-category counts from the posts list and renders a clickable category list.",
+      "tags": [
+        "categories",
+        "aggregation",
+        "react-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/Categories.tsx:Categories",
+      "type": "function",
+      "name": "Categories",
+      "filePath": "src/components/Categories.tsx",
+      "summary": "Counts posts per category and renders clickable rows for navigation.",
+      "tags": [
+        "react-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/CodeBlock.tsx",
+      "type": "file",
+      "name": "CodeBlock.tsx",
+      "filePath": "src/components/CodeBlock.tsx",
+      "summary": "Syntax-highlighted code block component with a copy-to-clipboard button, custom editorial theme, and support for 10 programming languages.",
+      "tags": [
+        "syntax-highlighting",
+        "react-component",
+        "copy"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/components/CodeBlock.tsx:CodeBlock",
+      "type": "function",
+      "name": "CodeBlock",
+      "filePath": "src/components/CodeBlock.tsx",
+      "summary": "Renders a syntax-highlighted code block using react-syntax-highlighter with a copy button.",
+      "tags": [
+        "react-component"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/components/Tags.tsx",
+      "type": "file",
+      "name": "Tags.tsx",
+      "filePath": "src/components/Tags.tsx",
+      "summary": "Tag cloud aggregator that collects all unique tags from posts, sorts alphabetically, and renders clickable tag chips for navigation.",
+      "tags": [
+        "tags",
+        "aggregation",
+        "react-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/Tags.tsx:Tags",
+      "type": "function",
+      "name": "Tags",
+      "filePath": "src/components/Tags.tsx",
+      "summary": "Collects unique tags from all posts and renders a sorted clickable tag cloud.",
+      "tags": [
+        "react-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/data/fallbackPosts.ts",
+      "type": "file",
+      "name": "fallbackPosts.ts",
+      "filePath": "src/data/fallbackPosts.ts",
+      "summary": "Static array of 5 hardcoded BlogPost objects used as fallback data when the Supabase API is unavailable or returns an empty response.",
+      "tags": [
+        "fallback",
+        "data",
+        "offline"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/hooks/useBlogPosts.ts",
+      "type": "file",
+      "name": "useBlogPosts.ts",
+      "filePath": "src/hooks/useBlogPosts.ts",
+      "summary": "Custom hook that fetches the post list from the Supabase API, falls back to hardcoded fallbackPosts on error, and exposes a refreshPosts function.",
+      "tags": [
+        "hook",
+        "data-fetching",
+        "posts",
+        "fallback"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/hooks/useBlogPosts.ts:useBlogPosts",
+      "type": "function",
+      "name": "useBlogPosts",
+      "filePath": "src/hooks/useBlogPosts.ts",
+      "summary": "Returns blogPosts array, isLoading, error, and refreshPosts. Falls back to fallbackPosts on API failure.",
+      "tags": [
+        "hook",
+        "data-fetching"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/index.css",
+      "type": "file",
+      "name": "index.css",
+      "filePath": "src/index.css",
+      "summary": "Global stylesheet defining the editorial design system via CSS custom properties (--bg-surface, --text-tertiary, --border-default etc.), dark-mode toggle via .dark class on html, and named semantic classes (editorial, hero, prose, code-block-wrapper, meta, accent). Also includes Tailwind v4 layer directives.",
+      "tags": [
+        "css",
+        "design-system",
+        "dark-mode",
+        "tailwind"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/supabase/functions/server/index.tsx",
+      "type": "file",
+      "name": "server/index.tsx",
+      "filePath": "src/supabase/functions/server/index.tsx",
+      "summary": "Hono/Deno Edge Function serving the blog REST API. Routes under /make-server-860c354e/: GET /posts, GET /posts/:id, POST /posts, PUT /posts/:id, DELETE /posts/:id. Admin write routes require x-admin-key header. Maps DB read_time column to readTime in JSON responses.",
+      "tags": [
+        "backend",
+        "api",
+        "hono",
+        "deno",
+        "supabase",
+        "edge-function",
+        "crud"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/supabase/functions/server/index.tsx:getDB",
+      "type": "function",
+      "name": "getDB",
+      "filePath": "src/supabase/functions/server/index.tsx",
+      "summary": "Returns a Supabase client instance initialized with env vars SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.",
+      "tags": [
+        "database",
+        "supabase"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/supabase/functions/server/index.tsx:requireAdmin",
+      "type": "function",
+      "name": "requireAdmin",
+      "filePath": "src/supabase/functions/server/index.tsx",
+      "summary": "Hono middleware that validates the x-admin-key header against the BLOG_ADMIN_KEY env var. Returns 401 or 503 on failure.",
+      "tags": [
+        "auth",
+        "middleware",
+        "admin"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/supabase/functions/server/index.tsx:toPost",
+      "type": "function",
+      "name": "toPost",
+      "filePath": "src/supabase/functions/server/index.tsx",
+      "summary": "Maps a DB row (with snake_case read_time) to a camelCase BlogPost API response object.",
+      "tags": [
+        "serialization",
+        "mapping"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/supabase/functions/server/kv_store.tsx",
+      "type": "file",
+      "name": "kv_store.tsx",
+      "filePath": "src/supabase/functions/server/kv_store.tsx",
+      "summary": "Legacy KV store wrapper around Supabase (used by migration). Exports get, set, del, mset, mget, mdel, getByPrefix operations for the old key-value data store.",
+      "tags": [
+        "legacy",
+        "kv-store",
+        "supabase",
+        "migration"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/supabase/functions/server/kv_store.tsx:getClient",
+      "type": "function",
+      "name": "getClient",
+      "filePath": "src/supabase/functions/server/kv_store.tsx",
+      "summary": "Returns a singleton Supabase client for the KV store.",
+      "tags": [
+        "supabase",
+        "singleton"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:vite.config.ts",
+      "type": "config",
+      "name": "vite.config.ts",
+      "filePath": "vite.config.ts",
+      "summary": "Vite build configuration: React SWC plugin, dual gzip+brotli compression, terser minification, manual chunk splitting (react-vendor, markdown-vendor), @ path alias, dev server on port 3000.",
+      "tags": [
+        "vite",
+        "build",
+        "bundling",
+        "compression"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/vite-env.d.ts",
+      "type": "file",
+      "name": "vite-env.d.ts",
+      "filePath": "src/vite-env.d.ts",
+      "summary": "Vite client type reference declaration for import.meta.env typings.",
+      "tags": [
+        "typescript",
+        "types",
+        "vite"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:public/_headers",
+      "type": "config",
+      "name": "_headers",
+      "filePath": "public/_headers",
+      "summary": "Cloudflare Pages cache-control configuration: 1-year immutable cache for static assets and fonts, 1-month for images, no-cache for HTML and service worker files.",
+      "tags": [
+        "cloudflare",
+        "caching",
+        "deployment"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/404.html",
+      "type": "file",
+      "name": "404.html",
+      "filePath": "public/404.html",
+      "summary": "SPA redirect shim using the rafgraph/spa-github-pages technique: encodes the full URL into the query string for hosts that don't support server-side URL rewriting.",
+      "tags": [
+        "spa",
+        "github-pages",
+        "routing"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:posts/reading-the-volatility-surface.md",
+      "type": "document",
+      "name": "reading-the-volatility-surface.md",
+      "filePath": "posts/reading-the-volatility-surface.md",
+      "summary": "Technical blog post on implied volatility surfaces, SVI parameterization, and Python fitting code. Example markdown content for the admin import feature.",
+      "tags": [
+        "blog-post",
+        "content",
+        "finance",
+        "quant"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:src/Attributions.md",
+      "type": "document",
+      "name": "Attributions.md",
+      "filePath": "src/Attributions.md",
+      "summary": "Attribution credits for shadcn/ui (MIT license) and Unsplash image sources used in the project.",
+      "tags": [
+        "attribution",
+        "license"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:src/guidelines/Guidelines.md",
+      "type": "document",
+      "name": "Guidelines.md",
+      "filePath": "src/guidelines/Guidelines.md",
+      "summary": "Figma Make guideline template (mostly commented out), with project-specific design guidelines for the blog.",
+      "tags": [
+        "design",
+        "guidelines"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:src/main.tsx",
+      "target": "file:src/App.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.9
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/hooks/useRouter.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/components/BlogHeader.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/components/Footer.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/components/AdminGate.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "function:src/App.tsx:App",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "function:src/App.tsx:getInitialTheme",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/hooks/useRouter.ts",
+      "target": "function:src/hooks/useRouter.ts:useRouter",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/hooks/useRouter.ts",
+      "target": "function:src/hooks/useRouter.ts:parsePath",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/hooks/useRouter.ts",
+      "target": "function:src/hooks/useRouter.ts:pushPath",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/adminSession.ts",
+      "target": "function:src/lib/adminSession.ts:getAdminKey",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/adminSession.ts",
+      "target": "function:src/lib/adminSession.ts:setAdminKey",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/adminSession.ts",
+      "target": "function:src/lib/adminSession.ts:clearAdminKey",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/components/AdminGate.tsx",
+      "target": "function:src/components/AdminGate.tsx:AdminGate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/components/AdminGate.tsx",
+      "target": "file:src/lib/adminSession.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/BlogHeader.tsx",
+      "target": "function:src/components/BlogHeader.tsx:BlogHeader",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/components/Footer.tsx",
+      "target": "function:src/components/Footer.tsx:Footer",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/components/Footer.tsx",
+      "target": "file:src/components/XIcon.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/App.tsx:App",
+      "target": "function:src/hooks/useRouter.ts:useRouter",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/components/Archives.tsx",
+      "target": "function:src/components/Archives.tsx:Archives",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/components/Article.tsx",
+      "target": "function:src/components/Article.tsx:Article",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/components/Article.tsx",
+      "target": "function:src/components/Article.tsx:slugify",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/components/Article.tsx",
+      "target": "function:src/components/Article.tsx:extractH2s",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/components/Article.tsx",
+      "target": "function:src/components/Article.tsx:loadKatexCSS",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/components/BlogPost.tsx",
+      "target": "function:src/components/BlogPost.tsx:BlogPost",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/components/CategoryArticles.tsx",
+      "target": "function:src/components/CategoryArticles.tsx:CategoryArticles",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/components/TaggedArticles.tsx",
+      "target": "function:src/components/TaggedArticles.tsx:TaggedArticles",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/components/YearGroupedList.tsx",
+      "target": "function:src/components/YearGroupedList.tsx:YearGroupedList",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/components/Archives.tsx",
+      "target": "file:src/components/YearGroupedList.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/CategoryArticles.tsx",
+      "target": "file:src/components/YearGroupedList.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/TaggedArticles.tsx",
+      "target": "file:src/components/YearGroupedList.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/YearGroupedList.tsx",
+      "target": "file:src/components/BlogPost.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/BlogPost.tsx",
+      "target": "file:src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/Article.tsx",
+      "target": "file:src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/components/Article.tsx:extractH2s",
+      "target": "function:src/components/Article.tsx:slugify",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/lib/blogApi.ts",
+      "target": "function:src/lib/blogApi.ts:listPosts",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/blogApi.ts",
+      "target": "function:src/lib/blogApi.ts:getPost",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/blogApi.ts",
+      "target": "function:src/lib/blogApi.ts:createPost",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/blogApi.ts",
+      "target": "function:src/lib/blogApi.ts:updatePost",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/blogApi.ts",
+      "target": "function:src/lib/blogApi.ts:deletePost",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/blogApi.ts",
+      "target": "function:src/lib/blogApi.ts:authHeaders",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/frontmatter.ts",
+      "target": "function:src/lib/frontmatter.ts:parseFrontmatter",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/hooks/useBlogPost.ts",
+      "target": "function:src/hooks/useBlogPost.ts:useBlogPost",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/components/Admin.tsx",
+      "target": "function:src/components/Admin.tsx:Admin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/components/MigratePosts.tsx",
+      "target": "function:src/components/MigratePosts.tsx:MigratePosts",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/blogApi.ts",
+      "target": "file:src/lib/adminSession.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/lib/blogApi.ts",
+      "target": "file:src/utils/supabase/info.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/lib/blogApi.ts",
+      "target": "file:src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/lib/frontmatter.ts",
+      "target": "file:src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/hooks/useBlogPost.ts",
+      "target": "file:src/lib/blogApi.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/hooks/useBlogPost.ts",
+      "target": "file:src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/Admin.tsx",
+      "target": "file:src/lib/blogApi.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/Admin.tsx",
+      "target": "file:src/lib/adminSession.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/Admin.tsx",
+      "target": "file:src/lib/frontmatter.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/Admin.tsx",
+      "target": "file:src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/MigratePosts.tsx",
+      "target": "file:src/lib/blogApi.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/lib/blogApi.ts:createPost",
+      "target": "function:src/lib/blogApi.ts:authHeaders",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/lib/blogApi.ts:updatePost",
+      "target": "function:src/lib/blogApi.ts:authHeaders",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/lib/blogApi.ts:deletePost",
+      "target": "function:src/lib/blogApi.ts:authHeaders",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "pipeline:.github/workflows/deploy.yml",
+      "target": "pipeline:.github/workflows/deploy.yml:build",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "pipeline:.github/workflows/deploy.yml",
+      "target": "pipeline:.github/workflows/deploy.yml:deploy",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "document:CLAUDE.md",
+      "target": "document:README.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:package.json",
+      "target": "file:index.html",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:tsconfig.json",
+      "target": "file:src/vite-env.d.ts",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "table:migration.sql:posts",
+      "target": "file:src/types.ts",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/components/About.tsx",
+      "target": "function:src/components/About.tsx:About",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/components/Categories.tsx",
+      "target": "function:src/components/Categories.tsx:Categories",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/components/CodeBlock.tsx",
+      "target": "function:src/components/CodeBlock.tsx:CodeBlock",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/components/Tags.tsx",
+      "target": "function:src/components/Tags.tsx:Tags",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/hooks/useBlogPosts.ts",
+      "target": "function:src/hooks/useBlogPosts.ts:useBlogPosts",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/supabase/functions/server/index.tsx",
+      "target": "function:src/supabase/functions/server/index.tsx:getDB",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/supabase/functions/server/index.tsx",
+      "target": "function:src/supabase/functions/server/index.tsx:requireAdmin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/supabase/functions/server/index.tsx",
+      "target": "function:src/supabase/functions/server/index.tsx:toPost",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/supabase/functions/server/kv_store.tsx",
+      "target": "function:src/supabase/functions/server/kv_store.tsx:getClient",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/hooks/useBlogPosts.ts",
+      "target": "file:src/data/fallbackPosts.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/hooks/useBlogPosts.ts",
+      "target": "file:src/lib/blogApi.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/hooks/useBlogPosts.ts",
+      "target": "file:src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/CodeBlock.tsx",
+      "target": "file:src/index.css",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/supabase/functions/server/index.tsx",
+      "target": "table:migration.sql:posts",
+      "type": "reads_from",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/supabase/functions/server/index.tsx",
+      "target": "table:migration.sql:posts",
+      "type": "writes_to",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:vite.config.ts",
+      "target": "file:src/vite-env.d.ts",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:public/_headers",
+      "target": "file:public/404.html",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/data/fallbackPosts.ts",
+      "target": "file:src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "pipeline:.github/workflows/deploy.yml",
+      "target": "config:vite.config.ts",
+      "type": "triggers",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/components/YearGroupedList.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/hooks/useBlogPost.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/hooks/useBlogPosts.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/components/Admin.tsx",
+      "target": "file:src/components/MigratePosts.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/components/Archives.tsx",
+      "target": "file:src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/components/CategoryArticles.tsx",
+      "target": "file:src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/components/TaggedArticles.tsx",
+      "target": "file:src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/components/YearGroupedList.tsx",
+      "target": "file:src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/main.tsx",
+      "target": "file:src/index.css",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    }
+  ],
+  "layers": [
+    {
+      "id": "layer:app-shell",
+      "name": "Application Shell",
+      "description": "Vite/React entry points, the root App component that owns custom History API routing, and the global editorial design system CSS that all views inherit.",
+      "nodeIds": [
+        "file:index.html",
+        "file:src/main.tsx",
+        "file:src/App.tsx",
+        "file:src/hooks/useRouter.ts",
+        "file:src/index.css",
+        "file:src/types.ts",
+        "file:src/vite-env.d.ts"
+      ]
+    },
+    {
+      "id": "layer:ui",
+      "name": "UI Components",
+      "description": "All reader-facing React view components — article rendering with KaTeX and syntax highlighting, navigation, archive/tag/category pages, shared layout primitives, and the post-row card.",
+      "nodeIds": [
+        "file:src/components/BlogHeader.tsx",
+        "file:src/components/Footer.tsx",
+        "file:src/components/XIcon.tsx",
+        "file:src/components/Archives.tsx",
+        "file:src/components/Article.tsx",
+        "file:src/components/BlogPost.tsx",
+        "file:src/components/CategoryArticles.tsx",
+        "file:src/components/TaggedArticles.tsx",
+        "file:src/components/YearGroupedList.tsx",
+        "file:src/components/About.tsx",
+        "file:src/components/Categories.tsx",
+        "file:src/components/CodeBlock.tsx",
+        "file:src/components/Tags.tsx"
+      ]
+    },
+    {
+      "id": "layer:admin",
+      "name": "Admin Panel",
+      "description": "Development-only admin UI for post CRUD, session key management, the KV-to-Postgres one-time migration wizard, and the floating gate button that surfaces the panel.",
+      "nodeIds": [
+        "file:src/components/Admin.tsx",
+        "file:src/components/AdminGate.tsx",
+        "file:src/components/MigratePosts.tsx",
+        "file:src/lib/adminSession.ts"
+      ]
+    },
+    {
+      "id": "layer:data-client",
+      "name": "Data & API Client",
+      "description": "React hooks for fetching the post list and individual posts, the HTTP client that wraps the Supabase Edge Function REST API, the YAML frontmatter parser for markdown import, the static fallback dataset, and the autogenerated Supabase project credentials.",
+      "nodeIds": [
+        "file:src/hooks/useBlogPosts.ts",
+        "file:src/hooks/useBlogPost.ts",
+        "file:src/lib/blogApi.ts",
+        "file:src/lib/frontmatter.ts",
+        "file:src/data/fallbackPosts.ts",
+        "file:src/utils/supabase/info.tsx"
+      ]
+    },
+    {
+      "id": "layer:backend",
+      "name": "Backend Edge Function",
+      "description": "Hono/Deno REST API deployed as a Supabase Edge Function that handles all blog post CRUD against Postgres, plus the legacy KV store wrapper retained for the migration path.",
+      "nodeIds": [
+        "file:src/supabase/functions/server/index.tsx",
+        "file:src/supabase/functions/server/kv_store.tsx"
+      ]
+    },
+    {
+      "id": "layer:infrastructure",
+      "name": "Infrastructure & CI/CD",
+      "description": "GitHub Actions workflow that builds the Vite bundle and deploys it to GitHub Pages, SPA routing shim for static hosts, and Cloudflare cache-control header rules.",
+      "nodeIds": [
+        "pipeline:.github/workflows/deploy.yml",
+        "pipeline:.github/workflows/deploy.yml:build",
+        "pipeline:.github/workflows/deploy.yml:deploy",
+        "file:public/404.html",
+        "config:public/_headers"
+      ]
+    },
+    {
+      "id": "layer:config-and-docs",
+      "name": "Configuration & Documentation",
+      "description": "Project build configuration (Vite, TypeScript, npm, environment variables), the Postgres schema and migration SQL, and all project documentation including developer guides, attribution notices, and sample blog content.",
+      "nodeIds": [
+        "config:package.json",
+        "config:tsconfig.json",
+        "config:vite.config.ts",
+        "config:.env.example",
+        "table:migration.sql:posts",
+        "document:README.md",
+        "document:AGENTS.md",
+        "document:CLAUDE.md",
+        "document:posts/reading-the-volatility-surface.md",
+        "document:src/Attributions.md",
+        "document:src/guidelines/Guidelines.md"
+      ]
+    }
+  ],
+  "tour": [
+    {
+      "order": 1,
+      "title": "Project Overview",
+      "description": "README.md is the best starting point for understanding what this project is and how to operate it. It describes a React/Vite personal blog backed by Supabase, explains the admin authentication model (BLOG_ADMIN_KEY stored only in sessionStorage, never baked into the client bundle), and gives the two commands you need to run the project locally. Reading this first establishes the mental model for every architectural decision you will encounter in later steps.",
+      "nodeIds": [
+        "document:README.md"
+      ]
+    },
+    {
+      "order": 2,
+      "title": "HTML Shell & Entry Point",
+      "description": "index.html is the single HTML document that Vite uses as its build root — it contains nothing but a `<div id=\"root\">` and a `<script type=\"module\">` tag pointing at `src/main.tsx`. `main.tsx` is the true JavaScript entry point: it wraps the React tree in `StrictMode` and mounts it into that root element. These two files together define the absolute boundary between the browser's native document and the React application that takes over from there.",
+      "nodeIds": [
+        "file:index.html",
+        "file:src/main.tsx"
+      ]
+    },
+    {
+      "order": 3,
+      "title": "Build & Dependency Configuration",
+      "description": "vite.config.ts configures how the application is compiled and bundled: it enables the SWC-based React plugin (faster than Babel), applies brotli and gzip compression to all emitted assets, and defines manual chunk splits that put React into `react-vendor` and markdown rendering libraries into `markdown-vendor`. package.json declares the full dependency set — React, Hono, the Supabase JS client, react-markdown, KaTeX, and sonner — revealing at a glance the entire technology stack before reading a single component.",
+      "nodeIds": [
+        "config:vite.config.ts",
+        "config:package.json"
+      ]
+    },
+    {
+      "order": 4,
+      "title": "Shared Domain Types",
+      "description": "types.ts defines the `BlogPost` interface that is imported by 14 different files — the highest fan-in of any node in the entire codebase. This single file is the contract that keeps the frontend hooks, UI components, admin panel, and Supabase Edge Function all speaking the same language. Understanding the fields on `BlogPost` (id, title, date, author, excerpt, content, readTime, tags, category) is a prerequisite for understanding every other part of the system.",
+      "nodeIds": [
+        "file:src/types.ts"
+      ]
+    },
+    {
+      "order": 5,
+      "title": "Application Shell & Routing",
+      "description": "App.tsx is the architectural centrepiece with the highest fan-out (15 imports), acting as the composition root that wires together routing, data fetching, and lazy-loaded views. Rather than a third-party router, routing is implemented as a lightweight custom hook in useRouter.ts: `parsePath()` maps `window.location.pathname` to a `ViewType`, `pushPath()` updates history, and a `popstate` listener handles browser back/forward. This pairing of App.tsx and useRouter.ts forms the entire navigation layer of the SPA without any external routing dependency.",
+      "nodeIds": [
+        "file:src/App.tsx",
+        "file:src/hooks/useRouter.ts"
+      ]
+    },
+    {
+      "order": 6,
+      "title": "Editorial Design System",
+      "description": "index.css defines the visual identity of the entire blog through CSS custom properties (`--bg-surface`, `--text-tertiary`, `--border-default`, etc.) that switch values when a `dark` class is added to `<html>`. Named semantic classes like `editorial`, `meta`, `hero`, and `accent` are defined here and map to the typographic and spacing conventions of the editorial tone. This file is the single source of truth for visual consistency — understanding it explains why so few components contain raw Tailwind colour utilities.",
+      "nodeIds": [
+        "file:src/index.css"
+      ]
+    },
+    {
+      "order": 7,
+      "title": "Data Fetching Hooks",
+      "description": "useBlogPosts.ts and useBlogPost.ts are the two React hooks that connect the UI to the Supabase backend. `useBlogPosts` fetches the full post list (with content stripped server-side for performance) and falls back transparently to the five hardcoded posts in fallbackPosts.ts when the network request fails. `useBlogPost(id)` fetches a single post's full content but skips the request when the list hook already hydrated it. Together they implement a lightweight caching strategy that avoids redundant fetches without a dedicated cache library.",
+      "nodeIds": [
+        "file:src/hooks/useBlogPosts.ts",
+        "file:src/hooks/useBlogPost.ts",
+        "file:src/data/fallbackPosts.ts"
+      ]
+    },
+    {
+      "order": 8,
+      "title": "API Client & Supabase Credentials",
+      "description": "blogApi.ts is the HTTP client that mediates all communication with the Supabase Edge Function. It exposes five functions — `listPosts`, `getPost`, `createPost`, `updatePost`, `deletePost` — all routed to the `/make-server-860c354e/` prefix. The Supabase project ID and anon key are imported from info.tsx, an autogenerated file that should never be hand-edited. Write operations pass the admin key from sessionStorage via an `Authorization` header, keeping it out of the source tree.",
+      "nodeIds": [
+        "file:src/lib/blogApi.ts",
+        "file:src/utils/supabase/info.tsx"
+      ]
+    },
+    {
+      "order": 9,
+      "title": "Navigation & Chrome",
+      "description": "BlogHeader.tsx renders the persistent top navigation bar: site links, the dark-mode toggle that writes the `dark` class to `<html>`, and a responsive mobile menu. Footer.tsx provides the site footer with social links, including the XIcon.tsx SVG component. These two files bookend every page view and are the only components that deal with global UI state (theme) — everything between them is route-specific content.",
+      "nodeIds": [
+        "file:src/components/BlogHeader.tsx",
+        "file:src/components/Footer.tsx"
+      ]
+    },
+    {
+      "order": 10,
+      "title": "Post List Primitives",
+      "description": "YearGroupedList.tsx and BlogPost.tsx are the shared display primitives for every list of posts in the app. `YearGroupedList` sorts posts by year, groups them under a year heading, and renders each entry as a `BlogPost` row. Three different views — Archives, CategoryArticles, and TaggedArticles — all delegate to `YearGroupedList`, which is why it has the third-highest fan-in in the codebase. This composition pattern means the year-grouping behaviour only needs to be maintained in one place.",
+      "nodeIds": [
+        "file:src/components/YearGroupedList.tsx",
+        "file:src/components/BlogPost.tsx",
+        "file:src/components/Archives.tsx",
+        "file:src/components/CategoryArticles.tsx",
+        "file:src/components/TaggedArticles.tsx"
+      ]
+    },
+    {
+      "order": 11,
+      "title": "Article Renderer",
+      "description": "Article.tsx is the most feature-rich component: it renders the full content of a post by parsing its markdown, then dynamically importing KaTeX for math rendering only when the content contains `$...$` expressions, and importing the syntax highlighter only when fenced code blocks are present. This on-demand loading is powered by CodeBlock.tsx, which wraps the highlighted output with a copy-to-clipboard button. Posts without math or code pay zero bundle cost for those heavy libraries.",
+      "nodeIds": [
+        "file:src/components/Article.tsx",
+        "file:src/components/CodeBlock.tsx"
+      ]
+    },
+    {
+      "order": 12,
+      "title": "Postgres Schema & Backend API",
+      "description": "The `posts` table in migration.sql is the persistent store that backs the entire blog: columns for id, title, date, author, excerpt, content, read_time, tags (TEXT[]), and category map exactly to the `BlogPost` interface from Step 4. The Hono/Deno Edge Function in server/index.tsx exposes these rows over HTTP — it handles all CRUD routes, enforces admin-key auth on write operations via a `toPost()` helper that translates the snake_case database column `read_time` into the camelCase `readTime` the frontend expects.",
+      "nodeIds": [
+        "table:migration.sql:posts",
+        "file:src/supabase/functions/server/index.tsx"
+      ]
+    },
+    {
+      "order": 13,
+      "title": "Admin Panel",
+      "description": "Admin.tsx is the dev-only CRUD interface for managing posts — it surfaces only when `import.meta.env.DEV` is true. It orchestrates the full write path: authenticating via the sessionStorage key managed by adminSession.ts, parsing YAML frontmatter from dropped `.md` files via frontmatter.ts, and calling the write endpoints in blogApi.ts. AdminGate.tsx provides the floating `+` button that opens the panel, and MigratePosts.tsx is a one-time utility that moved posts from the legacy Deno KV store into Postgres.",
+      "nodeIds": [
+        "file:src/components/AdminGate.tsx",
+        "file:src/components/Admin.tsx",
+        "file:src/lib/adminSession.ts",
+        "file:src/lib/frontmatter.ts"
+      ]
+    },
+    {
+      "order": 14,
+      "title": "Deployment Pipeline",
+      "description": "deploy.yml defines the two-job GitHub Actions workflow that ships the blog to GitHub Pages on every push to main. The `build` job installs dependencies with `npm ci` (reproducible installs from the lockfile), runs `npm run build`, and uploads the `dist/` directory as a Pages artifact. The `deploy` job then publishes that artifact to the `github-pages` environment. The `_headers` config file in `public/` tells Cloudflare to cache static assets for one year and never cache the HTML — so users always get the freshest entry point but benefit from long-lived asset caches.",
+      "nodeIds": [
+        "pipeline:.github/workflows/deploy.yml",
+        "config:public/_headers"
+      ]
+    },
+    {
+      "order": 15,
+      "title": "Content & SPA Resilience",
+      "description": "public/404.html is the SPA routing shim: when GitHub Pages (or any static host) receives a request for a URL like `/archives` that has no corresponding file, it serves 404.html instead of the index. The shim encodes the original path into a query string and redirects to `index.html`, where the client-side router in useRouter.ts (Step 5) reconstructs the intended view. The sample post in `posts/reading-the-volatility-surface.md` demonstrates the YAML frontmatter format that Admin.tsx's import feature parses, closing the loop between the authoring workflow and the rendering pipeline.",
+      "nodeIds": [
+        "file:public/404.html",
+        "document:posts/reading-the-volatility-surface.md"
+      ]
+    }
+  ]
+}
