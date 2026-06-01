@@ -68,24 +68,26 @@ export default function App() {
         onToggleTheme={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}
       />
 
-      {/* Admin access button — quiet styling */}
-      <button
-        onClick={() => navigate('admin')}
-        title="Admin Panel"
-        style={{
-          position: 'fixed', bottom: '20px', right: '20px',
-          width: '34px', height: '34px',
-          borderRadius: '999px',
-          background: 'var(--bg-surface)',
-          color: 'var(--text-tertiary)',
-          border: '0.5px solid var(--border-default)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          cursor: 'pointer', zIndex: 50,
-          fontFamily: 'var(--font-mono)', fontSize: '16px', lineHeight: 1,
-        }}
-      >
-        +
-      </button>
+      {/* Admin access button — dev only */}
+      {import.meta.env.DEV && (
+        <button
+          onClick={() => navigate('admin')}
+          title="Admin Panel"
+          style={{
+            position: 'fixed', bottom: '20px', right: '20px',
+            width: '34px', height: '34px',
+            borderRadius: '999px',
+            background: 'var(--bg-surface)',
+            color: 'var(--text-tertiary)',
+            border: '0.5px solid var(--border-default)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', zIndex: 50,
+            fontFamily: 'var(--font-mono)', fontSize: '16px', lineHeight: 1,
+          }}
+        >
+          +
+        </button>
+      )}
 
       {currentView === 'home' ? (
         <main className="editorial fade-in">
