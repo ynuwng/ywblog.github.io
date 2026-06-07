@@ -1529,10 +1529,10 @@ html {
 
 /* ---------- Tokens ---------- */
 :root {
-  /* Heading + Body: Inter · Code: JetBrains Mono */
-  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
-  --font-serif:   'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
-  --font-sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  /* Heading + Body: DM Sans + Noto Sans SC · Code: JetBrains Mono */
+  --font-heading: 'DM Sans', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --font-serif:   'DM Sans', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --font-sans:    'DM Sans', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
   --font-mono:  'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Monaco,
                 Consolas, monospace;
 
@@ -1807,17 +1807,17 @@ body {
 
 /* ---------- Homepage hero ---------- */
 .hero {
-  font-family: var(--font-heading);
+  font-family: 'Dancing Script', var(--font-heading);
   font-size: var(--text-display);
   line-height: 1.2;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
   color: var(--text-primary);
   font-weight: 400;
   margin: 0 0 14px;
 }
 .hero-tagline {
   font-family: var(--font-serif);
-  font-size: 19px;                         /* matches body, italic */
+  font-size: 17px;
   line-height: 1.5;
   color: var(--text-secondary);
   font-style: italic;

@@ -97,33 +97,8 @@ export function Article({ post, onCategoryClick, onTagClick }: ArticleProps) {
 
   return (
     <div className={showRails ? 'layout fade-in' : 'fade-in'}>
-      {/* Left rail: TOC */}
-      {showRails && (
-        <aside className="left-rail">
-          <div className="rail-section">
-            <h3 className="rail-label">Contents</h3>
-            <div className="rail-body">
-              {outline.map((h, i) => (
-                <div key={h.id} style={{ marginBottom: '6px', display: 'flex', gap: '8px' }}>
-                  <span className="mono" style={{ color: 'var(--text-tertiary)', fontSize: '11px' }}>
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <a
-                    href={`#${h.id}`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const el = document.getElementById(h.id);
-                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }}
-                  >
-                    {h.text}
-                  </a>
-                </div>
-              ))}
-            </div>
-          </div>
-        </aside>
-      )}
+      {/* Left rail — empty stub; reserved for future use */}
+      {showRails && <aside className="left-rail" />}
 
       <article className={showRails ? 'main-col' : 'editorial main-col-narrow'}>
         {/* Header */}
@@ -316,8 +291,33 @@ export function Article({ post, onCategoryClick, onTagClick }: ArticleProps) {
         </div>
       </article>
 
-      {/* Right rail — empty stub; reserved for footnotes / references */}
-      {showRails && <aside className="right-rail" />}
+      {/* Right rail: TOC */}
+      {showRails && (
+        <aside className="right-rail">
+          <div className="rail-section">
+            <h3 className="rail-label">Contents</h3>
+            <div className="rail-body">
+              {outline.map((h, i) => (
+                <div key={h.id} style={{ marginBottom: '6px', display: 'flex', gap: '8px' }}>
+                  <span className="mono" style={{ color: 'var(--text-tertiary)', fontSize: '11px' }}>
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <a
+                    href={`#${h.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const el = document.getElementById(h.id);
+                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }}
+                  >
+                    {h.text}
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+        </aside>
+      )}
     </div>
   );
 }

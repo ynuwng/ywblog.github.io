@@ -1,5 +1,5 @@
 -- Run this in the Supabase SQL editor:
--- https://supabase.com/dashboard/project/ktdhmushfpfkfcbgqgqi/sql
+-- https://supabase.com/dashboard/project/qmocohsuzslotpuaazlk/sql
 
 -- Step 1: create the posts table
 CREATE TABLE IF NOT EXISTS posts (
