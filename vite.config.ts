@@ -7,6 +7,16 @@ import viteCompression from 'vite-plugin-compression';
 export default defineConfig({
   plugins: [
     react(),
+    // Strip the auto-generated modulepreload hint for markdown-vendor.
+    // The chunk is kept separate so react-markdown/remark-gfm have their own
+    // cache hash (Article.tsx changes don't invalidate them), but we don't want
+    // to preload 45KB of markdown libs on every page — only article views need them.
+    {
+      name: 'no-markdown-preload',
+      transformIndexHtml(html: string) {
+        return html.replace(/\s*<link rel="modulepreload"[^>]*markdown-vendor[^>]*>/g, '');
+      },
+    },
     // Gzip compression for all assets
     viteCompression({
       verbose: true,
@@ -55,6 +65,7 @@ export default defineConfig({
         // — articles without math/code never pay for them.
         manualChunks: {
           'react-vendor': ['react', 'react-dom'],
+          'markdown-vendor': ['react-markdown', 'remark-gfm'],
         },
       },
     },

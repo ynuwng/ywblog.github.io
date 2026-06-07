@@ -49,22 +49,20 @@ export default function App() {
     navigate, goArticle, goTag, goCategory, goHome, goTags, goCategories,
   } = useRouter();
 
-  const { blogPosts, loading, refreshPosts } = useBlogPosts();
+  const { blogPosts, refreshPosts } = useBlogPosts();
 
   const postInList = blogPosts.find(p => p.id === selectedArticle);
-  const hasContent = Boolean(postInList?.content);
 
-  // only fetch individually when the list view didn't already include content
   const { post: fetchedPost, loading: loadingArticle } = useBlogPost(
     currentView === 'article' ? selectedArticle : null,
-    { enabled: !hasContent }
   );
 
-  const currentArticle = hasContent ? postInList : fetchedPost;
+  // fetchedPost has full content; fall back to list metadata when API is down
+  const currentArticle = fetchedPost ?? postInList ?? null;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {import.meta.env.DEV && DevToaster && (
+      {DevToaster && (
         <Suspense fallback={null}><DevToaster position="top-right" /></Suspense>
       )}
       <BlogHeader
@@ -103,22 +101,7 @@ export default function App() {
             notes, derivations, and the occasional dead end.
           </p>
 
-          {!loading && blogPosts.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '3rem 0' }}>
-              <p className="text-secondary" style={{ marginBottom: '1.25rem' }}>No posts yet.</p>
-              {import.meta.env.DEV && (
-                <button
-                  onClick={() => navigate('admin')}
-                  className="accent"
-                  style={{ background: 'none', border: 0, cursor: 'pointer', font: 'inherit' }}
-                >
-                  Create your first post
-                </button>
-              )}
-            </div>
-          ) : (
-            <YearGroupedList posts={blogPosts} onClick={goArticle} onTagClick={goTag} />
-          )}
+          <YearGroupedList posts={blogPosts} onClick={goArticle} onTagClick={goTag} />
         </main>
       ) : currentView === 'archives' ? (
         <Suspense fallback={<LoadingSpinner />}>
