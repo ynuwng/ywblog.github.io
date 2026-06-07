@@ -55,7 +55,6 @@ export default defineConfig({
         // — articles without math/code never pay for them.
         manualChunks: {
           'react-vendor': ['react', 'react-dom'],
-          'markdown-vendor': ['react-markdown', 'remark-gfm'],
         },
       },
     },

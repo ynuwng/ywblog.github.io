@@ -3,10 +3,14 @@ import { YearGroupedList } from './components/YearGroupedList';
 import { Footer } from './components/Footer';
 import { AdminGate } from './components/AdminGate';
 import { useState, useEffect, lazy, Suspense } from 'react';
-import { Toaster } from 'sonner';
 import { useBlogPosts } from './hooks/useBlogPosts';
 import { useBlogPost } from './hooks/useBlogPost';
 import { useRouter } from './hooks/useRouter';
+
+// Sonner is only needed for admin toasts — exclude from production bundle entirely.
+const DevToaster = import.meta.env.DEV
+  ? lazy(() => import('sonner').then(m => ({ default: m.Toaster })))
+  : null;
 
 type Theme = 'light' | 'dark';
 
@@ -60,7 +64,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Toaster position="top-right" />
+      {import.meta.env.DEV && DevToaster && (
+        <Suspense fallback={null}><DevToaster position="top-right" /></Suspense>
+      )}
       <BlogHeader
         onNavigate={navigate}
         currentView={currentView}
