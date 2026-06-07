@@ -97,9 +97,7 @@ export default function App() {
             notes, derivations, and the occasional dead end.
           </p>
 
-          {loading ? (
-            <p className="meta" style={{ textAlign: 'center', padding: '3rem 0' }}>Loading posts…</p>
-          ) : blogPosts.length === 0 ? (
+          {!loading && blogPosts.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '3rem 0' }}>
               <p className="text-secondary" style={{ marginBottom: '1.25rem' }}>No posts yet.</p>
               {import.meta.env.DEV && (
