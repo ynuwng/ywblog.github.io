@@ -6,6 +6,7 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { useBlogPosts } from './hooks/useBlogPosts';
 import { useBlogPost } from './hooks/useBlogPost';
 import { useRouter } from './hooks/useRouter';
+import { articlePath, findPostByArticleKey } from './lib/articleSlugs';
 
 // Sonner is only needed for admin toasts — exclude from production bundle entirely.
 const DevToaster = import.meta.env.DEV
@@ -49,19 +50,25 @@ export default function App() {
     navigate, goArticle, goTag, goCategory, goHome, goTags, goCategories,
   } = useRouter();
 
-  const { blogPosts, refreshPosts } = useBlogPosts();
+  const { blogPosts, refreshPosts, loading: loadingPosts } = useBlogPosts();
 
-  const postInList = blogPosts.find(p => p.id === selectedArticle);
+  const postInList = findPostByArticleKey(blogPosts, selectedArticle);
+  const articleId = postInList?.id ?? selectedArticle;
 
   const initialArticle = postInList?.content ? postInList : null;
 
   const { post: fetchedPost, loading: loadingArticle } = useBlogPost(
-    currentView === 'article' ? selectedArticle : null,
+    currentView === 'article' ? articleId : null,
     initialArticle,
   );
 
   // fetchedPost has full content; fall back to list metadata when API is down
   const currentArticle = fetchedPost ?? postInList ?? null;
+
+  useEffect(() => {
+    if (currentView !== 'article' || !currentArticle || selectedArticle !== currentArticle.id) return;
+    window.history.replaceState(null, '', articlePath(currentArticle));
+  }, [currentView, currentArticle, selectedArticle]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -119,7 +126,7 @@ export default function App() {
           <About />
         </Suspense>
       ) : currentView === 'article' ? (
-        loadingArticle && !currentArticle?.content ? (
+        (loadingPosts || loadingArticle) && !currentArticle?.content ? (
           <div className="editorial" style={{ padding: '4rem 0', textAlign: 'center' }}>
             <p className="meta">Loading article…</p>
           </div>
