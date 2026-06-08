@@ -2108,6 +2108,9 @@ body {
 .prose .katex-display > .katex { font-size: 1em; }
 .prose .katex {
   font-family: KaTeX_Main, 'Times New Roman', serif;
+  font-size: 1.08em;
+  line-height: 1;
+  vertical-align: -0.04em;
 }
 .prose .katex,
 .prose .katex * {
@@ -2115,6 +2118,13 @@ body {
   overflow-wrap: normal;
   word-break: normal;
   text-wrap: nowrap;
+}
+.prose .katex-display > .katex {
+  font-size: 1em;
+  vertical-align: 0;
+}
+.prose em .katex {
+  font-style: normal;
 }
 .prose .katex .tag {
   font-family: var(--font-mono) !important;
