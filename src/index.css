@@ -1529,11 +1529,11 @@ html {
 
 /* ---------- Tokens ---------- */
 :root {
-  /* Heading + Body: DM Sans + Noto Sans SC · Code: JetBrains Mono */
-  --font-heading: 'DM Sans', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
-  --font-serif:   'DM Sans', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
-  --font-sans:    'DM Sans', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
-  --font-mono:  'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Monaco,
+  /* System stacks avoid external font downloads on the critical path. */
+  --font-heading: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', sans-serif;
+  --font-serif:   -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', sans-serif;
+  --font-sans:    -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', sans-serif;
+  --font-mono:  ui-monospace, 'SF Mono', Menlo, Monaco,
                 Consolas, monospace;
 
   /* Surfaces */
@@ -1807,7 +1807,7 @@ body {
 
 /* ---------- Homepage hero ---------- */
 .hero {
-  font-family: 'Dancing Script', var(--font-heading);
+  font-family: var(--font-heading);
   font-size: var(--text-display);
   line-height: 1.2;
   letter-spacing: 0;
@@ -2332,4 +2332,3 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .fade-in { animation: none; }
   * { transition: none !important; }
 }
-
