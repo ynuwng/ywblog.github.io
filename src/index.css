@@ -1527,6 +1527,14 @@ html {
    Single source of truth for tokens, typography, and components.
    ===================================================================== */
 
+@font-face {
+  font-family: 'Dancing Script Yuan';
+  src: url('/fonts/dancing-script-latin.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
 /* ---------- Tokens ---------- */
 :root {
   /* System stacks avoid external font downloads on the critical path. */
@@ -1807,7 +1815,7 @@ body {
 
 /* ---------- Homepage hero ---------- */
 .hero {
-  font-family: var(--font-heading);
+  font-family: 'Dancing Script Yuan', var(--font-heading);
   font-size: var(--text-display);
   line-height: 1.2;
   letter-spacing: 0;
