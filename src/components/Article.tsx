@@ -3,24 +3,25 @@ import ReactMarkdown from 'react-markdown';
 import { Copy, Check } from 'lucide-react';
 import { BlogPost } from '../types';
 import remarkGfm from 'remark-gfm';
+import {
+  childrenText,
+  formatMixedChildren,
+  formatMixedText,
+  textLang,
+} from '../lib/mixedTypography';
 
 /* Heavy renderers are pulled in only when the article content actually needs them:
-   - KaTeX (remark-math + rehype-katex + ~50KB CSS) only when $...$ or $$...$$ is present.
+   - KaTeX (remark-math + rehype-katex + local CSS chunk) only when $...$ or $$...$$ is present.
    - Syntax highlighter (react-syntax-highlighter + hljs themes) only when ``` fences exist.
    This keeps math-free / code-free posts cheap. */
 
 const HAS_MATH = /(^|[^\\])\$[^$\n]+\$|^\$\$|\n\$\$/;
 const HAS_CODE = /^```|\n```/;
 
+let katexCssPromise: Promise<unknown> | null = null;
 const loadKatexCSS = () => {
-  if (typeof document !== 'undefined' && !document.querySelector('link[href*="katex"]')) {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css';
-    link.integrity = 'sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV';
-    link.crossOrigin = 'anonymous';
-    document.head.appendChild(link);
-  }
+  katexCssPromise ||= import('katex/dist/katex.min.css');
+  return katexCssPromise;
 };
 
 type MathPlugins = { remark: any; rehype: any };
@@ -36,9 +37,11 @@ interface ArticleProps {
 /* Slugify heading text for anchor IDs (used for TOC + KaTeX equation hash links) */
 function slugify(text: string): string {
   return text
+    .normalize('NFKC')
     .toLowerCase()
+    .trim()
     .replace(/\s+/g, '-')
-    .replace(/[^\w-]/g, '');
+    .replace(/[^\p{L}\p{N}_-]/gu, '');
 }
 
 /* Extract h2 outline from markdown source so the TOC can pre-render
@@ -53,17 +56,39 @@ function extractH2s(md: string): { id: string; text: string }[] {
     if (inFence) continue;
     const m = /^##\s+(.+?)\s*$/.exec(ln);
     if (m) {
-      const text = m[1].replace(/\s*#*\s*$/, '');
+      const text = formatMixedText(m[1].replace(/\s*#*\s*$/, ''));
       out.push({ id: slugify(text), text });
     }
   }
   return out;
 }
 
+function escapeCurrencyDollars(md: string): string {
+  const lines = md.split('\n');
+  let inFence = false;
+  let inDisplayMath = false;
+
+  return lines.map(line => {
+    if (/^```/.test(line)) {
+      inFence = !inFence;
+      return line;
+    }
+
+    if (!inFence && /^\s*\$\$\s*$/.test(line)) {
+      inDisplayMath = !inDisplayMath;
+      return line;
+    }
+
+    if (inFence || inDisplayMath) return line;
+
+    return line.replace(/(^|[^\\])\$(?=\d+(?:[.,，。！？；：、\s]|$))/g, '$1\\$');
+  }).join('\n');
+}
+
 export function Article({ post, onCategoryClick, onTagClick }: ArticleProps) {
   const [copied, setCopied] = useState(false);
 
-  const content = post.content || '';
+  const content = useMemo(() => escapeCurrencyDollars(post.content || ''), [post.content]);
   const hasMath = useMemo(() => HAS_MATH.test(content), [content]);
   const hasCode = useMemo(() => HAS_CODE.test(content), [content]);
 
@@ -72,8 +97,7 @@ export function Article({ post, onCategoryClick, onTagClick }: ArticleProps) {
 
   useEffect(() => {
     if (!hasMath) return;
-    loadKatexCSS();
-    Promise.all([import('remark-math'), import('rehype-katex')]).then(([r, h]) => {
+    Promise.all([import('remark-math'), import('rehype-katex'), loadKatexCSS()]).then(([r, h]) => {
       setMathPlugins({ remark: r.default, rehype: h.default });
     });
   }, [hasMath]);
@@ -94,6 +118,7 @@ export function Article({ post, onCategoryClick, onTagClick }: ArticleProps) {
 
   const outline = useMemo(() => extractH2s(content), [content]);
   const showRails = outline.length >= 2;
+  const title = formatMixedText(post.title);
 
   return (
     <div className={showRails ? 'layout fade-in' : 'fade-in'}>
@@ -103,7 +128,7 @@ export function Article({ post, onCategoryClick, onTagClick }: ArticleProps) {
       <article className={showRails ? 'main-col' : 'editorial main-col-narrow'}>
         {/* Header */}
         <header className="article-head">
-          <h1 className="article-title">{post.title}</h1>
+          <h1 className="article-title" lang={textLang(title)}>{title}</h1>
           <div className="article-meta">
             <span>{formatDate(post.date)}</span>
             <span className="sep">·</span>
@@ -133,9 +158,11 @@ export function Article({ post, onCategoryClick, onTagClick }: ArticleProps) {
                 return CodeBlock ? (
                   <CodeBlock language={match[1]}>{codeString}</CodeBlock>
                 ) : (
-                  <pre className="code-block-wrapper" style={{ padding: '14px 18px', fontFamily: 'var(--font-mono)', fontSize: '14px', lineHeight: 1.55, overflow: 'auto', margin: '1.4em 0' }}>
-                    <code>{codeString}</code>
-                  </pre>
+                  <div className="code-block-wrapper code-block-plain">
+                    <pre>
+                      <code>{codeString}</code>
+                    </pre>
+                  </div>
                 );
               },
               a({ node, children, ...props }) {
@@ -177,24 +204,33 @@ export function Article({ post, onCategoryClick, onTagClick }: ArticleProps) {
                     onClick={handleClick}
                     target={isExternal ? '_blank' : undefined}
                     rel={isExternal ? 'noopener noreferrer' : undefined}
+                    lang={textLang(childrenText(children))}
                   >
-                    {children}
+                    {formatMixedChildren(children)}
                   </a>
                 );
               },
               h2({ children }) {
-                const text = typeof children === 'string'
-                  ? children
-                  : Array.isArray(children) ? children.join('') : '';
+                const text = formatMixedText(childrenText(children));
                 const id = slugify(text);
-                return <h2 id={id}>{children}</h2>;
+                return <h2 id={id} lang={textLang(text)}>{formatMixedChildren(children)}</h2>;
               },
               h3({ children }) {
-                const text = typeof children === 'string'
-                  ? children
-                  : Array.isArray(children) ? children.join('') : '';
+                const text = formatMixedText(childrenText(children));
                 const id = slugify(text);
-                return <h3 id={id}>{children}</h3>;
+                return <h3 id={id} lang={textLang(text)}>{formatMixedChildren(children)}</h3>;
+              },
+              li({ children, ...props }) {
+                const text = childrenText(children);
+                return <li {...props} lang={textLang(text)}>{formatMixedChildren(children)}</li>;
+              },
+              strong({ children, ...props }) {
+                const text = childrenText(children);
+                return <strong {...props} lang={textLang(text)}>{formatMixedChildren(children)}</strong>;
+              },
+              em({ children, ...props }) {
+                const text = childrenText(children);
+                return <em {...props} lang={textLang(text)}>{formatMixedChildren(children)}</em>;
               },
               /* Render images as proper <figure>s — alt-text becomes the caption.
                  Absolute paths (`/figures/...`) are rewritten to respect Vite's
@@ -219,11 +255,12 @@ export function Article({ post, onCategoryClick, onTagClick }: ArticleProps) {
                 if (onlyChild && onlyChild.type === 'element' && onlyChild.tagName === 'img') {
                   return <>{children}</>;
                 }
-                return <p {...props}>{children}</p>;
+                const text = childrenText(children);
+                return <p {...props} lang={textLang(text)}>{formatMixedChildren(children)}</p>;
               },
             }}
           >
-            {post.content || ''}
+            {content}
           </ReactMarkdown>
         </div>
 

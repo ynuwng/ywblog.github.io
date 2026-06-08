@@ -1538,6 +1538,8 @@ html {
 /* ---------- Tokens ---------- */
 :root {
   /* System stacks avoid external font downloads on the critical path. */
+  --font-cjk:     'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
+                  'Noto Sans CJK SC', 'Source Han Sans SC', sans-serif;
   --font-heading: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', sans-serif;
   --font-serif:   -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', sans-serif;
   --font-sans:    -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', sans-serif;
@@ -1648,6 +1650,33 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+:lang(zh-CN) {
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', var(--font-cjk);
+  line-break: normal;
+  word-break: normal;
+  overflow-wrap: break-word;
+  text-wrap: pretty;
+}
+
+.post-row .post-title:lang(zh-CN),
+.article-title:lang(zh-CN),
+.prose h2:lang(zh-CN),
+.prose h3:lang(zh-CN) {
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+
+.post-row .post-desc:lang(zh-CN),
+.prose p:lang(zh-CN),
+.prose li:lang(zh-CN) {
+  line-height: 1.72;
+}
+
+.prose em:lang(zh-CN) {
+  font-style: normal;
+  color: var(--text-primary);
 }
 
 ::selection {
@@ -2077,6 +2106,16 @@ body {
 /* Equation tag styling — KaTeX manual \tag{} */
 .prose .katex-display { margin: 1.4em 0; }
 .prose .katex-display > .katex { font-size: 1em; }
+.prose .katex {
+  font-family: KaTeX_Main, 'Times New Roman', serif;
+}
+.prose .katex,
+.prose .katex * {
+  line-break: auto;
+  overflow-wrap: normal;
+  word-break: normal;
+  text-wrap: nowrap;
+}
 .prose .katex .tag {
   font-family: var(--font-mono) !important;
   font-size: 0.78em;
@@ -2167,11 +2206,19 @@ body {
 
 /* ---------- Code block ---------- */
 .code-block-wrapper {
-  margin: 1.4em 0;
+  margin: 1.6em 0 1.9em;
   border: 0.5px solid var(--border-faint);
   border-radius: 6px;
   background: var(--bg-subtle);
   overflow: hidden;
+}
+.code-block-plain pre {
+  padding: 18px 20px;
+  margin: 0;
+  overflow: auto;
+  font-family: var(--font-mono);
+  font-size: var(--text-code-block);
+  line-height: 1.65;
 }
 .code-block-wrapper .cb-bar {
   display: flex; align-items: center; justify-content: space-between;
