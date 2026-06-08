@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { BlogPost as BlogPostType } from '../types';
 import { BlogPost } from './BlogPost';
 
@@ -13,15 +13,20 @@ interface YearGroupedListProps {
  * Year header in mono uppercase; rows in BlogPost.
  */
 export function YearGroupedList({ posts, onClick, onTagClick }: YearGroupedListProps) {
-  const byYear = posts.reduce((acc, p) => {
-    const y = new Date(p.date).getFullYear();
-    (acc[y] ||= []).push(p);
-    return acc;
-  }, {} as Record<number, BlogPostType[]>);
+  const { byYear, years } = useMemo(() => {
+    const grouped = posts.reduce((acc, p) => {
+      const y = new Date(p.date).getFullYear();
+      (acc[y] ||= []).push(p);
+      return acc;
+    }, {} as Record<number, BlogPostType[]>);
 
-  const years = Object.keys(byYear).map(Number).sort((a, b) => b - a);
+    const sortedYears = Object.keys(grouped).map(Number).sort((a, b) => b - a);
+    sortedYears.forEach((y) => {
+      grouped[y] = [...grouped[y]].sort((a, b) => +new Date(b.date) - +new Date(a.date));
+    });
 
-  years.forEach((y) => byYear[y].sort((a, b) => +new Date(b.date) - +new Date(a.date)));
+    return { byYear: grouped, years: sortedYears };
+  }, [posts]);
 
   return (
     <div>

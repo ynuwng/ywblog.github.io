@@ -53,8 +53,11 @@ export default function App() {
 
   const postInList = blogPosts.find(p => p.id === selectedArticle);
 
+  const initialArticle = postInList?.content ? postInList : null;
+
   const { post: fetchedPost, loading: loadingArticle } = useBlogPost(
     currentView === 'article' ? selectedArticle : null,
+    initialArticle,
   );
 
   // fetchedPost has full content; fall back to list metadata when API is down
@@ -116,7 +119,7 @@ export default function App() {
           <About />
         </Suspense>
       ) : currentView === 'article' ? (
-        loadingArticle ? (
+        loadingArticle && !currentArticle?.content ? (
           <div className="editorial" style={{ padding: '4rem 0', textAlign: 'center' }}>
             <p className="meta">Loading article…</p>
           </div>

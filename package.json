@@ -30,6 +30,7 @@
     },
       "scripts": {
           "dev": "vite",
-          "build": "vite build"
+          "build": "vite build",
+          "bundle:report": "node scripts/bundle-report.mjs"
       }
   }

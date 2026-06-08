@@ -4,12 +4,17 @@ import { logger } from "npm:hono/logger";
 import { createClient } from "jsr:@supabase/supabase-js@2.49.8";
 
 const app = new Hono();
+const PUBLIC_CACHE = "public, max-age=60, s-maxage=600, stale-while-revalidate=86400";
+
+let db: ReturnType<typeof createClient> | null = null;
 
 function getDB() {
+  if (db) return db;
   const url = Deno.env.get("SUPABASE_URL");
   const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   if (!url || !key) throw new Error("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
-  return createClient(url, key);
+  db = createClient(url, key);
+  return db;
 }
 
 function requireAdmin(c: any) {
@@ -32,7 +37,9 @@ function toPost(row: Record<string, unknown>) {
   return { ...rest, readTime: read_time };
 }
 
-app.use('*', logger(console.log));
+if (Deno.env.get("LOG_REQUESTS") === "true") {
+  app.use('*', logger(console.log));
+}
 
 app.use(
   "/*",
@@ -58,6 +65,7 @@ app.get("/make-server-860c354e/posts", async (c) => {
       .order("date", { ascending: false });
 
     if (error) throw error;
+    c.header("Cache-Control", PUBLIC_CACHE);
     return c.json({ success: true, posts: (data ?? []).map(toPost) });
   } catch (error) {
     console.log("Error fetching posts:", error);
@@ -75,6 +83,7 @@ app.get("/make-server-860c354e/posts/:id", async (c) => {
 
     if (error) throw error;
     if (!data) return c.json({ success: false, error: "Post not found" }, 404);
+    c.header("Cache-Control", PUBLIC_CACHE);
     return c.json({ success: true, post: toPost(data) });
   } catch (error) {
     console.log("Error fetching post:", error);
