@@ -44,7 +44,7 @@ export function BlogHeader({ onNavigate, currentView, theme, onToggleTheme }: Bl
           YUAN'S BLOG
         </button>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
+        <div className="header-actions">
           <nav className="site-nav">
             {NAV_ITEMS.map((item) => (
               <button

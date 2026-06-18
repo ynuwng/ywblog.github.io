@@ -1811,6 +1811,12 @@ body {
 }
 
 /* Nav */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
 .site-nav {
   display: flex;
   gap: 18px;
@@ -2339,11 +2345,19 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .main-col          { padding-top: 24px; padding-bottom: 56px; }
   .editorial         { padding-top: 24px; padding-bottom: 56px; }
 
-  /* Header — wordmark stays, tagline drops to free up nav room */
+  /* Header — wordmark gets its own row above navigation */
   .wordmark .domains,
   .wordmark .em-dash { display: none; }
-  .site-header-inner { padding-top: 12px; padding-bottom: 12px; gap: 12px; }
-  .site-nav          { gap: 14px; }
+  .site-header-inner {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    gap: 6px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .wordmark          { align-self: flex-start; }
+  .header-actions    { width: 100%; gap: 12px; flex-wrap: nowrap; }
+  .site-nav          { flex: 1; min-width: 0; justify-content: space-between; gap: 6px; }
   .nav-link          { padding: 8px 0; font-size: 13px; }   /* ≥40px touch via line-height + padding */
   .icon-btn          { width: 38px; height: 38px; }
 
