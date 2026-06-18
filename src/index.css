@@ -1787,6 +1787,8 @@ body {
   font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.05em;
+  white-space: nowrap;
+  flex-shrink: 0;
   text-transform: uppercase;
   color: var(--text-primary);
   background: none; border: 0; padding: 0; cursor: pointer;
