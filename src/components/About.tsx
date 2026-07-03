@@ -4,6 +4,17 @@ export function About() {
   return (
     <main className="editorial fade-in">
       <h2 className="rail-label">About</h2>
+      <img
+        src="/yuan-wang.jpg"
+        alt="Yuan Wang"
+        style={{
+          width: '112px',
+          height: '112px',
+          borderRadius: '50%',
+          objectFit: 'cover',
+          marginBottom: '20px',
+        }}
+      />
       <h1 className="hero" style={{ fontSize: '28px', marginBottom: '14px' }}>
         Yuan Wang
       </h1>

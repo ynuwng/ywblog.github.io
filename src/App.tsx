@@ -106,7 +106,7 @@ export default function App() {
       {currentView === 'home' ? (
         <main className="editorial fade-in">
           <h1 className="hero">Yuan Wang</h1>
-          <p className="hero-tagline">
+          <p className="hero-tagline" style={{ fontStyle: 'normal' }}>
             静水流深，和光同尘。
           </p>
 
