@@ -107,8 +107,7 @@ export default function App() {
         <main className="editorial fade-in">
           <h1 className="hero">Yuan Wang</h1>
           <p className="hero-tagline">
-            Writing on AI, quantitative research, and signal processing —
-            notes, derivations, and the occasional dead end.
+            静水流深，和光同尘。
           </p>
 
           <YearGroupedList posts={blogPosts} onClick={goArticle} onTagClick={goTag} />
