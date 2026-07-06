@@ -1576,7 +1576,7 @@ html {
   --text-display-tracking:  -0.02em;
 
   --text-h1: 30px;
-  --text-h2: 24px;
+  --text-h2: 26px;
   --text-h3: 20px;
   --text-h4: 17px;
 
@@ -1584,6 +1584,15 @@ html {
   --text-body-line:   1.5;             /* Jane Street prose leading */
   --text-body-ui:     17px;
   --text-small:       15px;
+
+  /* Article prose spec — scoped to .prose / .article-title only,
+     kept separate from --text-body/--text-display since those are
+     shared with the global body text and the homepage hero. */
+  --text-article-h1:        34px;
+  --text-article-body:      17px;
+  --text-article-body-line: 1.72;
+  --text-article-p-gap:     24px;
+  --text-article-img-gap:   28px;
   --text-meta:        12px;
   --text-meta-tracking: 0.08em;
 
@@ -1687,9 +1696,12 @@ body {
 /* ---------- Layout ---------- */
 .layout {
   display: grid;
-  grid-template-columns: 200px minmax(0, 680px) 180px;
+  /* Center column may shrink below 780px between the 980px collapse
+     breakpoint and full width — rigid tracks would overflow and clip
+     the TOC rail (html/body use overflow-x: clip, so no scrollbar). */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 780px) 300px;
   gap: 0 32px;
-  max-width: 1100px;
+  max-width: 1240px;
   margin: 0 auto;
   padding: 0 24px;
 }
@@ -1707,7 +1719,7 @@ body {
 
 .main-col {
   padding: 40px 0 80px;
-  max-width: 680px;
+  max-width: 780px;
 }
 
 .main-col-narrow {
@@ -1719,6 +1731,13 @@ body {
   max-width: 680px;
   margin: 0 auto;
   padding: 32px 24px 72px;
+}
+
+/* Article body without a TOC rail still gets the article measure (780px of
+   text — .editorial's 24px side padding is added on top), without widening
+   the shared .editorial container used by Tags/Categories/About. */
+.editorial.main-col-narrow {
+  max-width: calc(780px + 2 * 24px);
 }
 
 /* ---------- Hairline ---------- */
@@ -1991,16 +2010,16 @@ body {
 /* ---------- Article — prose (Stripe Press measurements) ---------- */
 .prose {
   font-family: var(--font-serif);
-  font-size: var(--text-body);          /* 16px */
-  line-height: var(--text-body-line);   /* 1.5 */
+  font-size: var(--text-article-body);          /* 17px */
+  line-height: var(--text-article-body-line);   /* 1.72 */
   color: var(--text-secondary);         /* Jane Street gray prose; headings stay dark */
 }
-.prose p { margin: 0 0 1.25em; }
+.prose p { margin: 0 0 var(--text-article-p-gap); }
 .prose p + p { margin-top: 0; }
 
 .prose h2 {
   font-family: var(--font-serif);
-  font-size: var(--text-h2);            /* 24px */
+  font-size: var(--text-h2);            /* 26px */
   line-height: 1.2;
   font-weight: 600;                     /* book-cover weight */
   color: var(--text-primary);
@@ -2109,7 +2128,10 @@ body {
   color: var(--text-secondary);
 }
 
-.prose img { max-width: 100%; height: auto; border-radius: 4px; margin: 1.4em auto; display: block; }
+.prose img { max-width: 100%; height: auto; border-radius: 4px; margin: var(--text-article-img-gap) auto; display: block; }
+/* Markdown images are figure-wrapped (Article.tsx); the 28px gap lives on the
+   figure's margin below — inside the card the image sits flush with the padding. */
+.prose figure img { margin: 0 auto; }
 
 /* Equation tag styling — KaTeX manual \tag{} */
 .prose .katex-display { margin: 1.4em 0; }
@@ -2146,7 +2168,7 @@ body {
   background: var(--bg-subtle);
   border-radius: 6px;
   padding: 20px 20px 16px;
-  margin: 2em 0;
+  margin: var(--text-article-img-gap) 0;   /* 28px */
   border: 0.5px solid var(--border-faint);
 }
 .prose figcaption {
@@ -2171,7 +2193,7 @@ body {
 .article-head { margin-bottom: 36px; }
 .article-title {
   font-family: var(--font-heading);
-  font-size: var(--text-display);            /* 42px */
+  font-size: var(--text-article-h1);         /* 34px */
   line-height: 1.2;
   letter-spacing: -0.01em;
   font-weight: 400;
@@ -2321,8 +2343,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
   :root {
     --text-display: 34px;
     --text-h1: 26px;
-    --text-h2: 22px;
+    --text-h2: 24px;
     --text-h3: 19px;
+    --text-article-h1: 28px;
   }
 }
 
@@ -2331,11 +2354,12 @@ button, a { -webkit-tap-highlight-color: transparent; }
   :root {
     --text-display: 30px;
     --text-h1: 24px;
-    --text-h2: 21px;
+    --text-h2: 23px;
     --text-h3: 18px;
     --text-body: 17px;
     --text-body-ui: 16px;
     --text-small: 14.5px;
+    --text-article-h1: 24px;
   }
 
   body { line-height: 1.6; }            /* a hair more air at smaller size */
@@ -2402,6 +2426,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 @media (max-width: 380px) {
   :root {
     --text-display: 26px;
+    --text-article-h1: 21px;
   }
   .editorial, .layout { padding-left: 14px; padding-right: 14px; }
   .post-row { grid-template-columns: 40px minmax(0, 1fr); gap: 10px; }
