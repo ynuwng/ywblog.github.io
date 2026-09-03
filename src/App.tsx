@@ -2,7 +2,7 @@ import { BlogHeader } from './components/BlogHeader';
 import { YearGroupedList } from './components/YearGroupedList';
 import { Footer } from './components/Footer';
 import { AdminGate } from './components/AdminGate';
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { useBlogPosts } from './hooks/useBlogPosts';
 import { useBlogPost } from './hooks/useBlogPost';
 import { useRouter } from './hooks/useRouter';
@@ -51,6 +51,19 @@ export default function App() {
   } = useRouter();
 
   const { blogPosts, refreshPosts, loading: loadingPosts } = useBlogPosts();
+
+  const recentPosts = useMemo(() => {
+    const oneYearAgo = new Date();
+    oneYearAgo.setHours(0, 0, 0, 0);
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+
+    return blogPosts
+      .filter((post) => {
+        const publishedAt = new Date(post.date);
+        return !Number.isNaN(publishedAt.getTime()) && publishedAt >= oneYearAgo;
+      })
+      .sort((a, b) => +new Date(b.date) - +new Date(a.date));
+  }, [blogPosts]);
 
   const postInList = findPostByArticleKey(blogPosts, selectedArticle);
   const articleId = postInList?.id ?? selectedArticle;
@@ -110,7 +123,7 @@ export default function App() {
             静水流深，和光同尘。
           </p>
 
-          <YearGroupedList posts={blogPosts} onClick={goArticle} onTagClick={goTag} />
+          <YearGroupedList posts={recentPosts} onClick={goArticle} onTagClick={goTag} />
         </main>
       ) : currentView === 'archives' ? (
         <Suspense fallback={<LoadingSpinner />}>

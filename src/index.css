@@ -1907,6 +1907,40 @@ body {
   padding-top: 4px;
 }
 
+.archive-year-toggle {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 4px 0 8px;
+  border-bottom: 0.5px solid var(--border-faint);
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+.archive-year-toggle::-webkit-details-marker { display: none; }
+.archive-year-label { margin: 0; padding: 0; }
+.archive-year-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--text-tertiary);
+  text-transform: lowercase;
+}
+.archive-year-chevron {
+  display: inline-block;
+  font-size: 15px;
+  line-height: 1;
+  transition: transform 0.18s ease;
+}
+.archive-year[open] .archive-year-chevron { transform: rotate(180deg); }
+.archive-year-toggle:hover .archive-year-label,
+.archive-year-toggle:hover .archive-year-meta { color: var(--accent); }
+.archive-year > div .post-row:first-child { border-top: 0; }
+
 /* ---------- Post row (Home + Archives) ---------- */
 .post-row {
   display: grid;

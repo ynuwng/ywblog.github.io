@@ -15,7 +15,7 @@ export function Archives({ posts, onArticleClick }: ArchivesProps) {
       <p className="hero-tagline" style={{ fontSize: '14px', marginBottom: '32px' }}>
         &nbsp;
       </p>
-      <YearGroupedList posts={posts} onClick={onArticleClick} />
+      <YearGroupedList posts={posts} onClick={onArticleClick} collapsible />
     </main>
   );
 }
