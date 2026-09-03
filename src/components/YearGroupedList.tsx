@@ -50,7 +50,7 @@ export function YearGroupedList({ posts, onClick, onTagClick, collapsible = fals
 
         if (collapsible) {
           return (
-            <details key={year} className="archive-year" style={sectionStyle} open={yi === 0}>
+            <details key={year} className="archive-year" style={sectionStyle}>
               <summary className="archive-year-toggle">
                 <span className="year-head archive-year-label">{year}</span>
                 <span className="archive-year-meta">

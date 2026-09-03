@@ -1,12 +1,12 @@
 import { BlogHeader } from './components/BlogHeader';
-import { YearGroupedList } from './components/YearGroupedList';
+import { BlogPost } from './components/BlogPost';
 import { Footer } from './components/Footer';
 import { AdminGate } from './components/AdminGate';
 import { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { useBlogPosts } from './hooks/useBlogPosts';
 import { useBlogPost } from './hooks/useBlogPost';
 import { useRouter } from './hooks/useRouter';
-import { articlePath, findPostByArticleKey } from './lib/articleSlugs';
+import { articlePath, articleSlug, findPostByArticleKey } from './lib/articleSlugs';
 
 // Sonner is only needed for admin toasts — exclude from production bundle entirely.
 const DevToaster = import.meta.env.DEV
@@ -52,17 +52,11 @@ export default function App() {
 
   const { blogPosts, refreshPosts, loading: loadingPosts } = useBlogPosts();
 
-  const recentPosts = useMemo(() => {
-    const oneYearAgo = new Date();
-    oneYearAgo.setHours(0, 0, 0, 0);
-    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-
+  const latestPosts = useMemo(() => {
     return blogPosts
-      .filter((post) => {
-        const publishedAt = new Date(post.date);
-        return !Number.isNaN(publishedAt.getTime()) && publishedAt >= oneYearAgo;
-      })
-      .sort((a, b) => +new Date(b.date) - +new Date(a.date));
+      .filter((post) => !Number.isNaN(new Date(post.date).getTime()))
+      .sort((a, b) => +new Date(b.date) - +new Date(a.date))
+      .slice(0, 3);
   }, [blogPosts]);
 
   const postInList = findPostByArticleKey(blogPosts, selectedArticle);
@@ -123,7 +117,16 @@ export default function App() {
             静水流深，和光同尘。
           </p>
 
-          <YearGroupedList posts={recentPosts} onClick={goArticle} onTagClick={goTag} />
+          <div className="home-latest-posts">
+            {latestPosts.map((post) => (
+              <BlogPost
+                key={post.id}
+                post={post}
+                onClick={() => goArticle(articleSlug(post))}
+                onTagClick={goTag}
+              />
+            ))}
+          </div>
         </main>
       ) : currentView === 'archives' ? (
         <Suspense fallback={<LoadingSpinner />}>
