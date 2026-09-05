@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Yuan's Blog</title>
+    <link>https://ynuwng.com/</link>
+    <description>Yuan Wang — notes on AI, quantitative research, and signal processing.</description>
+    <atom:link href="https://ynuwng.com/rss.xml" rel="self" type="application/rss+xml" />
+    <ttl>60</ttl>
+    <item>
+      <title>0DTE期权：当日到期合约的交易逻辑与风险结构</title>
+      <link>https://ynuwng.com/article/0f479592-2ec0-4568-990c-4558bc7ea904</link>
+      <guid isPermaLink="true">https://ynuwng.com/article/0f479592-2ec0-4568-990c-4558bc7ea904</guid>
+      <description>0DTE期权在散户和机构中同时爆炸式增长。本文拆解它的Gamma结构、做市商对冲流、常见策略，以及为什么它对市场微观结构的影响远比看上去深远。</description>
+      <dc:creator>Yuan Wang</dc:creator>
+      <pubDate>Sun, 07 Jun 2026 00:00:00 GMT</pubDate>
+      <category>Quant</category>
+      <category>options</category>
+      <category>vol</category>
+      <category>quant</category>
+      <category>derivatives</category>
+      <category>期权</category>
+    </item>
+    <item>
+      <title>Reading the volatility surface</title>
+      <link>https://ynuwng.com/article/f6044ca9-96ab-4ef8-86e3-b95004170c29</link>
+      <guid isPermaLink="true">https://ynuwng.com/article/f6044ca9-96ab-4ef8-86e3-b95004170c29</guid>
+      <description>A walk through what implied volatility actually means, why the smile and term structure refuse to flatten, and a practical SVI parameterization that fits market quotes well enough to trade against.</description>
+      <dc:creator>Yuan Wang</dc:creator>
+      <pubDate>Tue, 05 May 2026 00:00:00 GMT</pubDate>
+      <category>Quant</category>
+      <category>vol</category>
+      <category>options</category>
+      <category>quant</category>
+      <category>math</category>
+    </item>
+    <item>
+      <title>Building Scalable Systems</title>
+      <link>https://ynuwng.com/article/2cb13d52-694b-4624-b3dc-bda289935ee4</link>
+      <guid isPermaLink="true">https://ynuwng.com/article/2cb13d52-694b-4624-b3dc-bda289935ee4</guid>
+      <description>Thoughts on designing distributed systems that can handle millions of requests per second.</description>
+      <dc:creator>Yuan Wang</dc:creator>
+      <pubDate>Wed, 10 Dec 2025 00:00:00 GMT</pubDate>
+      <category>Engineering</category>
+      <category>systems</category>
+      <category>architecture</category>
+    </item>
+    <item>
+      <title>The Art of Code Review</title>
+      <link>https://ynuwng.com/article/4556178a-f49c-4a7f-b046-ddd92a118be9</link>
+      <guid isPermaLink="true">https://ynuwng.com/article/4556178a-f49c-4a7f-b046-ddd92a118be9</guid>
+      <description>Best practices for conducting effective code reviews that improve both code quality and team collaboration.</description>
+      <dc:creator>Yuan Wang</dc:creator>
+      <pubDate>Fri, 05 Dec 2025 00:00:00 GMT</pubDate>
+      <category>Best Practices</category>
+      <category>development</category>
+      <category>team</category>
+    </item>
+    <item>
+      <title>Why TypeScript Matters</title>
+      <link>https://ynuwng.com/article/c612fc84-a5e2-4f86-be8d-05f04b22beff</link>
+      <guid isPermaLink="true">https://ynuwng.com/article/c612fc84-a5e2-4f86-be8d-05f04b22beff</guid>
+      <description>Exploring how static typing transforms the development experience and catches bugs before they reach production.</description>
+      <dc:creator>Yuan Wang</dc:creator>
+      <pubDate>Fri, 28 Nov 2025 00:00:00 GMT</pubDate>
+      <category>Programming Languages</category>
+      <category>typescript</category>
+      <category>javascript</category>
+    </item>
+    <item>
+      <title>Optimizing Database Queries</title>
+      <link>https://ynuwng.com/article/4a658d6e-a8a4-4900-9ffe-173facb8f10c</link>
+      <guid isPermaLink="true">https://ynuwng.com/article/4a658d6e-a8a4-4900-9ffe-173facb8f10c</guid>
+      <description>Deep dive into query optimization techniques that reduced our API response time by 80%.</description>
+      <dc:creator>Yuan Wang</dc:creator>
+      <pubDate>Thu, 20 Nov 2025 00:00:00 GMT</pubDate>
+      <category>Performance</category>
+      <category>database</category>
+      <category>performance</category>
+    </item>
+  </channel>
+</rss>
