@@ -1,0 +1,12 @@
+/** Site mark — a damped sine: a signal settling into stillness (静水流深).
+ *  Same path as public/favicon.svg. */
+export const MARK_PATH =
+  'M1.0 7.00 L1.5 4.35 L2.0 2.83 L2.5 2.77 L3.0 4.01 L3.5 6.01 L4.0 8.07 L4.5 9.55 L5.0 10.07 L5.5 9.59 L6.0 8.38 L6.5 6.89 L7.0 5.62 L7.5 4.92 L8.0 4.95 L8.5 5.59 L9.0 6.59 L9.5 7.59 L10.0 8.29 L10.5 8.51 L11.0 8.24 L11.5 7.63 L12.0 6.90 L12.5 6.29 L13.0 5.97 L13.5 6.00 L14.0 6.34 L14.5 6.84 L15.0 7.32 L15.5 7.65 L16.0 7.74 L16.5 7.59 L17.0 7.28 L17.5 6.92 L18.0 6.63 L18.5 6.49 L19.0 6.52 L19.5 6.69 L20.0 6.94 L20.5 7.17 L21.0 7.33 L21.5 7.36 L22.0 7.28 L22.5 7.13 L23.0 6.95';
+
+export function Mark() {
+  return (
+    <svg className="mark" viewBox="0 0 24 14" width="26" height="15" aria-hidden="true">
+      <path d={MARK_PATH} fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}

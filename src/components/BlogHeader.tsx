@@ -1,16 +1,8 @@
 import React from 'react';
 import { Sun, Moon } from 'lucide-react';
+import { Mark } from './Mark';
 
-type View =
-  | 'home'
-  | 'archives'
-  | 'categories'
-  | 'tags'
-  | 'about'
-  | 'article'
-  | 'tagged'
-  | 'category'
-  | 'admin';
+type View = 'home' | 'about' | 'article' | 'tagged' | 'admin';
 
 interface BlogHeaderProps {
   onNavigate: (view: View) => void;
@@ -20,16 +12,12 @@ interface BlogHeaderProps {
 }
 
 const NAV_ITEMS: { key: View; label: string }[] = [
-  { key: 'home',       label: 'Home' },
-  { key: 'archives',   label: 'Archives' },
-  { key: 'categories', label: 'Categories' },
-  { key: 'tags',       label: 'Tags' },
-  { key: 'about',      label: 'About' },
+  { key: 'home',  label: 'Writing' },
+  { key: 'about', label: 'About' },
 ];
 
 function effectiveNav(view: View): View {
-  if (view === 'tagged')   return 'tags';
-  if (view === 'category') return 'categories';
+  if (view === 'tagged' || view === 'article') return 'home';
   return view;
 }
 
@@ -39,8 +27,9 @@ export function BlogHeader({ onNavigate, currentView, theme, onToggleTheme }: Bl
   return (
     <header className="site-header">
       <div className="site-header-inner">
-        {/* Wordmark — mono uppercase signature with em-dash tagline */}
+        {/* Wordmark — signal glyph + mono uppercase signature */}
         <button onClick={() => onNavigate('home')} className="wordmark" aria-label="Go home">
+          <Mark />
           YUAN'S BLOG
         </button>
 
@@ -62,7 +51,7 @@ export function BlogHeader({ onNavigate, currentView, theme, onToggleTheme }: Bl
             aria-label="Toggle theme"
             title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
           >
-            {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
           </button>
         </div>
       </div>

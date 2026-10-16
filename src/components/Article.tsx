@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import { Copy, Check } from 'lucide-react';
 import { BlogPost } from '../types';
 import remarkGfm from 'remark-gfm';
+import { remarkSidenotes } from '../lib/remarkSidenotes';
 import {
   childrenText,
   formatMixedChildren,
@@ -17,6 +18,7 @@ import {
 
 const HAS_MATH = /(^|[^\\])\$[^$\n]+\$|^\$\$|\n\$\$/;
 const HAS_CODE = /^```|\n```/;
+const HAS_NOTES = /^\[\^[^\]]+\]:/m;
 
 let katexCssPromise: Promise<unknown> | null = null;
 const loadKatexCSS = () => {
@@ -29,8 +31,6 @@ type CodeBlockComp = React.ComponentType<{ language: string; children: string }>
 
 interface ArticleProps {
   post: BlogPost;
-  onBack: () => void;
-  onCategoryClick?: (category: string) => void;
   onTagClick?: (tag: string) => void;
 }
 
@@ -85,12 +85,13 @@ function escapeCurrencyDollars(md: string): string {
   }).join('\n');
 }
 
-export function Article({ post, onCategoryClick, onTagClick }: ArticleProps) {
+export function Article({ post, onTagClick }: ArticleProps) {
   const [copied, setCopied] = useState(false);
 
   const content = useMemo(() => escapeCurrencyDollars(post.content || ''), [post.content]);
   const hasMath = useMemo(() => HAS_MATH.test(content), [content]);
   const hasCode = useMemo(() => HAS_CODE.test(content), [content]);
+  const hasNotes = useMemo(() => HAS_NOTES.test(content), [content]);
 
   const [mathPlugins, setMathPlugins] = useState<MathPlugins | null>(null);
   const [CodeBlock, setCodeBlock] = useState<CodeBlockComp | null>(null);
@@ -108,7 +109,7 @@ export function Article({ post, onCategoryClick, onTagClick }: ArticleProps) {
   }, [hasCode]);
 
   const remarkPlugins = useMemo(
-    () => (mathPlugins ? [remarkGfm, mathPlugins.remark] : [remarkGfm]),
+    () => (mathPlugins ? [remarkGfm, mathPlugins.remark, remarkSidenotes] : [remarkGfm, remarkSidenotes]),
     [mathPlugins]
   );
   const rehypePlugins = useMemo(
@@ -117,15 +118,11 @@ export function Article({ post, onCategoryClick, onTagClick }: ArticleProps) {
   );
 
   const outline = useMemo(() => extractH2s(content), [content]);
-  const showRails = outline.length >= 2;
   const title = formatMixedText(post.title);
 
   return (
-    <div className={showRails ? 'layout fade-in' : 'fade-in'}>
-      {/* Left rail — empty stub; reserved for future use */}
-      {showRails && <aside className="left-rail" />}
-
-      <article className={showRails ? 'main-col' : 'editorial main-col-narrow'}>
+    <div className={`article-page fade-in${hasNotes ? ' has-sidenotes' : ''}`}>
+      <article>
         {/* Header */}
         <header className="article-head">
           <h1 className="article-title" lang={textLang(title)}>{title}</h1>
@@ -139,6 +136,31 @@ export function Article({ post, onCategoryClick, onTagClick }: ArticleProps) {
         </header>
 
         <hr className="rule" style={{ marginBottom: '24px' }} />
+
+        {/* Contents — inline, so the right margin stays free for sidenotes */}
+        {outline.length >= 2 && (
+          <nav className="article-toc" aria-label="Contents">
+            <h2 className="rail-label">Contents</h2>
+            <ol>
+              {outline.map((h, i) => (
+                <li key={h.id}>
+                  <span className="toc-num">{String(i + 1).padStart(2, '0')}</span>
+                  <a
+                    href={`#${h.id}`}
+                    lang={textLang(h.text)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const el = document.getElementById(h.id);
+                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }}
+                  >
+                    {h.text}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
 
         {/* Body */}
         <div className="prose">
@@ -266,18 +288,6 @@ export function Article({ post, onCategoryClick, onTagClick }: ArticleProps) {
 
         {/* Tail */}
         <div className="article-tail">
-          {post.category && (
-            <div className="article-tail-row">
-              <span className="label">Category</span>
-              <button
-                className="accent-link"
-                onClick={() => onCategoryClick && onCategoryClick(post.category)}
-              >
-                {post.category}
-              </button>
-            </div>
-          )}
-
           {post.tags && post.tags.length > 0 && (
             <div className="article-tail-row" style={{ alignItems: 'center' }}>
               <span className="label">Tags</span>
@@ -321,40 +331,13 @@ export function Article({ post, onCategoryClick, onTagClick }: ArticleProps) {
               style={{ font: 'inherit', fontFamily: 'var(--font-mono)', fontSize: '11px', letterSpacing: '0.04em', color: 'var(--text-tertiary)' }}
               aria-label="Copy link to this article"
             >
-              {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+              {copied ? <Check size={14} /> : <Copy size={14} />}
               <span>{copied ? 'copied' : 'copy link'}</span>
             </button>
           </div>
         </div>
       </article>
 
-      {/* Right rail: TOC */}
-      {showRails && (
-        <aside className="right-rail">
-          <div className="rail-section">
-            <h3 className="rail-label">Contents</h3>
-            <div className="rail-body">
-              {outline.map((h, i) => (
-                <div key={h.id} style={{ marginBottom: '6px', display: 'flex', gap: '8px' }}>
-                  <span className="mono" style={{ color: 'var(--text-tertiary)', fontSize: '11px' }}>
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <a
-                    href={`#${h.id}`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const el = document.getElementById(h.id);
-                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }}
-                  >
-                    {h.text}
-                  </a>
-                </div>
-              ))}
-            </div>
-          </div>
-        </aside>
-      )}
     </div>
   );
 }

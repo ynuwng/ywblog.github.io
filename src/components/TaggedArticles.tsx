@@ -5,7 +5,6 @@ import { BlogPost } from '../types';
 interface TaggedArticlesProps {
   tag: string;
   posts: BlogPost[];
-  onBack: () => void;
   onArticleClick: (articleId: string) => void;
 }
 

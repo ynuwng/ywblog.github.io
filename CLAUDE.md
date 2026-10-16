@@ -22,7 +22,7 @@ The app is a single-page React application with **custom History API routing** �
 - `pushPath()` / `go()` push URLs and re-parse state
 - `popstate` listener handles browser back/forward
 
-Views: `home | archives | categories | tags | about | article | tagged | category | admin`
+Views: `home | about | article | tagged | admin`. Retired paths (`/archives`, `/tags`, `/categories`, `/category/*`) fall through to home.
 
 Route components are **lazy-loaded** (`React.lazy`) so each page only loads its chunk on first visit. Heavy article dependencies (KaTeX, syntax highlighter) are **dynamically imported inside `Article.tsx`** only when the markdown content contains math (`$...$`) or fenced code blocks — articles without those pay zero cost.
 
@@ -50,7 +50,15 @@ Only rendered in `import.meta.env.DEV`. Accessible via the `+` button (bottom-ri
 
 ### Styling
 
-The app mixes **Tailwind utility classes** with a custom editorial design system defined in `src/index.css`. The design system uses CSS custom properties (`--bg-surface`, `--text-tertiary`, `--border-default`, etc.) toggled by a `dark` class on `<html>`. Named semantic classes like `editorial`, `meta`, `hero`, and `accent` are defined in the CSS and should be preferred over raw Tailwind for text/layout elements that need to match the editorial tone.
+Public pages use only the editorial design system in `src/index.css`. It is driven by CSS custom properties (`--bg-surface`, `--text-tertiary`, `--border-default`, etc.) toggled by a `dark` class on `<html>`. Use the semantic classes (`editorial`, `meta`, `hero`, `prose`, …). There is no Tailwind build. The precompiled Tailwind utilities live in `src/admin.css`, which is imported only by the dev-only `Admin.tsx`, so don't use Tailwind classes on public pages.
+
+Design rules (keep new UI consistent with these):
+- **Serif for reading, mono for metadata.** All titles and body text use `--font-serif` (system serifs, CJK falls back to Song). Dates, tags, nav, the `YUAN'S BLOG` wordmark, and labels use `--font-mono`. The only web font is Dancing Script on `.hero` (the handwritten name). Don't add others.
+- **Warm paper, never pure white or black.** Use the `--bg-*` / `--text-*` tokens only.
+- **One accent.** `--accent` is reserved for links, the active state, the mark, and sidenote numbers. Never use it as decoration.
+- **One mark.** The damped-sine glyph (`src/components/Mark.tsx`, `public/favicon.svg`). The header wordmark reads `YUAN'S BLOG`, the hero is "Yuan Wang" in handwriting, and the only tagline is 静水流深，和光同尘。
+- **Keep the nav to two items** (Writing, About). Tags stay inline on posts. Don't add index pages until there's enough content to need them.
+- **Article margin notes:** Markdown footnotes (`[^1]`) render as sidenotes in the right margin (`src/lib/remarkSidenotes.ts`).
 
 ### Build output
 

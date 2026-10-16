@@ -4,6 +4,7 @@ import { MigratePosts } from './MigratePosts';
 import { BlogPost } from '../types';
 import { createPost, deletePost, getPost, listPosts, updatePost } from '../lib/blogApi';
 import { parseFrontmatter } from '../lib/frontmatter';
+import '../admin.css';
 
 interface AdminProps {
   refreshPosts: () => Promise<void>;

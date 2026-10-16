@@ -11,10 +11,10 @@ export function Footer() {
           © {year} Yuan Wang
         </p>
         <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
-          <a href="https://github.com/ynuwng" className="social-link" aria-label="GitHub"><Github className="w-4 h-4" /></a>
-          <a href="https://x.com/ynuwng" className="social-link" aria-label="X"><XIcon className="w-4 h-4" /></a>
-          <a href="/rss.xml" className="social-link" aria-label="RSS"><Rss className="w-4 h-4" /></a>
-          <a href="mailto:ynuwng@gmail.com" className="social-link" aria-label="Email"><Mail className="w-4 h-4" /></a>
+          <a href="https://github.com/ynuwng" className="social-link" aria-label="GitHub"><Github size={16} /></a>
+          <a href="https://x.com/ynuwng" className="social-link" aria-label="X"><XIcon size={16} /></a>
+          <a href="/rss.xml" className="social-link" aria-label="RSS"><Rss size={16} /></a>
+          <a href="mailto:ynuwng@gmail.com" className="social-link" aria-label="Email"><Mail size={16} /></a>
         </div>
       </div>
     </footer>

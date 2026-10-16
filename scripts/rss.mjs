@@ -1,3 +1,5 @@
+import { articlePath } from '../src/lib/articleSlugs';
+
 export const SITE_URL = 'https://ynuwng.com/';
 
 function xml(value) {
@@ -7,16 +9,21 @@ function xml(value) {
     .replace(/"/g, '&quot;').replace(/'/g, '&apos;');
 }
 
-export function renderRss(posts) {
-  const items = [...posts].sort((a, b) => Date.parse(b.date) - Date.parse(a.date)).map(post => {
-    if (!post.id || !post.title || !Number.isFinite(Date.parse(post.date))) {
-      throw new Error('RSS post is missing an ID, title, or valid date');
-    }
-    const link = new URL(`article/${encodeURIComponent(post.id)}`, SITE_URL).href;
+export function renderRss(posts, warn = console.warn) {
+  const valid = posts.filter(post => {
+    if (post.id && post.title && Number.isFinite(Date.parse(post.date))) return true;
+    // Skip rather than throw so one bad row can't block every deploy.
+    warn(`RSS: skipping post ${post.id ?? '(no id)'}: missing an ID, title, or valid date`);
+    return false;
+  });
+  const items = valid.sort((a, b) => Date.parse(b.date) - Date.parse(a.date)).map(post => {
+    const link = new URL(articlePath(post).slice(1), SITE_URL).href;
+    // GUIDs stay ID-based so existing subscribers don't see items as new.
+    const guid = new URL(`article/${encodeURIComponent(post.id)}`, SITE_URL).href;
     return `    <item>
       <title>${xml(post.title)}</title>
       <link>${xml(link)}</link>
-      <guid isPermaLink="true">${xml(link)}</guid>
+      <guid isPermaLink="true">${xml(guid)}</guid>
       <description>${xml(post.excerpt)}</description>
       <dc:creator>${xml(post.author)}</dc:creator>
       <pubDate>${new Date(post.date).toUTCString()}</pubDate>
@@ -26,7 +33,7 @@ ${[...new Set([post.category, ...(post.tags ?? [])].filter(Boolean))].map(catego
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
-    <title>Yuan's Blog</title>
+    <title>Yuan Wang</title>
     <link>${SITE_URL}</link>
     <description>Yuan Wang — notes on AI, quantitative research, and signal processing.</description>
     <atom:link href="${SITE_URL}rss.xml" rel="self" type="application/rss+xml" />
@@ -37,7 +44,7 @@ ${items}
 `;
 }
 
-export async function fetchRss(projectId, publicAnonKey) {
+export async function fetchRss(projectId, publicAnonKey, warn) {
   const response = await fetch(`https://${projectId}.supabase.co/functions/v1/make-server-860c354e/posts`, {
     headers: { Authorization: `Bearer ${publicAnonKey}` },
     signal: AbortSignal.timeout(30000),
@@ -46,5 +53,5 @@ export async function fetchRss(projectId, publicAnonKey) {
   const data = await response.json();
   if (!data.success || !Array.isArray(data.posts)) throw new Error('RSS article response is invalid');
   // Fail on API errors rather than publishing sample articles over the real feed.
-  return renderRss(data.posts);
+  return renderRss(data.posts, warn);
 }

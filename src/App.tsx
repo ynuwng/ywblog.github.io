@@ -1,12 +1,12 @@
 import { BlogHeader } from './components/BlogHeader';
-import { BlogPost } from './components/BlogPost';
+import { YearGroupedList } from './components/YearGroupedList';
 import { Footer } from './components/Footer';
 import { AdminGate } from './components/AdminGate';
-import { useState, useEffect, useMemo, lazy, Suspense } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { useBlogPosts } from './hooks/useBlogPosts';
 import { useBlogPost } from './hooks/useBlogPost';
 import { useRouter } from './hooks/useRouter';
-import { articlePath, articleSlug, findPostByArticleKey } from './lib/articleSlugs';
+import { articlePath, findPostByArticleKey } from './lib/articleSlugs';
 
 // Sonner is only needed for admin toasts — exclude from production bundle entirely.
 const DevToaster = import.meta.env.DEV
@@ -21,13 +21,9 @@ function getInitialTheme(): Theme {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
-const Archives        = lazy(() => import('./components/Archives').then(m => ({ default: m.Archives })));
-const Tags            = lazy(() => import('./components/Tags').then(m => ({ default: m.Tags })));
 const About           = lazy(() => import('./components/About').then(m => ({ default: m.About })));
 const Article         = lazy(() => import('./components/Article').then(m => ({ default: m.Article })));
 const TaggedArticles  = lazy(() => import('./components/TaggedArticles').then(m => ({ default: m.TaggedArticles })));
-const Categories      = lazy(() => import('./components/Categories').then(m => ({ default: m.Categories })));
-const CategoryArticles = lazy(() => import('./components/CategoryArticles').then(m => ({ default: m.CategoryArticles })));
 const Admin           = lazy(() => import('./components/Admin').then(m => ({ default: m.Admin })));
 
 // Quiet loading fallback — matches editorial tone.
@@ -46,18 +42,11 @@ export default function App() {
   }, [theme]);
 
   const {
-    currentView, selectedArticle, selectedTag, selectedCategory,
-    navigate, goArticle, goTag, goCategory, goHome, goTags, goCategories,
+    currentView, selectedArticle, selectedTag,
+    navigate, goArticle, goTag,
   } = useRouter();
 
   const { blogPosts, refreshPosts, loading: loadingPosts } = useBlogPosts();
-
-  const latestPosts = useMemo(() => {
-    return blogPosts
-      .filter((post) => !Number.isNaN(new Date(post.date).getTime()))
-      .sort((a, b) => +new Date(b.date) - +new Date(a.date))
-      .slice(0, 3);
-  }, [blogPosts]);
 
   const postInList = findPostByArticleKey(blogPosts, selectedArticle);
   const articleId = postInList?.id ?? selectedArticle;
@@ -78,7 +67,7 @@ export default function App() {
   }, [currentView, currentArticle, selectedArticle]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div>
       {DevToaster && (
         <Suspense fallback={null}><DevToaster position="top-right" /></Suspense>
       )}
@@ -113,29 +102,12 @@ export default function App() {
       {currentView === 'home' ? (
         <main className="editorial fade-in">
           <h1 className="hero">Yuan Wang</h1>
-          <p className="hero-tagline" style={{ fontStyle: 'normal' }}>
+          <p className="hero-tagline" lang="zh-CN" style={{ fontStyle: 'normal' }}>
             静水流深，和光同尘。
           </p>
 
-          <div className="home-latest-posts">
-            {latestPosts.map((post) => (
-              <BlogPost
-                key={post.id}
-                post={post}
-                onClick={() => goArticle(articleSlug(post))}
-                onTagClick={goTag}
-              />
-            ))}
-          </div>
+          <YearGroupedList posts={blogPosts} onClick={goArticle} onTagClick={goTag} />
         </main>
-      ) : currentView === 'archives' ? (
-        <Suspense fallback={<LoadingSpinner />}>
-          <Archives posts={blogPosts} onNavigateHome={goHome} onArticleClick={goArticle} />
-        </Suspense>
-      ) : currentView === 'tags' ? (
-        <Suspense fallback={<LoadingSpinner />}>
-          <Tags posts={blogPosts} onTagClick={goTag} />
-        </Suspense>
       ) : currentView === 'about' ? (
         <Suspense fallback={<LoadingSpinner />}>
           <About />
@@ -147,12 +119,7 @@ export default function App() {
           </div>
         ) : currentArticle ? (
           <Suspense fallback={<LoadingSpinner />}>
-            <Article
-              post={currentArticle}
-              onBack={goHome}
-              onCategoryClick={goCategory}
-              onTagClick={goTag}
-            />
+            <Article post={currentArticle} onTagClick={goTag} />
           </Suspense>
         ) : (
           <div className="editorial" style={{ padding: '4rem 0', textAlign: 'center' }}>
@@ -161,15 +128,7 @@ export default function App() {
         )
       ) : currentView === 'tagged' && selectedTag ? (
         <Suspense fallback={<LoadingSpinner />}>
-          <TaggedArticles tag={selectedTag} posts={blogPosts} onBack={goTags} onArticleClick={goArticle} />
-        </Suspense>
-      ) : currentView === 'categories' ? (
-        <Suspense fallback={<LoadingSpinner />}>
-          <Categories posts={blogPosts} onCategoryClick={goCategory} />
-        </Suspense>
-      ) : currentView === 'category' && selectedCategory ? (
-        <Suspense fallback={<LoadingSpinner />}>
-          <CategoryArticles category={selectedCategory} posts={blogPosts} onBack={goCategories} onArticleClick={goArticle} />
+          <TaggedArticles tag={selectedTag} posts={blogPosts} onArticleClick={goArticle} />
         </Suspense>
       ) : currentView === 'admin' ? (
         <AdminGate>

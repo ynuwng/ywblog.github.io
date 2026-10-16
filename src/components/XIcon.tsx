@@ -1,8 +1,9 @@
-export function XIcon({ className }: { className?: string }) {
+export function XIcon({ size }: { size: number }) {
   return (
     <svg 
       viewBox="0 0 24 24" 
-      className={className}
+      width={size}
+      height={size}
       fill="currentColor"
       aria-hidden="true"
     >

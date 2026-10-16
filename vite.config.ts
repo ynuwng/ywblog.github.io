@@ -1,6 +1,7 @@
 
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
+import fs from 'fs';
 import path from 'path';
 import viteCompression from 'vite-plugin-compression';
 import { fetchRss } from './scripts/rss.mjs';
@@ -9,25 +10,45 @@ import { projectId, publicAnonKey } from './src/utils/supabase/info';
 export default defineConfig({
   plugins: [
     react(),
-    {
-      name: 'blog-rss',
-      async generateBundle() {
-        this.emitFile({ type: 'asset', fileName: 'rss.xml', source: await fetchRss(projectId, publicAnonKey) });
-      },
-      configureServer(server) {
-        server.middlewares.use('/rss.xml', async (_req, res) => {
+    (() => {
+      // Read the last emitted feed before Vite empties outDir (renderStart),
+      // so an API outage republishes it instead of failing the whole build.
+      let previousFeed: string | undefined;
+      return {
+        name: 'blog-rss',
+        buildStart() {
+          const file = path.resolve(__dirname, 'dist/rss.xml');
+          previousFeed = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : undefined;
+        },
+        async generateBundle() {
+          let source: string;
           try {
-            const feed = await fetchRss(projectId, publicAnonKey);
-            res.setHeader('Content-Type', 'application/rss+xml; charset=utf-8');
-            res.end(feed);
+            source = await fetchRss(projectId, publicAnonKey, (msg: string) => this.warn(msg));
           } catch (error) {
-            res.statusCode = 503;
-            res.end('RSS is temporarily unavailable. Please try again later.');
-            server.config.logger.error(String(error));
+            if (!previousFeed) {
+              this.warn(`RSS fetch failed and no previous feed exists; rss.xml not emitted: ${error}`);
+              return;
+            }
+            this.warn(`RSS fetch failed; reusing previous rss.xml: ${error}`);
+            source = previousFeed;
           }
-        });
-      },
-    },
+          this.emitFile({ type: 'asset', fileName: 'rss.xml', source });
+        },
+        configureServer(server) {
+          server.middlewares.use('/rss.xml', async (_req, res) => {
+            try {
+              const feed = await fetchRss(projectId, publicAnonKey, (msg: string) => server.config.logger.warn(msg));
+              res.setHeader('Content-Type', 'application/rss+xml; charset=utf-8');
+              res.end(feed);
+            } catch (error) {
+              res.statusCode = 503;
+              res.end('RSS is temporarily unavailable. Please try again later.');
+              server.config.logger.error(String(error));
+            }
+          });
+        },
+      };
+    })(),
     // Strip the auto-generated modulepreload hint for markdown-vendor.
     // The chunk is kept separate so react-markdown/remark-gfm have their own
     // cache hash (Article.tsx changes don't invalidate them), but we don't want

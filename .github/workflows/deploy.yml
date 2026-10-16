@@ -14,7 +14,8 @@ permissions:
 
 concurrency:
   group: "pages"
-  cancel-in-progress: true
+  # Queue instead of cancel, so an hourly run can't kill a push deploy mid-flight.
+  cancel-in-progress: false
 
 jobs:
   build:

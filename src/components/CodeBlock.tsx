@@ -76,12 +76,12 @@ export function CodeBlock({ language, children }: CodeBlockProps) {
         <button onClick={handleCopy} className="cb-copy" aria-label="Copy code">
           {copied ? (
             <>
-              <Check className="w-3 h-3" />
+              <Check size={12} />
               <span>copied</span>
             </>
           ) : (
             <>
-              <Copy className="w-3 h-3" />
+              <Copy size={12} />
               <span>copy</span>
             </>
           )}

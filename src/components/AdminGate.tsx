@@ -39,7 +39,7 @@ export function AdminGate({ children }: { children: React.ReactNode }) {
           placeholder="Enter admin key"
           style={{
             padding: '0.5rem 1rem',
-            border: `1px solid ${error ? 'var(--color-red-600)' : 'var(--border-default)'}`,
+            border: `1px solid ${error ? 'var(--c-test)' : 'var(--border-default)'}`,
             borderRadius: '4px',
             background: 'var(--bg-surface)',
             color: 'var(--text-primary)',
