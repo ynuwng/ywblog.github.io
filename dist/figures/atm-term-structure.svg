@@ -1,14 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 320" preserveAspectRatio="xMidYMid meet">
   <style>
-    .ax    { stroke: #8A8A85; stroke-width: 0.5; fill: none; }
-    .lbl   { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; fill: #8A8A85; letter-spacing: 0.04em; }
+    .ax    { stroke: #707070; stroke-width: 0.5; fill: none; }
+    .lbl   { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; fill: #707070; letter-spacing: 0.04em; }
     .axt   { font-family: 'STIX Two Text', 'Source Serif Pro', Georgia, serif; font-size: 12px; fill: #555555; font-style: italic; }
     .curve { fill: none; stroke: #7F77DD; stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
     .pt    { fill: #7F77DD; }
     .ann   { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; fill: #7F77DD; letter-spacing: 0.04em; }
     @media (prefers-color-scheme: dark) {
-      .ax { stroke: #4A4A45; }
-      .lbl, .axt { fill: #8A8A85; }
+      .ax { stroke: #555555; }
+      .lbl, .axt { fill: #B0B0B0; }
     }
   </style>
 

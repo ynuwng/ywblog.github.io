@@ -62,8 +62,10 @@ If `BLOG_ADMIN_KEY` or `ADMIN_KEY` is not configured in the Supabase Edge Functi
 
 ## Build & deploy
 
-RSS is available at `https://ynuwng.com/rss.xml`, with automatic feed discovery in the page head. The Vite RSS plugin reads the public article API during every build and emits titles, summaries, dates, authors, categories, and slug-based article links (GUIDs stay ID-based). The dev server serves the same feed at `/rss.xml`. Posts missing an ID, title, or valid date are skipped with a build warning. If the API request fails, the build warns and republishes the previous `dist/rss.xml` instead of failing; sample fallback posts are never published to RSS. A successful empty response produces an empty feed.
+RSS is available at `https://ynuwng.com/rss.xml`, with automatic feed discovery in the page head. The Vite RSS plugin reads the public article API during every build and emits titles, summaries, dates, authors, categories, and stable ID-based article links (GUIDs stay ID-based). The dev server serves the same feed at `/rss.xml`. Posts missing an ID, title, or valid date are skipped with a build warning. If the API request fails, the build warns and republishes the previous `dist/rss.xml` instead of failing; sample fallback posts are never published to RSS. A successful empty response produces an empty feed.
 
 GitHub Actions rebuilds and deploys hourly (at minute 17), on pushes to main, or manually via workflow dispatch. Backend article changes appear after the next successful deployment; scheduled runs can be delayed by GitHub. The canonical domain is configured in `scripts/rss.mjs`.
 
 `npm run build` emits to `dist/`, split into `react-vendor`, `markdown-vendor`, and per-route chunks. Assets ≥10KB get `.gz` and `.br` companions, and the `_headers` file (in `public/`, copied to `dist/`) configures Cloudflare to serve the pre-compressed files. `console.log` calls are stripped in production. The `dist/` directory is committed, so a production build should accompany any change meant to ship.
+
+Article URLs use immutable post IDs, so editing a title does not change its link. Previously published title URLs have retained aliases, and current-title URLs remain supported; both redirect to stable ID URLs.

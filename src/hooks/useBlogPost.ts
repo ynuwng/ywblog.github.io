@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { BlogPost } from '../types';
 import { getPost } from '../lib/blogApi';
 
-const postCache = new Map<string, BlogPost>();
+import { postCache } from '../lib/postCache';
 
 export function useBlogPost(id: string | null, initialPost: BlogPost | null = null) {
   const initialHasContent = Boolean(initialPost?.content);
@@ -33,16 +33,9 @@ export function useBlogPost(id: string | null, initialPost: BlogPost | null = nu
       return;
     }
 
-    const cached = postCache.get(id);
-    if (cached) {
-      setPost(cached);
-      setLoading(false);
-      return;
-    }
-
     let cancelled = false;
     const fetchPost = async () => {
-      setLoading(true);
+      setLoading(!postCache.has(id));
       setError(null);
       try {
         const data = await getPost(id);
@@ -51,6 +44,8 @@ export function useBlogPost(id: string | null, initialPost: BlogPost | null = nu
           postCache.set(id, data.post);
           setPost(data.post);
         } else {
+          postCache.delete(id);
+          setPost(null);
           setError(data.error || 'Post not found');
         }
       } catch (err) {

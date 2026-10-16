@@ -1,5 +1,6 @@
 import React from 'react';
 import { BlogPost as BlogPostType } from '../types';
+import { articlePath } from '../lib/articleSlugs';
 import { formatMixedText, textLang } from '../lib/mixedTypography';
 
 interface BlogPostProps {
@@ -44,12 +45,18 @@ export function BlogPost({ post, onClick, onTagClick }: BlogPostProps) {
   const excerpt = post.excerpt ? formatMixedText(post.excerpt) : '';
 
   return (
-    <article className="post-row fade-in" onClick={onClick}>
+    <article className="post-row fade-in">
       <div className="post-date">
         {month} {day}
       </div>
       <div>
-        <h2 className="post-title" lang={textLang(title)}>{title}</h2>
+        <h2 className="post-title" lang={textLang(title)}>
+          <a href={articlePath(post)} onClick={(e) => {
+            if (!onClick || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+            e.preventDefault();
+            onClick();
+          }}>{title}</a>
+        </h2>
         {excerpt && <p className="post-desc" lang={textLang(excerpt)}>{excerpt}</p>}
         {meta.length > 0 && (
           <div className="post-meta-row">{meta}</div>

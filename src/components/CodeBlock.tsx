@@ -29,11 +29,32 @@ interface CodeBlockProps {
   children: string;
 }
 
+const syntaxColors: Record<string, string> = {
+  '#a0a1a7': 'var(--code-comment)',
+  '#a626a4': 'var(--code-keyword)',
+  '#e45649': 'var(--code-red)',
+  '#0184bb': 'var(--code-cyan)',
+  '#50a14f': 'var(--code-green)',
+  '#c18401': 'var(--code-number)',
+  '#986801': 'var(--code-number)',
+  '#4078f2': 'var(--code-blue)',
+};
+
 const editorialTheme = {
-  ...atomOneLight,
+  ...Object.fromEntries(Object.entries(atomOneLight).map(([selector, rules]) => [
+    selector,
+    { ...rules, ...(rules.color ? { color: syntaxColors[rules.color] ?? 'var(--text-primary)' } : {}) },
+  ])),
+  // Give names their own semantic colors instead of sharing number colors.
+  'hljs-title': { color: 'var(--code-blue)' },
+  'hljs-variable': { color: 'var(--code-variable)' },
+  'hljs-template-variable': { color: 'var(--code-variable)' },
+  'hljs-attr': { color: 'var(--code-variable)' },
+  'hljs-params': { color: 'var(--code-parameter)' },
+  'hljs-type': { color: 'var(--code-type)' },
   hljs: {
     ...atomOneLight['hljs'],
-    color: 'var(--text-primary)',
+    color: 'var(--code-text)',
     background: 'transparent',
     fontFamily: 'var(--font-mono)',
     fontSize: '14px',
@@ -97,7 +118,6 @@ export function CodeBlock({ language, children }: CodeBlockProps) {
           minWidth: '2.5em',
           paddingRight: '1em',
           color: 'var(--text-tertiary)',
-          opacity: 0.55,
           userSelect: 'none',
         }}
       >

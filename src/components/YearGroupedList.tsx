@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { BlogPost as BlogPostType } from '../types';
 import { BlogPost } from './BlogPost';
-import { articleSlug } from '../lib/articleSlugs';
 
 interface YearGroupedListProps {
   posts: BlogPostType[];
@@ -38,7 +37,7 @@ export function YearGroupedList({ posts, onClick, onTagClick }: YearGroupedListP
             <BlogPost
               key={post.id}
               post={post}
-              onClick={() => onClick(articleSlug(post))}
+              onClick={() => onClick(post.id)}
               onTagClick={onTagClick}
             />
           ))}

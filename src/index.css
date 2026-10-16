@@ -298,15 +298,27 @@
   --font-mono:  ui-monospace, 'SF Mono', Menlo, Monaco,
                 Consolas, monospace;
 
-  /* Surfaces — warm paper, never pure white (和光同尘: soften the glare) */
-  --bg-page:    #FAFAF9;
+  /* Surfaces — clean white reading canvas. */
+  --bg-page:    #FFFFFF;
   --bg-surface: #FFFFFF;
-  --bg-subtle:  #F2F1EE;
+  --bg-subtle:  #F6F6F6;
+  color-scheme: light;
+  --code-comment: #686868;
+  --code-keyword: #C42B35;
+  --code-red: #C43535;
+  --code-cyan: #007E9E;
+  --code-green: #16803D;
+  --code-number: #0876A0;
+  --code-blue: #006FE6;
+  --code-variable: #AD5000;
+  --code-parameter: #AD5000;
+  --code-type: #8750CF;
+  --code-text: #24292F;
 
   /* Text — warm ink, never pure black */
   --text-primary:   #1C1C1A;
   --text-secondary: #55534E;
-  --text-tertiary:  #87847D;
+  --text-tertiary:  #686660;
 
   /* Borders */
   --border-faint:   rgba(28, 28, 26, 0.08);
@@ -372,11 +384,23 @@
 .dark {
   --bg-page:    #1A1A1A;
   --bg-surface: #232323;
-  --bg-subtle:  #2A2A28;
+  --bg-subtle:  #252525;
+  color-scheme: dark;
+  --code-comment: #A3A3A3;
+  --code-keyword: #D6A0E5;
+  --code-red: #F19A94;
+  --code-cyan: #7CCBDF;
+  --code-green: #A3CE99;
+  --code-number: #E2BC7C;
+  --code-blue: #94B9F5;
+  --code-variable: #E2BC7C;
+  --code-parameter: var(--text-primary);
+  --code-type: #E2BC7C;
+  --code-text: var(--text-primary);
 
   --text-primary:   #ECEAE3;
   --text-secondary: #A8A6A0;
-  --text-tertiary:  #6E6D68;
+  --text-tertiary:  #A09E97;
 
   --border-faint:   rgba(255, 255, 255, 0.08);
   --border-default: rgba(255, 255, 255, 0.15);
@@ -639,9 +663,10 @@ body {
   align-items: baseline;
   padding: 14px 0;
   border-top: 0.5px solid var(--border-faint);
-  cursor: pointer;
 }
-.post-row:hover .post-title { color: var(--accent); }
+.post-title a { color: inherit; text-decoration: none; }
+.post-title a:hover { color: var(--accent); }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 .post-row .post-date {
   font-family: var(--font-mono);
   font-size: var(--text-meta);
@@ -671,18 +696,20 @@ body {
 }
 .post-row .post-meta-row {
   font-family: var(--font-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.04em;
+  font-size: 12px;
+  line-height: 1.8;
+  letter-spacing: 0.02em;
   color: var(--text-tertiary);
   text-transform: lowercase;
   margin-top: 8px;
 }
+.post-meta-row button, .post-meta-row > span:not(.sep) { white-space: nowrap; }
 .post-row .post-meta-row .sep { margin: 0 6px; opacity: 0.7; }
 
 /* ---------- Inline tag strip (replaces all pill styles) ---------- */
 .tag-strip {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.04em;
   color: var(--text-tertiary);
   text-transform: lowercase;
@@ -776,6 +803,15 @@ body {
   border: 0.5px solid var(--border-faint);
 }
 
+.prose pre {
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  border: 0.5px solid var(--border-faint);
+  border-radius: 6px;
+  padding: 18px 20px;
+  overflow-x: auto;
+}
+
 /* Nuke any inherited chrome (borders, underlines, backgrounds) on every
    element inside the syntax-highlighter output. The wrapper itself keeps
    its outer border via .code-block-wrapper above. */
@@ -789,7 +825,7 @@ body {
   background: transparent !important;
   box-shadow: none !important;
 }
-.code-block-wrapper pre { padding: 0 !important; margin: 0 !important; }
+.code-block-wrapper pre { padding: 14px 18px !important; margin: 0 !important; }
 
 .prose hr {
   border: 0;
@@ -909,7 +945,24 @@ body {
 
 /* Inline contents — replaces the old TOC rail so the right margin is free
    for sidenotes. */
-.article-toc { margin: 0 0 32px; }
+.article-toc {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--bg-page); padding: 12px 0;
+  margin: 0 0 28px; border-bottom: 1px solid var(--border-default);
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+.article-toc.is-hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.article-toc summary { cursor: pointer; font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); padding: 6px 0; }
+.article-toc summary span { float: right; color: var(--text-tertiary); }
+.article-toc details[open] ol { max-height: 28vh; overflow-y: auto; padding-top: 8px; }
+.article-toc .toc-subsection { padding-left: 20px; }
+.article-toc a[aria-current="location"] { color: var(--text-primary); text-decoration: underline; text-underline-offset: 4px; }
+.prose h2, .prose h3 { scroll-margin-top: 38vh; }
 .article-toc ol { list-style: none; margin: 0; padding: 0; }
 .article-toc li {
   display: flex; gap: 10px; align-items: baseline;
@@ -1112,12 +1165,12 @@ button, a { -webkit-tap-highlight-color: transparent; }
 
   /* Post rows — narrower date column, snug grid */
   .post-row {
-    grid-template-columns: 44px minmax(0, 1fr);
-    gap: 12px;
-    padding: 12px 0;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+    padding: 20px 0;
   }
-  .post-row .post-title { font-size: 17px; }
-  .post-row .post-desc  { font-size: 14px; }
+  .post-row .post-title { font-size: 20px; line-height: 1.45; }
+  .post-row .post-desc  { font-size: 15px; line-height: 1.65; }
 
   /* Hero */
   .hero         { margin-bottom: 10px; }
@@ -1153,7 +1206,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
     --text-article-h1: 21px;
   }
   .editorial, .article-page { padding-left: 14px; padding-right: 14px; }
-  .post-row { grid-template-columns: 40px minmax(0, 1fr); gap: 10px; }
+  .post-row { grid-template-columns: minmax(0, 1fr); gap: 6px; }
   .code-block-wrapper { margin-left: -14px; margin-right: -14px; }
 }
 

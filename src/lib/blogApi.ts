@@ -1,8 +1,11 @@
+import { invalidatePost } from './postCache';
 import { BlogPost } from '../types';
 import { getAdminKey } from './adminSession';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
 
 const API_BASE = `https://${projectId}.supabase.co/functions/v1/make-server-860c354e`;
+
+let contentRevision = 0;
 
 type ApiResponse<T> =
   | ({ success: true } & T)
@@ -33,15 +36,17 @@ async function readJson<T>(response: Response): Promise<ApiResponse<T>> {
 }
 
 export async function listPosts(): Promise<ApiResponse<{ posts: BlogPost[] }>> {
-  const response = await fetch(`${API_BASE}/posts`, {
+  const response = await fetch(`${API_BASE}/posts?revision=${contentRevision}`, {
     headers: authHeaders(),
+    cache: 'no-store',
   });
   return readJson(response);
 }
 
 export async function getPost(id: string): Promise<ApiResponse<{ post: BlogPost }>> {
-  const response = await fetch(`${API_BASE}/posts/${encodeURIComponent(id)}`, {
+  const response = await fetch(`${API_BASE}/posts/${encodeURIComponent(id)}?revision=${contentRevision}`, {
     headers: authHeaders(),
+    cache: 'no-store',
   });
   return readJson(response);
 }
@@ -55,7 +60,9 @@ export async function createPost(post: Omit<BlogPost, 'id'>): Promise<ApiRespons
     },
     body: JSON.stringify(post),
   });
-  return readJson(response);
+  const result = await readJson<{ post: BlogPost }>(response);
+  if (result.success) contentRevision = Date.now();
+  return result;
 }
 
 export async function updatePost(id: string, post: Omit<BlogPost, 'id'>): Promise<ApiResponse<{ post: BlogPost }>> {
@@ -67,7 +74,12 @@ export async function updatePost(id: string, post: Omit<BlogPost, 'id'>): Promis
     },
     body: JSON.stringify(post),
   });
-  return readJson(response);
+  const result = await readJson<{ post: BlogPost }>(response);
+  if (result.success) {
+    invalidatePost(id);
+    contentRevision = Date.now();
+  }
+  return result;
 }
 
 export async function deletePost(id: string): Promise<ApiResponse<{ message: string }>> {
@@ -75,5 +87,10 @@ export async function deletePost(id: string): Promise<ApiResponse<{ message: str
     method: 'DELETE',
     headers: authHeaders(true),
   });
-  return readJson(response);
+  const result = await readJson<{ message: string }>(response);
+  if (result.success) {
+    invalidatePost(id);
+    contentRevision = Date.now();
+  }
+  return result;
 }

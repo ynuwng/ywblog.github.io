@@ -18,7 +18,7 @@ function getInitialPosts(): BlogPost[] {
     if (!cached) return fallbackPosts;
 
     const posts = JSON.parse(cached);
-    return Array.isArray(posts) && posts.length > 0 ? posts : fallbackPosts;
+    return Array.isArray(posts) ? posts : fallbackPosts;
   } catch {
     return fallbackPosts;
   }
@@ -42,12 +42,12 @@ export function useBlogPosts(): UseBlogPostsReturn {
       setLoading(true);
       const data = await listPosts();
       
-      if (data.success && data.posts && data.posts.length > 0) {
+      if (data.success && Array.isArray(data.posts)) {
         setBlogPosts(data.posts);
         cachePosts(data.posts);
         setHasFetchedFromDB(true);
       } else {
-        // DB returned empty — keep showing fallback posts rather than a blank page
+        // Failed requests retain the last available data; a successful empty list clears it.
         setHasFetchedFromDB(true);
       }
     } catch (error) {

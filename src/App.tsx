@@ -6,7 +6,7 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { useBlogPosts } from './hooks/useBlogPosts';
 import { useBlogPost } from './hooks/useBlogPost';
 import { useRouter } from './hooks/useRouter';
-import { articlePath, findPostByArticleKey } from './lib/articleSlugs';
+import { articlePath, findPostByArticleKey, resolveArticleKey } from './lib/articleSlugs';
 
 // Sonner is only needed for admin toasts — exclude from production bundle entirely.
 const DevToaster = import.meta.env.DEV
@@ -49,7 +49,7 @@ export default function App() {
   const { blogPosts, refreshPosts, loading: loadingPosts } = useBlogPosts();
 
   const postInList = findPostByArticleKey(blogPosts, selectedArticle);
-  const articleId = postInList?.id ?? selectedArticle;
+  const articleId = postInList?.id ?? resolveArticleKey(selectedArticle);
 
   const initialArticle = postInList?.content ? postInList : null;
 
@@ -62,8 +62,8 @@ export default function App() {
   const currentArticle = fetchedPost ?? postInList ?? null;
 
   useEffect(() => {
-    if (currentView !== 'article' || !currentArticle || selectedArticle !== currentArticle.id) return;
-    window.history.replaceState(null, '', articlePath(currentArticle));
+    if (currentView !== 'article' || !currentArticle || selectedArticle === currentArticle.id) return;
+    window.history.replaceState(null, '', articlePath(currentArticle) + window.location.search + window.location.hash);
   }, [currentView, currentArticle, selectedArticle]);
 
   return (
@@ -106,7 +106,7 @@ export default function App() {
             静水流深，和光同尘。
           </p>
 
-          <YearGroupedList posts={blogPosts} onClick={goArticle} onTagClick={goTag} />
+          {blogPosts.length ? <YearGroupedList posts={blogPosts} onClick={goArticle} onTagClick={goTag} /> : <p className="meta">No articles yet.</p>}
         </main>
       ) : currentView === 'about' ? (
         <Suspense fallback={<LoadingSpinner />}>

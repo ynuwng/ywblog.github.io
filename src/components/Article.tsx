@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Copy, Check } from 'lucide-react';
 import { BlogPost } from '../types';
@@ -42,25 +42,6 @@ function slugify(text: string): string {
     .trim()
     .replace(/\s+/g, '-')
     .replace(/[^\p{L}\p{N}_-]/gu, '');
-}
-
-/* Extract h2 outline from markdown source so the TOC can pre-render
-   alongside the article (no DOM scrape, no flash). */
-function extractH2s(md: string): { id: string; text: string }[] {
-  const lines = md.split('\n');
-  const out: { id: string; text: string }[] = [];
-  let inFence = false;
-  for (const ln of lines) {
-    const fence = /^```/.test(ln);
-    if (fence) { inFence = !inFence; continue; }
-    if (inFence) continue;
-    const m = /^##\s+(.+?)\s*$/.exec(ln);
-    if (m) {
-      const text = formatMixedText(m[1].replace(/\s*#*\s*$/, ''));
-      out.push({ id: slugify(text), text });
-    }
-  }
-  return out;
 }
 
 function escapeCurrencyDollars(md: string): string {
@@ -117,8 +98,82 @@ export function Article({ post, onTagClick }: ArticleProps) {
     [mathPlugins]
   );
 
-  const outline = useMemo(() => extractH2s(content), [content]);
+  const proseRef = useRef<HTMLDivElement>(null);
+  const tocRef = useRef<HTMLElement>(null);
+  const [tocHidden, setTocHidden] = useState(false);
+  const [outline, setOutline] = useState<{ id: string; text: string; level: number }[]>([]);
+  const [activeHeading, setActiveHeading] = useState('');
+  const [tocOpen, setTocOpen] = useState(() => window.matchMedia('(min-width: 769px)').matches);
+
+  useEffect(() => {
+    const headings = Array.from(proseRef.current?.querySelectorAll('h2, h3') ?? []);
+    const used = new Set<string>();
+    const items = headings.map(heading => {
+      const text = heading.textContent ?? '';
+      const base = slugify(text) || 'section';
+      let id = base;
+      for (let n = 2; used.has(id); n++) id = `${base}-${n}`;
+      used.add(id);
+      heading.id = id;
+      return { id, text, level: Number(heading.tagName.slice(1)) };
+    });
+    setOutline(items);
+    const updateActive = () => {
+      let active = items[0]?.id ?? '';
+      proseRef.current?.querySelectorAll('h2, h3').forEach(heading => {
+        if (heading.getBoundingClientRect().top <= Math.max(200, window.innerHeight * 0.38 + 2)) active = heading.id;
+      });
+      setActiveHeading(active);
+    };
+    updateActive();
+    window.addEventListener('scroll', updateActive, { passive: true });
+    // Resolve direct chapter links only after the article has rendered.
+    if (window.location.hash) {
+      try { document.getElementById(decodeURIComponent(window.location.hash.slice(1)))?.scrollIntoView(); } catch {}
+    }
+    return () => window.removeEventListener('scroll', updateActive);
+  }, [content, mathPlugins]);
+
+  useEffect(() => {
+    setTocOpen(window.matchMedia('(min-width: 769px)').matches);
+  }, [post.id]);
+  useEffect(() => {
+    setTocHidden(false);
+    let directionStart = window.scrollY;
+    let previousY = window.scrollY;
+    let direction = 0;
+    const updateVisibility = () => {
+      const y = Math.max(0, window.scrollY);
+      const nextDirection = Math.sign(y - previousY);
+      if (nextDirection && nextDirection !== direction) {
+        directionStart = previousY;
+        direction = nextDirection;
+      }
+      previousY = y;
+      const toc = tocRef.current;
+      if (!toc || y <= 0 || toc.getBoundingClientRect().top > 0) {
+        setTocHidden(false);
+        return;
+      }
+      // Ignore small scroll movements so the directory does not flicker.
+      if (Math.abs(y - directionStart) >= 12) {
+        setTocHidden(direction > 0);
+      }
+    };
+    window.addEventListener('scroll', updateVisibility, { passive: true });
+    return () => window.removeEventListener('scroll', updateVisibility);
+  }, [post.id, outline.length >= 2]);
+
   const title = formatMixedText(post.title);
+  // Keep IDs deterministic on every render, including repeated headings.
+  const headingIds = new Set<string>();
+  const headingId = (text: string) => {
+    const base = slugify(text) || 'section';
+    let id = base;
+    for (let n = 2; headingIds.has(id); n++) id = `${base}-${n}`;
+    headingIds.add(id);
+    return id;
+  };
 
   return (
     <div className={`article-page fade-in${hasNotes ? ' has-sidenotes' : ''}`}>
@@ -139,35 +194,43 @@ export function Article({ post, onTagClick }: ArticleProps) {
 
         {/* Contents — inline, so the right margin stays free for sidenotes */}
         {outline.length >= 2 && (
-          <nav className="article-toc" aria-label="Contents">
-            <h2 className="rail-label">Contents</h2>
-            <ol>
-              {outline.map((h, i) => (
-                <li key={h.id}>
-                  <span className="toc-num">{String(i + 1).padStart(2, '0')}</span>
-                  <a
-                    href={`#${h.id}`}
-                    lang={textLang(h.text)}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const el = document.getElementById(h.id);
-                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }}
-                  >
-                    {h.text}
-                  </a>
-                </li>
-              ))}
-            </ol>
+          <nav ref={tocRef} className={`article-toc${tocHidden ? ' is-hidden' : ''}`}
+            aria-label="Contents" aria-hidden={tocHidden}
+            {...(tocHidden ? { inert: '' } : {})}>
+            <details open={tocOpen} onToggle={(e) => setTocOpen(e.currentTarget.open)}>
+              <summary>Contents <span>{outline.length} sections</span></summary>
+              <ol>
+                {outline.map((h, i) => (
+                  <li key={h.id} className={h.level === 3 ? 'toc-subsection' : undefined}>
+                    <span className="toc-num">{String(i + 1).padStart(2, '0')}</span>
+                    <a href={`#${encodeURIComponent(h.id)}`} lang={textLang(h.text)}
+                      aria-current={activeHeading === h.id ? 'location' : undefined}
+                      onClick={(e) => {
+                        if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+                        if (window.matchMedia('(max-width: 768px)').matches) setTocOpen(false);
+                      }}>{h.text}</a>
+                  </li>
+                ))}
+              </ol>
+            </details>
           </nav>
         )}
 
         {/* Body */}
-        <div className="prose">
+        <div className="prose" ref={proseRef}>
           <ReactMarkdown
             remarkPlugins={remarkPlugins}
             rehypePlugins={rehypePlugins}
             components={{
+              pre({ node, children, ...props }) {
+                const code = node?.children?.[0];
+                const classes = code?.type === 'element' ? code.properties?.className : undefined;
+                // Highlighted blocks supply their own pre and themed wrapper.
+                if (Array.isArray(classes) && classes.some(name => String(name).startsWith('language-'))) {
+                  return <>{children}</>;
+                }
+                return <pre {...props}>{children}</pre>;
+              },
               code({ node, className, children, ...props }) {
                 const match = /language-(\w+)/.exec(className || '');
                 const codeString = String(children).replace(/\n$/, '');
@@ -189,35 +252,21 @@ export function Article({ post, onTagClick }: ArticleProps) {
               },
               a({ node, children, ...props }) {
                 const href = props.href || '';
-                const isExternal = href.startsWith('http://') || href.startsWith('https://');
-                const isHashOnly = href.startsWith('#') && !href.includes('/');
-                const isInternalArticle = !isExternal && !isHashOnly && href.length > 0;
-
+                const isExternal = /^(https?:)?\/\//i.test(href);
+                const isHashOnly = href.startsWith('#');
+                const isBareId = /^[\w-]+$/.test(href);
+                const isInternalArticle = href.startsWith('/article/') || isBareId;
+                const displayHref = isBareId ? `/article/${encodeURIComponent(href)}` : href;
                 const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-                  if (isHashOnly) {
-                    // In-page TOC anchor — smooth-scroll.
+                  if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+                  if (isInternalArticle && !isHashOnly) {
                     e.preventDefault();
-                    const el = document.getElementById(href.slice(1));
-                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  } else if (isInternalArticle) {
-                    // Internal article link — clean URL via history API.
-                    e.preventDefault();
-                    let path = href.startsWith('/') ? href : '/' + href;
-                    if (!/^\/article\//.test(path)) path = '/article' + path; // bare ID → /article/<id>
-                    window.history.pushState(null, '', path);
+                    window.history.pushState(null, '', displayHref);
                     window.dispatchEvent(new PopStateEvent('popstate'));
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    // Article loading resolves any chapter hash after rendering.
+                    if (!displayHref.includes('#')) window.scrollTo({ top: 0 });
                   }
                 };
-
-                // For internal links, present the canonical clean URL in the href attribute
-                // so middle-click / "open in new tab" still works.
-                let displayHref = href;
-                if (isInternalArticle) {
-                  let path = href.startsWith('/') ? href : '/' + href;
-                  if (!/^\/article\//.test(path)) path = '/article' + path;
-                  displayHref = path;
-                }
 
                 return (
                   <a
@@ -234,12 +283,12 @@ export function Article({ post, onTagClick }: ArticleProps) {
               },
               h2({ children }) {
                 const text = formatMixedText(childrenText(children));
-                const id = slugify(text);
+                const id = headingId(text);
                 return <h2 id={id} lang={textLang(text)}>{formatMixedChildren(children)}</h2>;
               },
               h3({ children }) {
                 const text = formatMixedText(childrenText(children));
-                const id = slugify(text);
+                const id = headingId(text);
                 return <h3 id={id} lang={textLang(text)}>{formatMixedChildren(children)}</h3>;
               },
               li({ children, ...props }) {
