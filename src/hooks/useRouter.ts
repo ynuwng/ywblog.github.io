@@ -13,7 +13,7 @@ function parsePath(): { view: ViewType; articleId?: string; tag?: string } {
   if (parts[0] === 'article' && parts[1])    return { view: 'article',  articleId: decodeURIComponent(parts[1]) };
   if (parts[0] === 'tag'     && parts[1])    return { view: 'tagged',   tag:       decodeURIComponent(parts[1]) };
   if (parts[0] === 'about')                  return { view: 'about' };
-  if (parts[0] === 'admin')                  return { view: 'admin' };
+  if (import.meta.env.DEV && parts[0] === 'admin') return { view: 'admin' };
   return { view: 'home' };
 }
 

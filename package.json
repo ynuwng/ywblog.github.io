@@ -1,36 +1,39 @@
-
-  {
-      "name": "Tech Style Personal Blog",
-      "version": "0.1.0",
-      "private": true,
-      "dependencies": {
-          "@jsr/supabase__supabase-js": "^2.49.8",
-          "hono": "*",
-          "lucide-react": "^0.487.0",
-          "react": "^18.3.1",
-          "react-dom": "^18.3.1",
-          "react-markdown": "*",
-          "react-syntax-highlighter": "*",
-          "remark-gfm": "^4.0.0",
-          "remark-math": "^6.0.0",
-          "rehype-katex": "^7.0.0",
-          "katex": "^0.16.9",
-          "sonner": "^2.0.3"
-      },
-    "devDependencies": {
-        "@types/node": "^20.10.0",
-        "@vitejs/plugin-react-swc": "^3.10.2",
-        "autoprefixer": "^10.4.17",
-        "cssnano": "^6.0.3",
-        "lightningcss": "^1.23.0",
-        "postcss": "^8.4.35",
-        "terser": "^5.36.0",
-        "vite": "6.3.5",
-        "vite-plugin-compression": "^0.5.1"
-    },
-      "scripts": {
-          "dev": "vite",
-          "build": "vite build",
-          "bundle:report": "node scripts/bundle-report.mjs"
-      }
+{
+  "name": "Tech Style Personal Blog",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@jsr/supabase__supabase-js": "2.87.1",
+    "hono": "4.13.13",
+    "katex": "0.18.2",
+    "lucide-react": "^0.487.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-markdown": "10.1.0",
+    "react-syntax-highlighter": "16.1.0",
+    "rehype-katex": "^7.0.0",
+    "remark-gfm": "^4.0.0",
+    "remark-math": "^6.0.0",
+    "sonner": "^2.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@vitejs/plugin-react-swc": "^3.10.2",
+    "autoprefixer": "^10.4.17",
+    "esbuild": "0.25.12",
+    "lightningcss": "^1.23.0",
+    "postcss": "^8.4.35",
+    "terser": "^5.36.0",
+    "vite": "6.4.4",
+    "vite-plugin-compression": "^0.5.1"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "bundle:report": "node scripts/bundle-report.mjs",
+    "test:security": "node --test scripts/security.test.mjs"
+  },
+  "overrides": {
+    "katex": "$katex"
   }
+}

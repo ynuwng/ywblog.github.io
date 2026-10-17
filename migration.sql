@@ -17,6 +17,16 @@ CREATE TABLE IF NOT EXISTS posts (
 
 CREATE INDEX IF NOT EXISTS posts_date_idx ON posts (date DESC);
 
+-- Browsers may read published articles; only the server may write them.
+-- Apply protection before importing data. RLS alone does not guard TRUNCATE.
+ALTER TABLE public.posts ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON TABLE public.posts FROM PUBLIC, anon, authenticated;
+GRANT SELECT ON TABLE public.posts TO anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.posts TO service_role;
+DROP POLICY IF EXISTS "Public can read posts" ON public.posts;
+CREATE POLICY "Public can read posts" ON public.posts
+  FOR SELECT TO anon, authenticated USING (true);
+
 -- Step 2: migrate existing data from the KV store
 -- kv_store values have camelCase keys (readTime, not read_time)
 INSERT INTO posts (id, title, date, author, excerpt, read_time, tags, category, content)

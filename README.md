@@ -19,11 +19,11 @@ The development server starts at `http://localhost:3000`. To generate the produc
 npm run build
 ```
 
-Output goes to the tracked `dist/` directory; include updated build output when shipping frontend changes. No automated test suite or linter is configured.
+Output goes to the tracked `dist/` directory; include updated build output when shipping frontend changes. Run `npm run test:security` for focused security regression tests. No linter is configured.
 
 ## Writing
 
-Open `/admin` to create, edit, delete, or import articles. The floating `+` shortcut is shown during local development. Saving changes requires the backend admin key, stored in session storage for the current browser session.
+Open `/admin` during local development to create, edit, delete, or import articles. The admin panel is excluded from production builds. Saving changes requires the backend admin key, held only in memory until the page reloads.
 
 Articles support Markdown, math, syntax-highlighted code, figures, and footnotes. Import `.md` files with the simple frontmatter format shown in `posts/`.
 
@@ -45,6 +45,10 @@ Useful places to start:
 Article links use permanent post IDs. Existing published title links have retained aliases in `src/lib/articleSlugs.ts`.
 
 Backend writes require the server secret `BLOG_ADMIN_KEY` (or the legacy `ADMIN_KEY`). Keep admin credentials out of frontend configuration. Do not hand-edit the generated `src/utils/supabase/info.tsx` or `src/supabase/functions/server/kv_store.tsx` files.
+
+Use a randomly generated admin key of at least 32 characters. Set `BLOG_ADMIN_ORIGINS` as a comma-separated list of permitted browser origins; it defaults to `http://localhost:3000,http://127.0.0.1:3000`. Set both values as Supabase Edge Function secrets, never as `VITE_` variables. The public anon key is expected in the browser and is not an admin credential.
+
+See [the security audit](security/AUDIT.md) for findings and deployment steps. Review `security/harden-database.sql` before applying it to an existing database: direct browser database writes are removed; writes continue through the authenticated Edge Function. Backend changes and SQL hardening are not deployed by the GitHub Pages workflow.
 
 ## Deployment
 

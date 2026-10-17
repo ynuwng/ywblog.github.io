@@ -24,7 +24,9 @@ function getInitialTheme(): Theme {
 const About           = lazy(() => import('./components/About').then(m => ({ default: m.About })));
 const Article         = lazy(() => import('./components/Article').then(m => ({ default: m.Article })));
 const TaggedArticles  = lazy(() => import('./components/TaggedArticles').then(m => ({ default: m.TaggedArticles })));
-const Admin           = lazy(() => import('./components/Admin').then(m => ({ default: m.Admin })));
+const Admin           = import.meta.env.DEV
+  ? lazy(() => import('./components/Admin').then(m => ({ default: m.Admin })))
+  : null;
 
 // Quiet loading fallback — matches editorial tone.
 const LoadingSpinner = () => (
@@ -130,7 +132,7 @@ export default function App() {
         <Suspense fallback={<LoadingSpinner />}>
           <TaggedArticles tag={selectedTag} posts={blogPosts} onArticleClick={goArticle} />
         </Suspense>
-      ) : currentView === 'admin' ? (
+      ) : currentView === 'admin' && Admin ? (
         <AdminGate>
           <Suspense fallback={<LoadingSpinner />}>
             <Admin refreshPosts={refreshPosts} />

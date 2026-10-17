@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { ADMIN_SESSION_KEY, setAdminKey } from '../lib/adminSession';
+import { getAdminKey, setAdminKey } from '../lib/adminSession';
 
 function isAuthed(): boolean {
-  return Boolean(sessionStorage.getItem(ADMIN_SESSION_KEY));
+  return Boolean(getAdminKey());
 }
 
 export function AdminGate({ children }: { children: React.ReactNode }) {
@@ -17,6 +17,7 @@ export function AdminGate({ children }: { children: React.ReactNode }) {
     const key = input.trim();
     if (key) {
       setAdminKey(key);
+      setInput('');
       setAuthed(true);
     } else {
       setError(true);

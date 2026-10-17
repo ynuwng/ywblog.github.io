@@ -1,13 +1,17 @@
-export const ADMIN_SESSION_KEY = 'blog_admin_key';
+// Keep the credential in memory; refresh clears the admin session.
+let adminKey: string | null = null;
+
+// Remove credentials left behind by older versions of the admin panel.
+try { sessionStorage.removeItem('blog_admin_key'); } catch { /* storage may be disabled */ }
 
 export function getAdminKey(): string | null {
-  return sessionStorage.getItem(ADMIN_SESSION_KEY);
+  return adminKey;
 }
 
 export function setAdminKey(key: string) {
-  sessionStorage.setItem(ADMIN_SESSION_KEY, key);
+  adminKey = key;
 }
 
 export function clearAdminKey() {
-  sessionStorage.removeItem(ADMIN_SESSION_KEY);
+  adminKey = null;
 }
