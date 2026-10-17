@@ -101,6 +101,7 @@ test('public CORS reads work while admin preflight is restricted to configured o
 });
 test('backend copies and pinned Hono versions stay aligned', async () => {
   assert.equal(await readFile(sourcePath, 'utf8'), await readFile('src/supabase/functions/server/index.tsx', 'utf8'));
+  assert.match(await readFile('supabase/functions/quick-handler/index.ts', 'utf8'), /import \"\.\.\/make-server-860c354e\/index\.ts\"/);
   const pkg = JSON.parse(await readFile('package.json', 'utf8'));
   assert.ok((await readFile(sourcePath, 'utf8')).includes(`npm:hono@${pkg.dependencies.hono}`));
 });
