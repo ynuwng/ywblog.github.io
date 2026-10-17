@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomOneLight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { Copy, Check } from 'lucide-react';

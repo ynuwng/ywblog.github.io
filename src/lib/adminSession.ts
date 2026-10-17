@@ -11,7 +11,3 @@ export function getAdminKey(): string | null {
 export function setAdminKey(key: string) {
   adminKey = key;
 }
-
-export function clearAdminKey() {
-  adminKey = null;
-}

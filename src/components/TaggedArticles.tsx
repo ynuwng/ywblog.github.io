@@ -1,4 +1,3 @@
-import React from 'react';
 import { YearGroupedList } from './YearGroupedList';
 import { BlogPost } from '../types';
 

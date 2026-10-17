@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { BlogPost as BlogPostType } from '../types';
 import { BlogPost } from './BlogPost';
 

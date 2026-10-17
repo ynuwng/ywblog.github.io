@@ -19,7 +19,7 @@ The development server starts at `http://localhost:3000`. To generate the produc
 npm run build
 ```
 
-Output goes to the tracked `dist/` directory; include updated build output when shipping frontend changes. Run `npm run test:security` for focused security regression tests. No linter is configured.
+Output goes to `dist/`, which is not committed; GitHub Actions builds it on deploy. Only `dist/rss.xml` is tracked, as the feed fallback. Run `npm run test:security` for focused security regression tests. No linter is configured.
 
 ## Writing
 
@@ -39,12 +39,12 @@ Useful places to start:
 - `src/components/Article.tsx` — Markdown rendering and article navigation.
 - `src/index.css` — typography, layout, and light/dark theme colors.
 - `src/lib/blogApi.ts` — article API requests.
-- `supabase/functions/make-server-860c354e/index.ts` — deployable backend entry point; a second copy lives in `src/supabase/functions/server/index.tsx`. Keep them aligned when changing the backend.
+- `supabase/functions/make-server-860c354e/index.ts` — deployable backend entry point.
 - `scripts/rss.mjs` — feed generation and canonical site URL.
 
 Article links use permanent post IDs. Existing published title links have retained aliases in `src/lib/articleSlugs.ts`.
 
-Backend writes require the server secret `BLOG_ADMIN_KEY` (or the legacy `ADMIN_KEY`). Keep admin credentials out of frontend configuration. Do not hand-edit the generated `src/utils/supabase/info.tsx` or `src/supabase/functions/server/kv_store.tsx` files.
+Backend writes require the server secret `BLOG_ADMIN_KEY` (or the legacy `ADMIN_KEY`). Keep admin credentials out of frontend configuration. Do not hand-edit the generated `src/utils/supabase/info.tsx` file.
 
 Use a randomly generated admin key of at least 32 characters. Set `BLOG_ADMIN_ORIGINS` as a comma-separated list of permitted browser origins; it defaults to `http://localhost:3000,http://127.0.0.1:3000`. Set both values as Supabase Edge Function secrets, never as `VITE_` variables. The public anon key is expected in the browser and is not an admin credential.
 

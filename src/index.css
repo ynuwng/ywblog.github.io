@@ -509,13 +509,6 @@ body {
   color: var(--text-tertiary);
   text-transform: uppercase;
 }
-.meta-lower { /* mono but not uppercased — for tag chips and minutes */
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  color: var(--text-tertiary);
-  text-transform: lowercase;
-}
 
 /* Rail label — recurring section heading */
 .rail-label {
@@ -558,15 +551,6 @@ body {
   background: none; border: 0; padding: 0; cursor: pointer;
 }
 .wordmark .mark { color: var(--accent); flex-shrink: 0; }
-.wordmark .em-dash {
-  color: var(--text-tertiary);
-  margin: 0 0.5em;
-  font-weight: 400;
-}
-.wordmark .domains {
-  color: var(--text-tertiary);
-  font-weight: 400;
-}
 .tagline {
   font-family: var(--font-mono);
   font-size: 11px;
@@ -635,10 +619,6 @@ body {
   font-style: italic;
   margin: 0 0 36px;
   max-width: 560px;
-}
-.hero-social {
-  display: flex; gap: 14px;
-  margin: 0 0 40px;
 }
 .social-link { color: var(--text-tertiary); transition: color 0.15s ease; }
 .social-link:hover { color: var(--accent); }
@@ -743,15 +723,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px soli
   color: var(--text-primary);
   margin: 2.4rem 0 0.6rem;
   letter-spacing: -0.012em;
-}
-.prose h2 .section-number {
-  font-family: var(--font-mono);
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--text-tertiary);
-  margin-right: 14px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
 }
 .prose h3 {
   font-family: var(--font-serif);
@@ -905,15 +876,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px soli
   color: var(--text-secondary);
   font-style: italic;
   margin-top: 14px;
-}
-.prose figcaption .figure-label {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.06em;
-  color: var(--text-primary);
-  margin-right: 6px;
-  font-style: normal;
-  text-transform: uppercase;
 }
 
 /* ---------- Article header ---------- */
@@ -1098,7 +1060,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px soli
 
 /* ---------- Small utilities ---------- */
 .serif { font-family: var(--font-serif); }
-.sans  { font-family: var(--font-sans); }
 .mono  { font-family: var(--font-mono); }
 .text-secondary { color: var(--text-secondary); }
 .text-tertiary  { color: var(--text-tertiary); }
@@ -1155,8 +1116,6 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .editorial         { padding-top: 24px; padding-bottom: 56px; }
 
   /* Header — one row: two nav items fit beside the wordmark */
-  .wordmark .domains,
-  .wordmark .em-dash { display: none; }
   .site-header-inner { padding-top: 8px; padding-bottom: 8px; }
   .header-actions    { gap: 12px; }
   .site-nav          { gap: 16px; }

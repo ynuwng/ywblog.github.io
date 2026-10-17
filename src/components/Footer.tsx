@@ -1,4 +1,3 @@
-import React from 'react';
 import { Github, Rss, Mail } from 'lucide-react';
 import { XIcon } from './XIcon';
 

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
-import { MigratePosts } from './MigratePosts';
 import { BlogPost } from '../types';
 import { createPost, deletePost, getPost, listPosts, updatePost } from '../lib/blogApi';
 import { parseFrontmatter } from '../lib/frontmatter';
@@ -199,12 +198,6 @@ export function Admin({ refreshPosts }: AdminProps) {
 
       {showArticleList && (
         <div className="mb-12">
-          <MigratePosts />
-        </div>
-      )}
-
-      {showArticleList && (
-        <div className="mb-12">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl">Published Articles</h2>
             <button
@@ -231,7 +224,7 @@ export function Admin({ refreshPosts }: AdminProps) {
             <div className="text-center py-8 text-gray-500">Loading articles...</div>
           ) : articles.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
-              No articles yet. Create your first article or migrate existing posts.
+              No articles yet. Create your first article.
             </div>
           ) : (
             <div className="space-y-4">

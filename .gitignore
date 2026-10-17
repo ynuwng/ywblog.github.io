@@ -6,3 +6,6 @@ node_modules
 *.key
 supabase/.temp/
 .DS_Store
+# Build output; rss.xml stays tracked as the build's fallback when the API is down.
+dist/*
+!dist/rss.xml
