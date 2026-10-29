@@ -26,7 +26,3 @@
 /*.html
   Cache-Control: public, max-age=0, must-revalidate
 
-# Don't cache service worker
-/sw.js
-  Cache-Control: public, max-age=0, must-revalidate
-

@@ -102,7 +102,7 @@ test('public CORS reads work while admin preflight is restricted to configured o
 test('legacy function and pinned Hono version stay aligned', async () => {
   assert.match(await readFile('supabase/functions/quick-handler/index.ts', 'utf8'), /import \"\.\.\/make-server-860c354e\/index\.ts\"/);
   const pkg = JSON.parse(await readFile('package.json', 'utf8'));
-  assert.ok((await readFile(sourcePath, 'utf8')).includes(`npm:hono@${pkg.dependencies.hono}`));
+  assert.ok((await readFile(sourcePath, 'utf8')).includes(`npm:hono@${pkg.devDependencies.hono}`));
 });
 
 test('authorized creation validates input and generates its own ID', async () => {

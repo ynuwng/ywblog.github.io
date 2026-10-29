@@ -1,7 +1,6 @@
 import { Sun, Moon } from 'lucide-react';
 import { Mark } from './Mark';
-
-type View = 'home' | 'about' | 'article' | 'tagged' | 'admin';
+import { ViewType as View } from '../hooks/useRouter';
 
 interface BlogHeaderProps {
   onNavigate: (view: View) => void;

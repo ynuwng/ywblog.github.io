@@ -6,7 +6,6 @@ import { listPosts } from '../lib/blogApi';
 interface UseBlogPostsReturn {
   blogPosts: BlogPost[];
   loading: boolean;
-  hasFetchedFromDB: boolean;
   refreshPosts: () => Promise<void>;
 }
 
@@ -35,24 +34,19 @@ function cachePosts(posts: BlogPost[]) {
 export function useBlogPosts(): UseBlogPostsReturn {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>(getInitialPosts);
   const [loading, setLoading] = useState(true);
-  const [hasFetchedFromDB, setHasFetchedFromDB] = useState(false);
 
   const fetchPosts = useCallback(async () => {
     try {
       setLoading(true);
       const data = await listPosts();
       
+      // Failed requests retain the last available data; a successful empty list clears it.
       if (data.success && Array.isArray(data.posts)) {
         setBlogPosts(data.posts);
         cachePosts(data.posts);
-        setHasFetchedFromDB(true);
-      } else {
-        // Failed requests retain the last available data; a successful empty list clears it.
-        setHasFetchedFromDB(true);
       }
     } catch (error) {
       console.error('Error fetching posts from Supabase:', error);
-      setHasFetchedFromDB(true);
     } finally {
       setLoading(false);
     }
@@ -62,5 +56,5 @@ export function useBlogPosts(): UseBlogPostsReturn {
     fetchPosts();
   }, [fetchPosts]);
 
-  return { blogPosts, loading, hasFetchedFromDB, refreshPosts: fetchPosts };
+  return { blogPosts, loading, refreshPosts: fetchPosts };
 }

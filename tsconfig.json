@@ -11,10 +11,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "strict": false,
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+    "strict": false
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]

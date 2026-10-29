@@ -303,18 +303,11 @@ export function Article({ post, onTagClick }: ArticleProps) {
                 const text = childrenText(children);
                 return <em {...props} lang={textLang(text)}>{formatMixedChildren(children)}</em>;
               },
-              /* Render images as proper <figure>s — alt-text becomes the caption.
-                 Absolute paths (`/figures/...`) are rewritten to respect Vite's
-                 deploy base, so subpath deploys (GitHub Pages, etc.) work. */
+              /* Render images as proper <figure>s — alt-text becomes the caption. */
               img({ src, alt, ...rest }) {
-                const base = (import.meta as any).env?.BASE_URL || '/';
-                const resolved =
-                  typeof src === 'string' && src.startsWith('/') && !src.startsWith('//')
-                    ? base.replace(/\/$/, '') + src
-                    : src;
                 return (
                   <figure>
-                    <img src={resolved} alt={alt} {...rest} />
+                    <img src={src} alt={alt} {...rest} />
                     {alt && <figcaption>{alt}</figcaption>}
                   </figure>
                 );

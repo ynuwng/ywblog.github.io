@@ -6,14 +6,11 @@ import { formatMixedText, textLang } from '../lib/mixedTypography';
 interface BlogPostProps {
   post: BlogPostType;
   onClick?: () => void;
-  /** Kept for prop compatibility with previous design; tags are now inline mono */
-  tagFrequencies?: Record<string, number>;
-  maxTagCount?: number;
   onTagClick?: (tag: string) => void;
 }
 
 /**
- * Flat post row used on Home, Archives, TaggedArticles, CategoryArticles.
+ * Flat post row used on Home and TaggedArticles.
  * 56px mono date column · serif title + description · `·`-separated mono meta strip.
  */
 export function BlogPost({ post, onClick, onTagClick }: BlogPostProps) {

@@ -328,25 +328,17 @@
   --accent:      #069AFF;
   --accent-soft: #E1F2FF;
 
-  /* Figure palette (ESL convention) */
-  --c-train: #1D9E75;
+  /* Error state */
   --c-test:  #D85A30;
-  --c-bayes: #7F77DD;
-  --c-grid:  #D3D1C7;
 
   /* Type scale — Stripe Press measurements (large display, snug body leading) */
   --text-display:           42px;     /* article titles, hero — Stripe Press ~44–48 */
-  --text-display-line:      1.12;
-  --text-display-tracking:  -0.02em;
 
-  --text-h1: 30px;
   --text-h2: 26px;
   --text-h3: 20px;
-  --text-h4: 17px;
 
   --text-body:        16px;            /* Jane Street body size */
   --text-body-line:   1.5;             /* Jane Street prose leading */
-  --text-body-ui:     17px;
   --text-small:       15px;
 
   /* Article prose spec — scoped to .prose / .article-title only,
@@ -363,20 +355,9 @@
   --text-code-block:  15px;
   --text-code-inline: 0.9em;
 
-  /* Spacing */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
-  --space-7: 48px;
-  --space-8: 64px;
-
   /* Re-bind shadcn-style tokens to our palette so legacy classes still resolve */
   --background: var(--bg-page);
   --foreground: var(--text-primary);
-  --muted:      var(--bg-subtle);
   --border:     var(--border-faint);
 }
 
@@ -408,14 +389,10 @@
   --accent:      #4FB1FF;
   --accent-soft: #0A2B45;
 
-  --c-train: #6FCBA8;
   --c-test:  #E88C68;
-  --c-bayes: #A39DEB;
-  --c-grid:  #4A4A45;
 
   --background: var(--bg-page);
   --foreground: var(--text-primary);
-  --muted:      var(--bg-subtle);
   --border:     var(--border-faint);
 }
 
@@ -551,13 +528,6 @@ body {
   background: none; border: 0; padding: 0; cursor: pointer;
 }
 .wordmark .mark { color: var(--accent); flex-shrink: 0; }
-.tagline {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  color: var(--text-tertiary);
-  text-transform: lowercase;
-}
 
 /* Nav */
 .header-actions {
@@ -1059,10 +1029,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px soli
 .fade-in { animation: fadeUp 0.32s ease both; }
 
 /* ---------- Small utilities ---------- */
-.serif { font-family: var(--font-serif); }
-.mono  { font-family: var(--font-mono); }
-.text-secondary { color: var(--text-secondary); }
-.text-tertiary  { color: var(--text-tertiary); }
 .accent         { color: var(--accent); }
 
 /* ============================================================
@@ -1088,7 +1054,6 @@ button, a { -webkit-tap-highlight-color: transparent; }
 
   :root {
     --text-display: 34px;
-    --text-h1: 26px;
     --text-h2: 24px;
     --text-h3: 19px;
     --text-article-h1: 28px;
@@ -1099,11 +1064,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
 @media (max-width: 640px) {
   :root {
     --text-display: 30px;
-    --text-h1: 24px;
     --text-h2: 23px;
     --text-h3: 18px;
     --text-body: 17px;
-    --text-body-ui: 16px;
     --text-small: 14.5px;
     --text-article-h1: 24px;
   }

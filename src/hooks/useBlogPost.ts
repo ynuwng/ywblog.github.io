@@ -9,18 +9,16 @@ export function useBlogPost(id: string | null, initialPost: BlogPost | null = nu
   const cachedPost = id ? postCache.get(id) ?? null : null;
   const startingPost = cachedPost ?? (initialHasContent ? initialPost : null);
 
-  // Synchronously reset loading/post/error when id changes so the caller sees
+  // Synchronously reset loading/post when id changes so the caller sees
   // loading=true immediately on navigation (no "Article not found" flash).
   const [prevId, setPrevId] = useState(id);
   const [post, setPost] = useState<BlogPost | null>(startingPost);
   const [loading, setLoading] = useState(Boolean(id && !startingPost));
-  const [error, setError] = useState<string | null>(null);
 
   if (prevId !== id) {
     const nextPost = id ? postCache.get(id) ?? (initialPost?.content ? initialPost : null) : null;
     setPrevId(id);
     setPost(nextPost);
-    setError(null);
     setLoading(Boolean(id && !nextPost));
   }
 
@@ -36,7 +34,6 @@ export function useBlogPost(id: string | null, initialPost: BlogPost | null = nu
     let cancelled = false;
     const fetchPost = async () => {
       setLoading(!postCache.has(id));
-      setError(null);
       try {
         const data = await getPost(id);
         if (cancelled) return;
@@ -46,12 +43,10 @@ export function useBlogPost(id: string | null, initialPost: BlogPost | null = nu
         } else {
           postCache.delete(id);
           setPost(null);
-          setError(data.error || 'Post not found');
         }
       } catch (err) {
         if (cancelled) return;
         console.error(err);
-        setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -61,5 +56,5 @@ export function useBlogPost(id: string | null, initialPost: BlogPost | null = nu
     return () => { cancelled = true; };
   }, [id, initialPost]);
 
-  return { post, loading, error };
+  return { post, loading };
 }
