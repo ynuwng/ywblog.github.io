@@ -1,7 +1,7 @@
-import { Hono } from "npm:hono@4.13.13";
-import { cors } from "npm:hono@4.13.13/cors";
-import { logger } from "npm:hono@4.13.13/logger";
-import { bodyLimit } from "npm:hono@4.13.13/body-limit";
+import { Hono } from "npm:hono@4.13.18";
+import { cors } from "npm:hono@4.13.18/cors";
+import { logger } from "npm:hono@4.13.18/logger";
+import { bodyLimit } from "npm:hono@4.13.18/body-limit";
 import { createClient } from "jsr:@supabase/supabase-js@2.87.1";
 
 const app = new Hono();
