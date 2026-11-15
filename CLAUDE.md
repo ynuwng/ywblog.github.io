@@ -37,7 +37,7 @@ Two hooks handle data:
 
 ### Backend (Supabase Edge Function)
 
-`supabase/functions/make-server-860c354e/index.ts` — Hono router running on Deno, deployed as a Supabase Edge Function (not by the GitHub Pages workflow). All routes are prefixed `/make-server-860c354e/`. `supabase/functions/quick-handler/` is a legacy alias that re-exports it.
+`supabase/functions/make-server-860c354e/index.ts` — Hono router running on Deno, deployed as a Supabase Edge Function (not by the GitHub Pages workflow). All routes are prefixed `/make-server-860c354e/`.
 
 Posts are stored in a **`posts` table** in Supabase Postgres. Schema:
 

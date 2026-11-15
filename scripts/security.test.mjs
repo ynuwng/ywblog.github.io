@@ -99,8 +99,7 @@ test('public CORS reads work while admin preflight is restricted to configured o
     assert.equal(response.headers.get('Access-Control-Allow-Origin'), allowed);
   }
 });
-test('legacy function and pinned Hono version stay aligned', async () => {
-  assert.match(await readFile('supabase/functions/quick-handler/index.ts', 'utf8'), /import \"\.\.\/make-server-860c354e\/index\.ts\"/);
+test('pinned Hono version stays aligned', async () => {
   const pkg = JSON.parse(await readFile('package.json', 'utf8'));
   assert.ok((await readFile(sourcePath, 'utf8')).includes(`npm:hono@${pkg.devDependencies.hono}`));
 });
