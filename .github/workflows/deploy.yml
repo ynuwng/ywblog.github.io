@@ -32,7 +32,7 @@ jobs:
         run: npm ci
 
       - name: Check dependency security
-        run: npm audit --audit-level=moderate
+        run: node scripts/audit.mjs
 
       - name: Verify security boundaries
         run: npm run test:security
