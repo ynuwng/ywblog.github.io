@@ -284,19 +284,60 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Lato';
+  src: url('/fonts/lato-latin-400-normal.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lato';
+  src: url('/fonts/lato-latin-400-italic.woff2') format('woff2');
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lato';
+  src: url('/fonts/lato-latin-700-normal.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrains-mono-latin-400-normal.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrains-mono-latin-400-italic.woff2') format('woff2');
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* ---------- Tokens ---------- */
 :root {
-  /* System stacks — the only web font is the handwritten hero name.
-     Serif carries all reading text (Tufte / Stripe Press); mono carries
-     all metadata. */
-  --font-cjk:     'Songti SC', 'STSong', 'Noto Serif CJK SC', 'Source Han Serif SC',
-                  'SimSun', serif;
-  --font-serif:   'Iowan Old Style', 'Charter', 'Bitstream Charter', 'Sitka Text',
-                  Cambria, Georgia, var(--font-cjk);
-  --font-heading: var(--font-serif);
+  /* Web fonts: Lato for reading text, JetBrains Mono for code, Dancing
+     Script for the hero name. Lato has no CJK glyphs, so Chinese falls back
+     to system sans. Mono (system) carries all metadata. */
+  --font-cjk:     'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
+                  'Noto Sans CJK SC', 'Source Han Sans SC', sans-serif;
+  --font-text:    'Lato', var(--font-cjk);
+  --font-heading: var(--font-text);
   --font-sans:    -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', sans-serif;
   --font-mono:  ui-monospace, 'SF Mono', Menlo, Monaco,
                 Consolas, monospace;
+  --font-code:  'JetBrains Mono', var(--font-mono);
 
   /* Surfaces — clean white reading canvas. */
   --bg-page:    #FFFFFF;
@@ -403,7 +444,7 @@ html, body {
 }
 
 body {
-  font-family: var(--font-serif);
+  font-family: var(--font-text);
   font-size: var(--text-body);
   line-height: var(--text-body-line);
   font-weight: 400;
@@ -415,7 +456,7 @@ body {
 }
 
 :lang(zh-CN) {
-  font-family: var(--font-serif);
+  font-family: var(--font-text);
   line-break: normal;
   word-break: normal;
   overflow-wrap: break-word;
@@ -582,7 +623,7 @@ body {
   margin: 0 0 14px;
 }
 .hero-tagline {
-  font-family: var(--font-serif);
+  font-family: var(--font-text);
   font-size: 17px;
   line-height: 1.5;
   color: var(--text-secondary);
@@ -638,7 +679,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px soli
   transition: color 0.15s ease;
 }
 .post-row .post-desc {
-  font-family: var(--font-serif);
+  font-family: var(--font-text);
   font-size: var(--text-small);            /* 15px */
   line-height: 1.5;
   color: var(--text-secondary);
@@ -677,7 +718,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px soli
 
 /* ---------- Article — prose (Stripe Press measurements) ---------- */
 .prose {
-  font-family: var(--font-serif);
+  font-family: var(--font-text);
   font-size: var(--text-article-body);          /* 17px */
   line-height: var(--text-article-body-line);   /* 1.72 */
   color: var(--text-secondary);         /* Jane Street gray prose; headings stay dark */
@@ -686,7 +727,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px soli
 .prose p + p { margin-top: 0; }
 
 .prose h2 {
-  font-family: var(--font-serif);
+  font-family: var(--font-text);
   font-size: var(--text-h2);            /* 26px */
   line-height: 1.2;
   font-weight: 600;                     /* book-cover weight */
@@ -695,7 +736,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px soli
   letter-spacing: -0.012em;
 }
 .prose h3 {
-  font-family: var(--font-serif);
+  font-family: var(--font-text);
   font-size: var(--text-h3);            /* 20px */
   line-height: 1.3;
   font-weight: 600;
@@ -736,7 +777,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px soli
 
 /* Inline code only — strictly excluded from the highlighted code block. */
 .prose :not(pre) > code {
-  font-family: var(--font-mono);
+  font-family: var(--font-code);
   font-size: var(--text-code-inline);
   background: var(--bg-subtle);
   padding: 1px 5px;
@@ -840,7 +881,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px soli
   border: 0.5px solid var(--border-faint);
 }
 .prose figcaption {
-  font-family: var(--font-serif);
+  font-family: var(--font-text);
   font-size: 15px;
   line-height: 1.5;
   color: var(--text-secondary);
@@ -898,7 +939,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px soli
 .article-toc ol { list-style: none; margin: 0; padding: 0; }
 .article-toc li {
   display: flex; gap: 10px; align-items: baseline;
-  font-family: var(--font-serif);
+  font-family: var(--font-text);
   font-size: 15px;
   line-height: 1.7;
 }
@@ -973,7 +1014,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px soli
   padding: 18px 20px;
   margin: 0;
   overflow: auto;
-  font-family: var(--font-mono);
+  font-family: var(--font-code);
   font-size: var(--text-code-block);
   line-height: 1.65;
 }

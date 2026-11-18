@@ -64,7 +64,7 @@ Only rendered in `import.meta.env.DEV`. Accessible via the `+` button (bottom-ri
 Public pages use only the editorial design system in `src/index.css`. It is driven by CSS custom properties (`--bg-surface`, `--text-tertiary`, `--border-default`, etc.) toggled by a `dark` class on `<html>`. Use the semantic classes (`editorial`, `meta`, `hero`, `prose`, …). There is no Tailwind build. The precompiled Tailwind utilities live in `src/admin.css`, which is imported only by the dev-only `Admin.tsx`, so don't use Tailwind classes on public pages.
 
 Design rules (keep new UI consistent with these):
-- **Serif for reading, mono for metadata.** All titles and body text use `--font-serif` (system serifs, CJK falls back to Song). Dates, tags, nav, the `YUAN'S BLOG` wordmark, and labels use `--font-mono`. The only web font is Dancing Script on `.hero` (the handwritten name). Don't add others.
+- **Lato for reading, mono for metadata.** All titles and body text use `--font-text` (Lato; CJK falls back to system sans such as PingFang). Code uses `--font-code` (JetBrains Mono). Dates, tags, nav, the `YUAN'S BLOG` wordmark, and labels use `--font-mono` (system mono). The web fonts are Lato, JetBrains Mono and Dancing Script on `.hero` (the handwritten name), all self-hosted Latin subsets in `public/fonts/`. Don't add others.
 - **Warm paper, never pure white or black.** Use the `--bg-*` / `--text-*` tokens only.
 - **One accent.** `--accent` is reserved for links, the active state, the mark, and sidenote numbers. Never use it as decoration.
 - **One mark.** The damped-sine glyph (`src/components/Mark.tsx`, `public/favicon.svg`). The header wordmark reads `YUAN'S BLOG`, the hero is "Yuan Wang" in handwriting, and the only tagline is 静水流深，和光同尘。

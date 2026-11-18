@@ -56,7 +56,7 @@ const editorialTheme = {
     ...atomOneLight['hljs'],
     color: 'var(--code-text)',
     background: 'transparent',
-    fontFamily: 'var(--font-mono)',
+    fontFamily: 'var(--font-code)',
     fontSize: '14px',
     lineHeight: 1.55,
     padding: '14px 18px',
